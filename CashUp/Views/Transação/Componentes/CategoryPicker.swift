@@ -15,48 +15,49 @@ struct CategoryPicker: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Button {
-                dismissKeyboard() 
-                isCategorySheetPresented = true
-            } label: {
-                HStack {
-                    if let subModel = selectedSubcategoryModel,
-                       let catModel = selectedCategoryModel {
-                        
-                        CategoriasViewIcon(
-                            systemName: subModel.icon,
-                            cor: catModel.color,
-                            size: 24
-                        )
-                        
-                        Text(subModel.nome) 
-                            .font(.title2)
-                            .foregroundStyle(.primary)
-                        
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.gray)
-                    } else {
-                        Image(systemName: "square.grid.2x2")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                            .foregroundStyle(.primary)
+            HStack {
+                Button {
+                    dismissKeyboard()
+                    isCategorySheetPresented = true
+                } label: {
+                    HStack {
+                        if let subModel = selectedSubcategoryModel,
+                           let catModel = selectedCategoryModel {
+                            CategoriasViewIcon(
+                                systemName: subModel.icon,
+                                cor: catModel.color,
+                                size: 24
+                            )
 
-                        Text("Selecionar categoria")
-                            .font(.title2)
-                            .foregroundStyle(.primary)
-                        
+                            Text(subModel.nome)
+                                .font(.title2)
+                                .foregroundStyle(.primary)
+
+                        } else {
+                            Image(systemName: "square.grid.2x2")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundStyle(.primary)
+
+                            Text("Selecionar categoria")
+                                .font(.title2)
+                                .foregroundStyle(.primary)
+                        }
+
                         Spacer()
                         Image(systemName: "chevron.right")
                             .foregroundStyle(.gray)
                     }
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 8)
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle()) // Expande o toque
                 }
-                .padding(.vertical, 8)
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .background(Color.clear) // ajuda a manter a área ativa
 
             Divider()
         }
     }
 }
-

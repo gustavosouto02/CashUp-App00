@@ -9,22 +9,35 @@ import SwiftUI
 import SwiftData
 
 struct AddTransactionView: View {
+
     @Environment(\.sizeCategory) var sizeCategory
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
-    @StateObject private var addTransactionVM = AddTransactionViewModel()
-    
+    @StateObject private var addTransactionVM: AddTransactionViewModel
+
     @State private var selectedSubcategoryModel: SubcategoriaModel? = nil
     @State private var selectedCategoryModel: CategoriaModel? = nil
-    
     @EnvironmentObject var expensesViewModel: ExpensesViewModel
-    
+
     @State private var isCategoryModalPresented = false
     @State private var showSuccessAlert = false
     @State private var showErrorAlert = false
     @State private var errorMessage = ""
+    let transactionToEdit: ExpenseModel?
+    var onEditComplete: (() -> Void)? = nil
+    
 
+    init(transactionToEdit: ExpenseModel? = nil, onEditComplete: (() -> Void)? = nil) {
+        _addTransactionVM = StateObject(wrappedValue: transactionToEdit != nil
+            ? AddTransactionViewModel(from: transactionToEdit!)
+            : AddTransactionViewModel())
+        self.transactionToEdit = transactionToEdit
+        self.onEditComplete = onEditComplete // ✅ Agora isso está correto
+    }
+
+
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -56,20 +69,53 @@ struct AddTransactionView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Adicionar") {
+                    Button(transactionToEdit == nil ? "Adicionar" : "Salvar") {
+                        if let transactionToEdit = transactionToEdit {
+                            transactionToEdit.amount = addTransactionVM.amount
+                            transactionToEdit.date = addTransactionVM.selectedDate
+                            transactionToEdit.expenseDescription = addTransactionVM.expenseDescription
+                            transactionToEdit.isIncome = addTransactionVM.selectedTransactionType == 1
+                            transactionToEdit.repetition = addTransactionVM.repeatOption != .nunca ?
+                                RepetitionData(repeatOption: addTransactionVM.repeatOption, endDate: addTransactionVM.repeatEndDate) :
+                                nil
 
-                        let sucesso = addTransactionVM.criarTransacaoEChamarClosure(
-                            categoriaModelApp: selectedCategoryModel,
-                            subcategoriaModelApp: selectedSubcategoryModel, modelContext: modelContext
-                        )
+                            if let cat = selectedCategoryModel, let sub = selectedSubcategoryModel {
+                                transactionToEdit.categoria = cat
+                                transactionToEdit.subcategoria = sub
+                            } else {
+                                errorMessage = "Selecione uma categoria e subcategoria."
+                                showErrorAlert = true
+                                return
+                            }
 
-                        if sucesso {
-                            showSuccessAlert = true
-                            selectedCategoryModel = nil
-                            selectedSubcategoryModel = nil
+
+                            do {
+                                try modelContext.save()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    onEditComplete?()
+                                }
+                                dismiss()
+
+                            } catch {
+                                print("❌ Erro ao salvar edição: \(error)")
+                                errorMessage = "Não foi possível salvar a transação editada."
+                                showErrorAlert = true
+                            }
                         } else {
-                            errorMessage = "Por favor, preencha o valor e selecione uma categoria."
-                            showErrorAlert = true
+                            let sucesso = addTransactionVM.criarTransacaoEChamarClosure(
+                                categoriaModelApp: selectedCategoryModel,
+                                subcategoriaModelApp: selectedSubcategoryModel,
+                                modelContext: modelContext
+                            )
+
+                            if sucesso {
+                                showSuccessAlert = true
+                                selectedCategoryModel = nil
+                                selectedSubcategoryModel = nil
+                            } else {
+                                errorMessage = "Por favor, preencha o valor e selecione uma categoria."
+                                showErrorAlert = true
+                            }
                         }
                     }
                     .disabled(addTransactionVM.amount <= 0 || selectedCategoryModel == nil || selectedSubcategoryModel == nil)
@@ -96,9 +142,13 @@ struct AddTransactionView: View {
                 Text(errorMessage)
             }
             .onAppear {
+                if let transaction = transactionToEdit {
+                    addTransactionVM.loadTransaction(transaction)
+                    selectedCategoryModel = transaction.categoria
+                    selectedSubcategoryModel = transaction.subcategoria
+                }
 
                 addTransactionVM.onTransactionCreated = { expenseModelCriado, categoriaModelSelecionada, subcategoriaModelSelecionada in
-
                     expensesViewModel.addExpense(
                         expenseData: expenseModelCriado,
                         categoriaModel: categoriaModelSelecionada,

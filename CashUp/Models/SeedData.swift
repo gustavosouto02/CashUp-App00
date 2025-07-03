@@ -266,7 +266,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
 
         for categoriaSeed in todasCategoriasSeedInfo {
             guard !categoriaIDsExistentes.contains(categoriaSeed.id) else {
-                print("Categoria já existe: \(categoriaSeed.nome)")
+//                print("Categoria já existe: \(categoriaSeed.nome)")
                 continue
             }
             let (r, g, b) = categoriaSeed.cor.toRGBComponents()
@@ -284,7 +284,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
 
             for subSeed in categoriaSeed.subcategorias {
                 guard !subcategoriaIDsExistentes.contains(subSeed.id) else {
-                    print("Subcategoria já existe: \(subSeed.nome)")
+//                    print("Subcategoria já existe: \(subSeed.nome)")
                     continue
                 }
 
@@ -307,9 +307,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
 
         if !novasCategorias.isEmpty {
             try modelContext.save()
-            print("⚡️ Dados iniciais de categoria populados com sucesso.")
         } else {
-            print("✅ Nenhum dado inicial novo necessário.")
         }
     } catch {
         print("❌ Erro ao popular dados iniciais: \(error.localizedDescription)")
@@ -326,7 +324,6 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
 
         for categoriaSeed in todasCategoriasSeedInfo {
             guard !categoriaIDsExistentes.contains(categoriaSeed.id) else {
-                print("Categoria já existe: \(categoriaSeed.nome)")
                 continue
             }
 
@@ -346,7 +343,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
 
             for subSeed in categoriaSeed.subcategorias {
                 guard !subcategoriaIDsExistentes.contains(subSeed.id) else {
-                    print("Subcategoria já existe: \(subSeed.nome)")
+//                    print("Subcategoria já existe: \(subSeed.nome)")
                     continue
                 }
 
@@ -371,7 +368,6 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
             try modelContext.save()
             print(" Dados iniciais de categoria populados com sucesso.")
         } else {
-            print(" Nenhum dado inicial novo necessário.")
         }
     } catch {
         print(" Erro ao popular dados iniciais: \(error.localizedDescription)")

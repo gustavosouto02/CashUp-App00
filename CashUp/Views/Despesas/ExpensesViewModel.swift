@@ -355,6 +355,26 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             currentMonth = newDate.startOfMonth()
         }
     }
+    
+    func originalExpenseModel(from displayable: DisplayableExpense) -> ExpenseModel? {
+        let idToSearch = displayable.originalExpenseID ?? displayable.id
+
+        let predicate = #Predicate<ExpenseModel> { $0.id == idToSearch }
+        let fetchDescriptor = FetchDescriptor<ExpenseModel>(predicate: predicate)
+
+        do {
+            let result = try modelContext.fetch(fetchDescriptor).first
+            if result == nil {
+                print("⚠️ Nenhuma transação encontrada com ID: \(idToSearch)")
+            }
+            return result
+        } catch {
+            print("Erro ao buscar transação original com ID: \(idToSearch) — \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+
 }
 
 struct DisplayableExpense: Identifiable, Hashable {
@@ -367,6 +387,11 @@ struct DisplayableExpense: Identifiable, Hashable {
     var categoria: CategoriaModel?
     var subcategoria: SubcategoriaModel?
     var isRecurringInstance: Bool
+
+    // ✅ Novo identificador estável
+    var stableID: UUID {
+        originalExpenseID ?? id
+    }
 
     init(from expense: ExpenseModel) {
         self.id = expense.id
@@ -393,10 +418,16 @@ struct DisplayableExpense: Identifiable, Hashable {
     }
 
     static func == (lhs: DisplayableExpense, rhs: DisplayableExpense) -> Bool {
-        lhs.id == rhs.id
+        lhs.stableID == rhs.stableID &&
+        lhs.amount == rhs.amount &&
+        lhs.expenseDescription == rhs.expenseDescription &&
+        lhs.date == rhs.date &&
+        lhs.categoria?.id == rhs.categoria?.id &&
+        lhs.subcategoria?.id == rhs.subcategoria?.id
     }
 
+
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(stableID)
     }
 }

@@ -18,6 +18,17 @@ class AddTransactionViewModel: ObservableObject {
     @Published var repeatEndDate: Date? = nil
     @Published var isRepeatDialogPresented: Bool = false
 
+    init() {}
+
+   init(from expense: ExpenseModel) {
+       self.amount = expense.amount
+       self.selectedDate = expense.date
+       self.expenseDescription = expense.expenseDescription
+       self.selectedTransactionType = expense.isIncome ? 1 : 0
+       self.repeatOption = expense.repetition?.repeatOption ?? .nunca
+       self.repeatEndDate = expense.repetition?.endDate ?? Date()
+   }
+    
     var onTransactionCreated: ((
         _ expenseModel: ExpenseModel,
         _ categoriaModel: CategoriaModel,
@@ -140,4 +151,13 @@ class AddTransactionViewModel: ObservableObject {
         repeatOption = .nunca
         repeatEndDate = nil
     }
+    
+    func loadTransaction(_ expense: ExpenseModel) {
+            self.amount = expense.amount
+            self.selectedDate = expense.date
+            self.expenseDescription = expense.expenseDescription
+            self.selectedTransactionType = expense.isIncome ? 1 : 0
+            self.repeatOption = expense.repetition?.repeatOption ?? .nunca
+            self.repeatEndDate = expense.repetition?.endDate ?? Date()
+        }
 }
