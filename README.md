@@ -26,17 +26,19 @@
 ---
 
 ## 📱 Telas do Aplicativo
-<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-
+<p align="center">
   <img src="https://github.com/user-attachments/assets/4481aeb9-aff8-47ab-90fa-025b80b37965" width="200" />
   <img src="https://github.com/user-attachments/assets/7a835f5a-6ee6-47f3-b67e-6d8a0e71753e" width="200" />
   <img src="https://github.com/user-attachments/assets/e130c622-2250-4f5e-99c2-b5740619c482" width="200" />
-  <br>
+</p>
+
+<p align="center">
   <img src="https://github.com/user-attachments/assets/dae960aa-6ec3-4449-877d-2556dbd69896" width="200" />
   <img src="https://github.com/user-attachments/assets/018028c4-0635-4ae6-b07f-fe4447c602ef" width="200"/>
   <img src="https://github.com/user-attachments/assets/6e6ba16f-9001-4c12-90fa-034f5f3f1ae7" width="200" />
+</p>
 
-</div>
+
 
 
 ---
