@@ -27,8 +27,8 @@
 
 ## 📱 Telas do Aplicativo
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/4481aeb9-aff8-47ab-90fa-025b80b37965" width="200" />
-  <img src="https://github.com/user-attachments/assets/7a835f5a-6ee6-47f3-b67e-6d8a0e71753e" width="200" />
+  <img src="https://github.com/user-attachments/assets/70d9e583-bad9-451f-a92b-99254a2306a9" width="200" />
+  <img src="https://github.com/user-attachments/assets/a1f57b3e-c9c3-4a6d-af80-d3173e09d9ae" width="200" />
   <img src="https://github.com/user-attachments/assets/e130c622-2250-4f5e-99c2-b5740619c482" width="200" />
 </p>
 
