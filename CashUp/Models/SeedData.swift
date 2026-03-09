@@ -254,45 +254,122 @@ fileprivate let todasCategoriasSeedInfo: [CategoriaSeedInfo] = [
 
 @MainActor
 func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
-    let fetchDescriptor = FetchDescriptor<CategoriaModel>()
     do {
-        let count = try modelContext.fetchCount(fetchDescriptor)
-        guard count == 0 else {
-            return
-        }
-    } catch {
-        print("Erro ao verificar a contagem de categorias existentes: \(error)")
-        return
-    }
+        let categoriasExistentes = try modelContext.fetch(FetchDescriptor<CategoriaModel>())
+        let subcategoriasExistentes = try modelContext.fetch(FetchDescriptor<SubcategoriaModel>())
 
-    print("Populando dados iniciais de categoria...")
-    for categoriaSeed in todasCategoriasSeedInfo {
-        let novaCategoriaModel = CategoriaModel(
-            id: categoriaSeed.id,
-            nome: categoriaSeed.nome,
-            icon: categoriaSeed.icon,
-            color: categoriaSeed.cor
-        )
-        
-        var subcategoriasParaEsteModelo: [SubcategoriaModel] = []
-        for subcategoriaSeed in categoriaSeed.subcategorias {
-            let novaSubcategoriaModel = SubcategoriaModel(
-                id: subcategoriaSeed.id,
-                nome: subcategoriaSeed.nome,
-                icon: subcategoriaSeed.icon,
-                categoria: novaCategoriaModel
+        let categoriaIDsExistentes = Set(categoriasExistentes.map { $0.id })
+        let subcategoriaIDsExistentes = Set(subcategoriasExistentes.map { $0.id })
+
+
+        var novasCategorias: [CategoriaModel] = []
+
+        for categoriaSeed in todasCategoriasSeedInfo {
+            guard !categoriaIDsExistentes.contains(categoriaSeed.id) else {
+//                print("Categoria já existe: \(categoriaSeed.nome)")
+                continue
+            }
+            let (r, g, b) = categoriaSeed.cor.toRGBComponents()
+
+            let novaCategoria = CategoriaModel(
+                id: categoriaSeed.id,
+                nome: categoriaSeed.nome,
+                icon: categoriaSeed.icon,
+                red: r,
+                green: g,
+                blue: b
             )
-            subcategoriasParaEsteModelo.append(novaSubcategoriaModel)
+
+            var novasSubcategorias: [SubcategoriaModel] = []
+
+            for subSeed in categoriaSeed.subcategorias {
+                guard !subcategoriaIDsExistentes.contains(subSeed.id) else {
+//                    print("Subcategoria já existe: \(subSeed.nome)")
+                    continue
+                }
+
+                let novaSub = SubcategoriaModel(
+                    id: subSeed.id,
+                    nome: subSeed.nome,
+                    icon: subSeed.icon,
+                    categoria: novaCategoria
+                )
+                novasSubcategorias.append(novaSub)
+            }
+
+            novaCategoria.subcategorias = novasSubcategorias
+            novasCategorias.append(novaCategoria)
         }
-        novaCategoriaModel.subcategorias = subcategoriasParaEsteModelo
-        
-        modelContext.insert(novaCategoriaModel)
-    }
-    
-    do {
-        try modelContext.save()
-        print("Dados iniciais de categoria populados e salvos com sucesso.")
+
+        for categoria in novasCategorias {
+            modelContext.insert(categoria)
+        }
+
+        if !novasCategorias.isEmpty {
+            try modelContext.save()
+        } else {
+        }
     } catch {
-        print("Erro CRÍTICO ao salvar dados iniciais de categoria: \(error.localizedDescription).")
+        print("❌ Erro ao popular dados iniciais: \(error.localizedDescription)")
+    }
+    do {
+        // Busca IDs existentes para evitar conflitos com .unique
+        let categoriasExistentes = try modelContext.fetch(FetchDescriptor<CategoriaModel>())
+        let subcategoriasExistentes = try modelContext.fetch(FetchDescriptor<SubcategoriaModel>())
+
+        let categoriaIDsExistentes = Set(categoriasExistentes.map(\.id))
+        let subcategoriaIDsExistentes = Set(subcategoriasExistentes.map(\.id))
+
+        var novasCategorias: [CategoriaModel] = []
+
+        for categoriaSeed in todasCategoriasSeedInfo {
+            guard !categoriaIDsExistentes.contains(categoriaSeed.id) else {
+                continue
+            }
+
+            let (r, g, b) = categoriaSeed.cor.toRGBComponents()
+
+            let novaCategoria = CategoriaModel(
+                id: categoriaSeed.id,
+                nome: categoriaSeed.nome,
+                icon: categoriaSeed.icon,
+                red: r,
+                green: g,
+                blue: b
+            )
+
+
+            var novasSubcategorias: [SubcategoriaModel] = []
+
+            for subSeed in categoriaSeed.subcategorias {
+                guard !subcategoriaIDsExistentes.contains(subSeed.id) else {
+//                    print("Subcategoria já existe: \(subSeed.nome)")
+                    continue
+                }
+
+                let novaSub = SubcategoriaModel(
+                    id: subSeed.id,
+                    nome: subSeed.nome,
+                    icon: subSeed.icon,
+                    categoria: novaCategoria
+                )
+                novasSubcategorias.append(novaSub)
+            }
+
+            novaCategoria.subcategorias = novasSubcategorias
+            novasCategorias.append(novaCategoria)
+        }
+
+        for categoria in novasCategorias {
+            modelContext.insert(categoria)
+        }
+
+        if !novasCategorias.isEmpty {
+            try modelContext.save()
+            print(" Dados iniciais de categoria populados com sucesso.")
+        } else {
+        }
+    } catch {
+        print(" Erro ao popular dados iniciais: \(error.localizedDescription)")
     }
 }

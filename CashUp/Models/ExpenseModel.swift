@@ -16,7 +16,8 @@ final class ExpenseModel {
     var date: Date
     var expenseDescription: String
     var isIncome: Bool
-    var repetition: RepetitionData? 
+    @Attribute(.externalStorage)
+    var repetition: RepetitionData?
 
     var categoria: CategoriaModel?
     var subcategoria: SubcategoriaModel?
@@ -61,7 +62,7 @@ extension ExpenseModel {
             if currentDateInLoop >= queryInterval.start &&
                currentDateInLoop <= queryInterval.end &&
                currentDateInLoop >= recurrenceStartDate &&
-               !normalizedExcludedDates.contains(normalizedCurrentDateInLoop) { 
+               !normalizedExcludedDates.contains(normalizedCurrentDateInLoop) {
 
                 if let definiteEndDate = repetitionData.endDate, currentDateInLoop > definiteEndDate {
                     break

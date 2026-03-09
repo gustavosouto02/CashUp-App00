@@ -103,10 +103,13 @@ struct PlanningRestanteView: View {
     func categoriaRestanteView(categoriaPModel: CategoriaPlanejadaModel) -> some View {
         let totalPlanejadoCategoria = planningViewModel.totalParaCategoriaPlanejada(categoriaPModel)
 
-        let totalGastoCategoria = expensesViewModel.calcularTotalGastoParaCategoria(
-            categoriaPModel,
-            paraMes: planningViewModel.currentMonth
-        )
+        let totalGastoCategoria = categoriaPModel.subcategoriasPlanejadas?.reduce(0.0) { sum, subPlanModel in
+            sum + expensesViewModel.calcularTotalGastoParaSubcategoria(
+                subPlanModel,
+                paraMes: planningViewModel.currentMonth
+            )
+        } ?? 0.0
+        
         let restanteCategoria = totalPlanejadoCategoria - totalGastoCategoria
 
         VStack(alignment: .leading, spacing: 12) {
@@ -118,10 +121,14 @@ struct PlanningRestanteView: View {
                 )
                 Text(categoriaPModel.nomeCategoriaOriginal)
                     .font(.headline)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
                 Spacer()
                 Text("\(formatCurrency(restanteCategoria)) restante")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(restanteCategoria < 0 ? .red : .secondary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
             }
 
             if let subcategoriasPlanejadas = categoriaPModel.subcategoriasPlanejadas, !subcategoriasPlanejadas.isEmpty {
@@ -135,14 +142,14 @@ struct PlanningRestanteView: View {
 
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            CategoriasViewIcon( //
+                            CategoriasViewIcon(
                                 systemName: subPlanModel.iconSubcategoriaOriginal,
                                 cor: categoriaPModel.corCategoriaOriginal,
                                 size: 20
                             )
                             Text(subPlanModel.nomeSubcategoriaOriginal)
                                 .font(.headline)
-                    
+                            
                             Spacer()
                             Text("\(formatCurrency(gastoNaSub)) / \(formatCurrency(limiteDaSub))")
                                 .font(.subheadline)

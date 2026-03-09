@@ -44,18 +44,15 @@ class PlanningViewModel: ObservableObject {
         let predicate = #Predicate<CategoriaPlanejadaModel> {
             $0.mesAno == monthToFetch
         }
-        let sortDescriptors = [SortDescriptor(\CategoriaPlanejadaModel.categoriaOriginal?.nome, order: .forward)]
-        
-        let fetchDescriptor = FetchDescriptor<CategoriaPlanejadaModel>(predicate: predicate, sortBy: sortDescriptors)
-        
+        let fetchDescriptor = FetchDescriptor<CategoriaPlanejadaModel>(predicate: predicate)
         do {
-            return try modelContext.fetch(fetchDescriptor)
+            let categorias = try modelContext.fetch(fetchDescriptor)
+            return categorias.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
         } catch {
             print("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error)")
             return []
         }
     }
-    
     private func salvarContexto(operacao: String = "Operação Desconhecida") -> Bool {
         do {
             try modelContext.save()
@@ -297,11 +294,11 @@ class PlanningViewModel: ObservableObject {
             return ("Erro", "Não foi possível determinar o próximo mês.")
         }
         let nextMonthStart = nextMonthDateUnsafe.startOfMonth()
-        
+
         let ptBRLocale = Locale(identifier: "pt_BR")
 
         let currentMonthPredicate = #Predicate<CategoriaPlanejadaModel> { $0.mesAno == currentMonthStart }
-        let currentMonthFetchDescriptor = FetchDescriptor(predicate: currentMonthPredicate, sortBy: [SortDescriptor(\CategoriaPlanejadaModel.categoriaOriginal?.nome)])
+        let currentMonthFetchDescriptor = FetchDescriptor(predicate: currentMonthPredicate)
         let categoriasPlanejadasAtuais: [CategoriaPlanejadaModel]
         do {
             categoriasPlanejadasAtuais = try modelContext.fetch(currentMonthFetchDescriptor)
@@ -315,7 +312,7 @@ class PlanningViewModel: ObservableObject {
         }
 
         let nextMonthPredicate = #Predicate<CategoriaPlanejadaModel> { $0.mesAno == nextMonthStart }
-        let nextMonthFetchDescriptor = FetchDescriptor(predicate: nextMonthPredicate, sortBy: [SortDescriptor(\CategoriaPlanejadaModel.categoriaOriginal?.nome)])
+        let nextMonthFetchDescriptor = FetchDescriptor(predicate: nextMonthPredicate)
         let categoriasPlanejadasProximoMesExistentes: [CategoriaPlanejadaModel]
         do {
             categoriasPlanejadasProximoMesExistentes = try modelContext.fetch(nextMonthFetchDescriptor)

@@ -69,7 +69,7 @@ struct ExpensesView: View {
                 }
             }
             .fullScreenCover(isPresented: $isAddTransactionPresented) {
-                AddTransactionView()
+                AddTransactionView(transactionToEdit: nil)
                     .environmentObject(viewModel)
             }
         }

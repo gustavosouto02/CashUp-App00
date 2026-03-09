@@ -14,6 +14,7 @@ final class SubcategoriaPlanejadaModel {
     var id: UUID
     var valorPlanejado: Double
     var subcategoriaOriginal: SubcategoriaModel?
+    @Relationship
     var categoriaPlanejada: CategoriaPlanejadaModel?
 
     init(id: UUID = UUID(),

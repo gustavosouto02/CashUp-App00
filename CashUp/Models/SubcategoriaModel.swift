@@ -16,8 +16,7 @@ final class SubcategoriaModel {
     var nome: String
     var icon: String
     var usageCount: Int = 0
-    
-    @Relationship(inverse: \CategoriaModel.subcategorias)
+    @Relationship
     var categoria: CategoriaModel?
     
     init(id: UUID = UUID(),

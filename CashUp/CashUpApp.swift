@@ -1,6 +1,3 @@
-// Arquivo: CashUp/CashUpApp.swift
-// Abordagem alternativa para .modelContainer e seeding
-
 import SwiftUI
 import SwiftData
 
@@ -23,7 +20,12 @@ struct CashUpApp: App {
         do {
             sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Não foi possível criar ModelContainer: \(error.localizedDescription)")
+            print("Erro ao criar container: \(error)")
+            do {
+                sharedModelContainer = try ModelContainer()
+            } catch {
+                fatalError("Erro ao criar fallback do ModelContainer: \(error)")
+            }
         }
     }
 
@@ -34,8 +36,8 @@ struct CashUpApp: App {
                     WelcomeView(isShowingWelcomeScreen: $isShowingWelcomeScreen)
                         .transition(.opacity.animation(.easeInOut(duration: 0.5)))
                 } else {
-                    HomeView(modelContext: sharedModelContainer.mainContext)
-                        // Adiciona uma transição suave de opacidade
+                    let context = sharedModelContainer.mainContext
+                    HomeView(modelContext: context)
                         .transition(.opacity.animation(.easeInOut(duration: 0.5)))
                 }
             }

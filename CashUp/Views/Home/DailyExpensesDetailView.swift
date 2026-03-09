@@ -1,8 +1,8 @@
 //
-//  DailyExpensesDetailView.swift
-//  CashUp
+//  DailyExpensesDetailView.swift
+//  CashUp
 //
-//  Created by Gustavo Souto Pereira on 29/05/25.
+//  Created by Gustavo Souto Pereira on 29/05/25.
 //
 
 import SwiftUI
@@ -17,6 +17,13 @@ struct DailyExpensesDetailView: View {
             .sorted(by: { $0.amount > $1.amount })
     }
 
+    private var formattedDate: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.locale = Locale(identifier: "pt_BR")
+        return formatter.string(from: selectedDate)
+    }
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -27,14 +34,14 @@ struct DailyExpensesDetailView: View {
                         .frame(maxHeight: .infinity)
                 } else {
                     List {
-                        ForEach(expensesForThisDay) { expense in 
+                        ForEach(expensesForThisDay) { expense in
                             DisplayableExpenseRow(expense: expense)
                         }
                     }
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("Gastos de \(selectedDate, style: .date)")
+            .navigationTitle("Gastos em \(formattedDate)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

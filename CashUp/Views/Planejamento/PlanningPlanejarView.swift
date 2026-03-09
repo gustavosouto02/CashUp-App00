@@ -23,22 +23,21 @@ struct PlanningPlanejarView: View {
     
     
     @Query var categoriasPlanejadasDoMesQuery: [CategoriaPlanejadaModel]
-    
-    init(viewModel: PlanningViewModel,
-         isEditing: Binding<Bool>,
-         subcategoriasSelecionadas: Binding<Set<UUID>>) {
-        self.viewModel = viewModel
-        self._isEditing = isEditing
-        self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
-        
-        let monthToFilter = viewModel.currentMonth.startOfMonth()
-        let predicate = #Predicate<CategoriaPlanejadaModel> {
-            $0.mesAno == monthToFilter
-        }
-        let sortDescriptors = [SortDescriptor(\CategoriaPlanejadaModel.categoriaOriginal?.nome, order: .forward)]
-        
-        _categoriasPlanejadasDoMesQuery = Query(filter: predicate, sort: sortDescriptors, animation: .default)
-    }
+
+   init(viewModel: PlanningViewModel,
+        isEditing: Binding<Bool>,
+        subcategoriasSelecionadas: Binding<Set<UUID>>) {
+       self.viewModel = viewModel
+       self._isEditing = isEditing
+       self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
+
+       let monthToFilter = viewModel.currentMonth.startOfMonth()
+       let predicate = #Predicate<CategoriaPlanejadaModel> {
+           $0.mesAno == monthToFilter
+       }
+
+       _categoriasPlanejadasDoMesQuery = Query(filter: predicate, sort: [], animation: .default)
+   }
     
     var body: some View {
         ZStack {
@@ -71,7 +70,7 @@ struct PlanningPlanejarView: View {
                     }
                     return
                 }
-                
+
                 let catModelParaProcessar: CategoriaModel?
                 if let directCat = selectedCategoryFromSheet, directCat.id == subModel.categoria?.id {
                     catModelParaProcessar = directCat
@@ -90,7 +89,7 @@ struct PlanningPlanejarView: View {
                     }
                     return
                 }
-                
+
                 guard let finalCatModel = catModelParaProcessar else {
                     print("Erro: Categoria final para processamento é nil após seleção de subcategoria.")
                     DispatchQueue.main.async {
@@ -99,10 +98,10 @@ struct PlanningPlanejarView: View {
                     }
                     return
                 }
-                
+
                 processarSelecaoDoSheet(subcategoria: subModel, categoria: finalCatModel)
             }
-            
+
             if showDuplicateAlert {
                 alertDuplicado
             }
@@ -139,8 +138,10 @@ struct PlanningPlanejarView: View {
     private var despesasPlanejadasCard: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 16) {
-                let plannedCategoriesWithValues = categoriasPlanejadasDoMesQuery.filter { viewModel.totalParaCategoriaPlanejada($0) > 0 }
-                
+                let plannedCategoriesWithValues = categoriasPlanejadasDoMesQuery
+                    .sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
+                    .filter { viewModel.totalParaCategoriaPlanejada($0) > 0 }
+
                 if viewModel.valorTotalPlanejadoParaMesAtual() > 0 && !plannedCategoriesWithValues.isEmpty {
                     Chart(plannedCategoriesWithValues) { categoriaPModel in
                         SectorMark(
@@ -155,12 +156,12 @@ struct PlanningPlanejarView: View {
                     }
                     .frame(width: 80, height: 80)
                 } else {
-                    Image(systemName: "chart.pie.fill") // Ícone mais apropriado
-                        .font(.system(size: 50)) // Ajustado
+                    Image(systemName: "chart.pie.fill")
+                        .font(.system(size: 50))
                         .foregroundColor(Color.secondary.opacity(0.4))
                         .frame(width: 80, height: 80, alignment: .center)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Despesas Planejadas")
                         .font(.headline)
@@ -170,14 +171,15 @@ struct PlanningPlanejarView: View {
                 }
                 Spacer()
             }
-            
-            if !categoriasPlanejadasDoMesQuery.isEmpty {
+
+            let sortedCategorias = categoriasPlanejadasDoMesQuery.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
+            if !sortedCategorias.isEmpty {
                 Text("Resumo por Categoria:")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
-                
-                ForEach(categoriasPlanejadasDoMesQuery) { categoriaPlanejadaModel in
+
+                ForEach(sortedCategorias) { categoriaPlanejadaModel in
                     categoriaResumo(categoriaPlanejadaModel)
                 }
             }
@@ -220,14 +222,15 @@ struct PlanningPlanejarView: View {
     
     @ViewBuilder
     private func listaCategoriasPlanejadasView() -> some View {
-        if categoriasPlanejadasDoMesQuery.isEmpty && !isEditing {
-             Text("Nenhuma categoria planejada para este mês.\nToque em \"Adicionar Categoria\" para começar.")
+        let sortedCategorias = categoriasPlanejadasDoMesQuery.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
+        if sortedCategorias.isEmpty && !isEditing {
+            Text("Nenhuma categoria planejada para este mês.\nToque em \"Adicionar Categoria\" para começar.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .center)
-            
+
             Text("Para copiar o planejamento para o mês seguinte,\n utilize o botao de documento no topo da tela.")
                .font(.subheadline)
                .foregroundStyle(.secondary)
@@ -235,7 +238,7 @@ struct PlanningPlanejarView: View {
                .padding()
                .frame(maxWidth: .infinity, alignment: .center)
         } else {
-            ForEach(categoriasPlanejadasDoMesQuery) { catPlanModel in
+            ForEach(sortedCategorias) { catPlanModel in
                 categoriaPlanejadaView(catPlanModel)
             }
         }

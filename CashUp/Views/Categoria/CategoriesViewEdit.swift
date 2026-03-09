@@ -63,7 +63,7 @@ struct CategoriaSectionView: View { //
 
     var body: some View {
         Section {
-            ForEach(categoria.subcategorias ?? []) { sub in
+            ForEach(categoria.subcategorias) { sub in
                 HStack(spacing: 12) {
                     CategoriasViewIcon(systemName: sub.icon, cor: categoria.color, size: 24)
                     Text(sub.nome)

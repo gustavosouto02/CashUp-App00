@@ -6,7 +6,7 @@
 //
 
 import SwiftData
-import SwiftUI 
+import SwiftUI
 
 @Model
 final class CategoriaModel {
@@ -14,30 +14,30 @@ final class CategoriaModel {
     var id: UUID
     var nome: String
     var icon: String
-
     var redComponent: Double
     var greenComponent: Double
     var blueComponent: Double
-    var subcategorias: [SubcategoriaModel]?
+    
+    @Relationship(deleteRule: .cascade, inverse: \SubcategoriaModel.categoria)
+    var subcategorias: [SubcategoriaModel] = []
 
     init(id: UUID = UUID(),
-         nome: String = "",
-         icon: String = "",
-         color: Color = .gray,
+         nome: String,
+         icon: String,
+         red: Double,
+         green: Double,
+         blue: Double,
          subcategorias: [SubcategoriaModel]? = []) {
+
         self.id = id
         self.nome = nome
         self.icon = icon
-
-        let uiColor = UIColor(color)
-        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-        uiColor.getRed(&r, green: &g, blue: &b, alpha: &a)
-        self.redComponent = Double(r)
-        self.greenComponent = Double(g)
-        self.blueComponent = Double(b)
-
-        self.subcategorias = subcategorias
+        self.redComponent = red
+        self.greenComponent = green
+        self.blueComponent = blue
+        self.subcategorias = subcategorias ?? []
     }
+
 
     var color: Color {
         Color(red: redComponent, green: greenComponent, blue: blueComponent)

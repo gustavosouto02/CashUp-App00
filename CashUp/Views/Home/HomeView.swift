@@ -86,7 +86,7 @@ struct HomeView: View {
                 TipsView()
             }
             .fullScreenCover(isPresented: $isAddTransactionPresented) {
-                AddTransactionView()
+                AddTransactionView( transactionToEdit: nil)
                     .environmentObject(homeViewModel.expensesViewModel)
             }
             .onAppear {
@@ -157,9 +157,12 @@ struct HomeView: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding(.top, 8)
-                    ProgressView(value: homeViewModel.totalPlanejadoMes - homeViewModel.totalRestantePlanejadoMes,
-                                 total: homeViewModel.totalPlanejadoMes > 0 ? homeViewModel.totalPlanejadoMes : 1)
-                    .tint(homeViewModel.totalRestantePlanejadoMes < 0 ? .red : .blue)
+                    let gastoReal = homeViewModel.totalPlanejadoMes - homeViewModel.totalRestantePlanejadoMes
+                    let totalPlanejado = max(homeViewModel.totalPlanejadoMes, 1)
+                    let progressoVisual = min(gastoReal, totalPlanejado)
+                    
+                    ProgressView(value: progressoVisual, total: totalPlanejado)
+                        .tint(gastoReal > totalPlanejado ? .red : .blue)
                 } else {
                     Text("Planejamento do Mês")
                         .font(.headline)

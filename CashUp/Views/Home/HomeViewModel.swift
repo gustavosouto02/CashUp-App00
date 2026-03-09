@@ -14,8 +14,7 @@ import SwiftUI
 
 @MainActor
 class HomeViewModel: ObservableObject {
-    let modelContext: ModelContext
-    let planningViewModel: PlanningViewModel
+        let planningViewModel: PlanningViewModel
     let expensesViewModel: ExpensesViewModel
 
     @Published var currentMonth: Date {
@@ -47,7 +46,6 @@ class HomeViewModel: ObservableObject {
     init(modelContext: ModelContext,
          planningViewModel: PlanningViewModel,
          expensesViewModel: ExpensesViewModel) {
-        self.modelContext = modelContext
         self.planningViewModel = planningViewModel
         self.expensesViewModel = expensesViewModel
 

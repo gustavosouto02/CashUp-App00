@@ -164,7 +164,7 @@ struct CategoriaFiltroView: View {
                             .padding(.horizontal)
                             .padding(.top, 8)
                         
-                        let subcategoriasDaCategoria = (categoriaModel.subcategorias ?? []).sorted { $0.nome < $1.nome }
+                        let subcategoriasDaCategoria = (categoriaModel.subcategorias).sorted { $0.nome < $1.nome }
                         
                         if !subcategoriasDaCategoria.isEmpty {
                             LazyVGrid(columns: [GridItem(.adaptive(minimum: 85, maximum: 100), spacing: 10)], spacing: 10) {
