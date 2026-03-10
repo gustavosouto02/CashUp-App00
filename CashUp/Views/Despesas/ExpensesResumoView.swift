@@ -14,6 +14,7 @@ struct ExpensesResumoView: View {
         income - expense
     }
     //Comentario bem legal e insano
+    //Testes modificados, identação corrigida
     private var saldoColor: Color {
         if balance == 0 {
             return .primary
