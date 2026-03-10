@@ -33,7 +33,7 @@ class AddTransactionViewModel: ObservableObject {
         _ expenseModel: ExpenseModel,
         _ categoriaModel: CategoriaModel,
         _ subcategoriaModel: SubcategoriaModel
-    ) -> Void)?
+    ) throws -> Void)?
 
     private lazy var currencyFormatter: NumberFormatter = {
         let f = NumberFormatter()
@@ -79,7 +79,7 @@ class AddTransactionViewModel: ObservableObject {
         categoriaModelApp: CategoriaModel?,
         subcategoriaModelApp: SubcategoriaModel?,
         modelContext: ModelContext
-    ) -> Bool {
+    ) throws -> Bool {
         
         guard let selectedCategoriaModel = categoriaModelApp,
               let selectedSubcategoriaModel = subcategoriaModelApp,
@@ -137,7 +137,7 @@ class AddTransactionViewModel: ObservableObject {
             subcategoria: subcategoriaPersistida
         )
 
-        onTransactionCreated?(novaExpenseModel, categoriaPersistida, subcategoriaPersistida)
+        try onTransactionCreated?(novaExpenseModel, categoriaPersistida, subcategoriaPersistida)
 
         resetFields()
         return true

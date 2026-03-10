@@ -37,6 +37,7 @@ struct SeedIDs {
     static let idSubDiversosGerais      = UUID(uuidString: "00030003-0003-0003-0003-000300030003")!
     static let idSubRoupas              = UUID(uuidString: "00040004-0004-0004-0004-000400040004")!
     static let idSubSaude               = UUID(uuidString: "00050005-0005-0005-0005-000500050005")!
+    
     static let idSubAcademia            = UUID(uuidString: "B6C7D8E9-F0A1-2B3C-4D5E-6F7A8B9C0D1E")!
     static let idSubAssinatura          = UUID(uuidString: "00070007-0007-0007-0007-000700070007")!
     static let idSubBoate               = UUID(uuidString: "B1B6A0CA-8A63-4630-8C0B-D8029163CA03")!
