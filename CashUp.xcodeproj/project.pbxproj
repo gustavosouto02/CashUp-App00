@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		BB346F462F58CBDE009C9872 /* PBXContainerItemProxy */ = {
+		BB346F552F58CBF2009C9872 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BB0A19D32DCD79FD00B352F6 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BB0A19DA2DCD79FD00B352F6;
 			remoteInfo = CashUp;
 		};
-		BB346F552F58CBF2009C9872 /* PBXContainerItemProxy */ = {
+		BB8841482F60A18200191974 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BB0A19D32DCD79FD00B352F6 /* Project object */;
 			proxyType = 1;
@@ -25,8 +25,8 @@
 
 /* Begin PBXFileReference section */
 		BB0A19DB2DCD79FD00B352F6 /* CashUp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CashUp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB346F402F58CBDE009C9872 /* CashUpUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashUpUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB346F4F2F58CBF2009C9872 /* CashUpUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashUpUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB8841442F60A18200191974 /* CashUpUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashUpUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,27 +35,20 @@
 			path = CashUp;
 			sourceTree = "<group>";
 		};
-		BB346F412F58CBDE009C9872 /* CashUpUnitTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = CashUpUnitTests;
-			sourceTree = "<group>";
-		};
 		BB346F502F58CBF2009C9872 /* CashUpUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CashUpUITests;
+			sourceTree = "<group>";
+		};
+		BB8841452F60A18200191974 /* CashUpUnitTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CashUpUnitTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		BB0A19D82DCD79FD00B352F6 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB346F3D2F58CBDE009C9872 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -69,6 +62,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BB8841412F60A18200191974 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -76,8 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				BB0A1A752DCD88DD00B352F6 /* CashUp */,
-				BB346F412F58CBDE009C9872 /* CashUpUnitTests */,
 				BB346F502F58CBF2009C9872 /* CashUpUITests */,
+				BB8841452F60A18200191974 /* CashUpUnitTests */,
 				BB0A19DC2DCD79FD00B352F6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,8 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				BB0A19DB2DCD79FD00B352F6 /* CashUp.app */,
-				BB346F402F58CBDE009C9872 /* CashUpUnitTests.xctest */,
 				BB346F4F2F58CBF2009C9872 /* CashUpUITests.xctest */,
+				BB8841442F60A18200191974 /* CashUpUnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,29 +117,6 @@
 			productReference = BB0A19DB2DCD79FD00B352F6 /* CashUp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BB346F3F2F58CBDE009C9872 /* CashUpUnitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BB346F4A2F58CBDE009C9872 /* Build configuration list for PBXNativeTarget "CashUpUnitTests" */;
-			buildPhases = (
-				BB346F3C2F58CBDE009C9872 /* Sources */,
-				BB346F3D2F58CBDE009C9872 /* Frameworks */,
-				BB346F3E2F58CBDE009C9872 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BB346F472F58CBDE009C9872 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				BB346F412F58CBDE009C9872 /* CashUpUnitTests */,
-			);
-			name = CashUpUnitTests;
-			packageProductDependencies = (
-			);
-			productName = CashUpUnitTests;
-			productReference = BB346F402F58CBDE009C9872 /* CashUpUnitTests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		BB346F4E2F58CBF2009C9872 /* CashUpUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BB346F572F58CBF2009C9872 /* Build configuration list for PBXNativeTarget "CashUpUITests" */;
@@ -163,6 +140,29 @@
 			productReference = BB346F4F2F58CBF2009C9872 /* CashUpUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		BB8841432F60A18200191974 /* CashUpUnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB88414A2F60A18200191974 /* Build configuration list for PBXNativeTarget "CashUpUnitTests" */;
+			buildPhases = (
+				BB8841402F60A18200191974 /* Sources */,
+				BB8841412F60A18200191974 /* Frameworks */,
+				BB8841422F60A18200191974 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BB8841492F60A18200191974 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BB8841452F60A18200191974 /* CashUpUnitTests */,
+			);
+			name = CashUpUnitTests;
+			packageProductDependencies = (
+			);
+			productName = CashUpUnitTests;
+			productReference = BB8841442F60A18200191974 /* CashUpUnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -170,18 +170,18 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					BB0A19DA2DCD79FD00B352F6 = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					BB346F3F2F58CBDE009C9872 = {
+					BB346F4E2F58CBF2009C9872 = {
 						CreatedOnToolsVersion = 26.2;
 						TestTargetID = BB0A19DA2DCD79FD00B352F6;
 					};
-					BB346F4E2F58CBF2009C9872 = {
-						CreatedOnToolsVersion = 26.2;
+					BB8841432F60A18200191974 = {
+						CreatedOnToolsVersion = 26.3;
 						TestTargetID = BB0A19DA2DCD79FD00B352F6;
 					};
 				};
@@ -201,8 +201,8 @@
 			projectRoot = "";
 			targets = (
 				BB0A19DA2DCD79FD00B352F6 /* CashUp */,
-				BB346F3F2F58CBDE009C9872 /* CashUpUnitTests */,
 				BB346F4E2F58CBF2009C9872 /* CashUpUITests */,
+				BB8841432F60A18200191974 /* CashUpUnitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -215,14 +215,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BB346F3E2F58CBDE009C9872 /* Resources */ = {
+		BB346F4D2F58CBF2009C9872 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BB346F4D2F58CBF2009C9872 /* Resources */ = {
+		BB8841422F60A18200191974 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,14 +239,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BB346F3C2F58CBDE009C9872 /* Sources */ = {
+		BB346F4B2F58CBF2009C9872 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BB346F4B2F58CBF2009C9872 /* Sources */ = {
+		BB8841402F60A18200191974 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -256,15 +256,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		BB346F472F58CBDE009C9872 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB0A19DA2DCD79FD00B352F6 /* CashUp */;
-			targetProxy = BB346F462F58CBDE009C9872 /* PBXContainerItemProxy */;
-		};
 		BB346F562F58CBF2009C9872 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BB0A19DA2DCD79FD00B352F6 /* CashUp */;
 			targetProxy = BB346F552F58CBF2009C9872 /* PBXContainerItemProxy */;
+		};
+		BB8841492F60A18200191974 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB0A19DA2DCD79FD00B352F6 /* CashUp */;
+			targetProxy = BB8841482F60A18200191974 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -462,48 +462,6 @@
 			};
 			name = Release;
 		};
-		BB346F482F58CBDE009C9872 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4649B2Z4DA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = br.com.gustavosouto.CashUpUnitTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = CashUp;
-			};
-			name = Debug;
-		};
-		BB346F492F58CBDE009C9872 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4649B2Z4DA;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = br.com.gustavosouto.CashUpUnitTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = CashUp;
-			};
-			name = Release;
-		};
 		BB346F582F58CBF2009C9872 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -546,6 +504,50 @@
 			};
 			name = Release;
 		};
+		BB88414B2F60A18200191974 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4649B2Z4DA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.gustavosouto.CashUpUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CashUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CashUp";
+			};
+			name = Debug;
+		};
+		BB88414C2F60A18200191974 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4649B2Z4DA;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = br.com.gustavosouto.CashUpUnitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CashUp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CashUp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -567,20 +569,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BB346F4A2F58CBDE009C9872 /* Build configuration list for PBXNativeTarget "CashUpUnitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BB346F482F58CBDE009C9872 /* Debug */,
-				BB346F492F58CBDE009C9872 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		BB346F572F58CBF2009C9872 /* Build configuration list for PBXNativeTarget "CashUpUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BB346F582F58CBF2009C9872 /* Debug */,
 				BB346F592F58CBF2009C9872 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB88414A2F60A18200191974 /* Build configuration list for PBXNativeTarget "CashUpUnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB88414B2F60A18200191974 /* Debug */,
+				BB88414C2F60A18200191974 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
