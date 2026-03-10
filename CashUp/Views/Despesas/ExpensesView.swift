@@ -13,7 +13,7 @@ struct ExpensesView: View {
     @State private var isAddTransactionPresented = false
 
     var body: some View {
-
+        //Alterei um arquivo para subir um PR
         NavigationStack {
             ScrollView{
                 VStack(alignment: .leading, spacing: 16) {
