@@ -29,11 +29,33 @@ final class CategoriesUnitTests: XCTestCase {
             SubcategoriaPlanejadaModel.self
         ])
         
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        _ = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         let modelContext = modelContainer.mainContext
         
         await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        
+        XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 7)
+    }
+    
+    @MainActor
+    func test_uniqueSeedInfoCategories() async throws {
+        let schema = Schema([
+            CategoriaModel.self,
+            SubcategoriaModel.self,
+            ExpenseModel.self,
+            CategoriaPlanejadaModel.self,
+            SubcategoriaPlanejadaModel.self
+        ])
+        
+        _ = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        let modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
+        let modelContext = modelContainer.mainContext
+        
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        
+        XCTAssertNotEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 14)
     }
 
 
