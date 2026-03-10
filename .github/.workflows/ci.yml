@@ -1,12 +1,19 @@
 name: Run CI
+
 on:
-  pull_request
-      
+  pull_request:
+
 jobs:
-  hello:
-    name: Hello World
-    runs-on: ubuntu-latest
+  build:
+    name: Build & Test
+    runs-on: macos-15        # ← precisa ser macOS, não Ubuntu
     steps:
-    - name: Say Hello
-      run: echo Hello World
-      
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: |
+          xcodebuild test \
+            -project MyApp.xcodeproj \
+            -scheme MyApp \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
