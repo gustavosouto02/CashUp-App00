@@ -61,12 +61,20 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
 
     func addExpense(expenseData: ExpenseModel,
                     categoriaModel: CategoriaModel,
-                    subcategoriaModel: SubcategoriaModel) {
+                    subcategoriaModel: SubcategoriaModel) throws {
+
+        guard let futureLimit = Calendar.current.date(byAdding: .year, value: 100, to: .now),
+              expenseData.date <= futureLimit else {
+            throw NSError(domain: "ExpenseValidation", code: 1, userInfo: [
+                NSLocalizedDescriptionKey: "A data da despesa não pode ser superior a 100 anos no futuro."
+            ])
+        }
+
         modelContext.insert(expenseData)
         print("ExpenseModel inserido com ID: \(expenseData.id), Desc: \(expenseData.expenseDescription)")
         do {
             try modelContext.save()
-            print("Contexto salvo após adicionar despesa.")
+            print("Contexto salvo apósT adicionar despesa.")
             loadDisplayableExpenses()
         } catch {
             print("Erro ao salvar contexto após adicionar despesa: \(error.localizedDescription)")
