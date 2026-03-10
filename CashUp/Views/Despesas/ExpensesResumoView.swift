@@ -13,7 +13,7 @@ struct ExpensesResumoView: View {
     var balance: Double {
         income - expense
     }
-    
+    //Comentario bem legal e insano
     private var saldoColor: Color {
         if balance == 0 {
             return .primary
