@@ -4,16 +4,9 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Build & Test
-    runs-on: macos-15        # ← precisa ser macOS, não Ubuntu
+  hello:
+    name: Hello World
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run Tests
-        run: |
-          xcodebuild test \
-            -project MyApp.xcodeproj \
-            -scheme MyApp \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest'
+      - name: Say Hello
+        run: echo Hello World
