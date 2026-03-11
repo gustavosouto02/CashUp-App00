@@ -79,6 +79,7 @@ struct HomeView: View {
                             Text("Registrar")
                         }
                         .font(.headline)
+                        .accessibilityIdentifier("addTransactionButtonHome")
                     }
                 }
             }
