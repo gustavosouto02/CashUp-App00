@@ -128,6 +128,7 @@ struct SectionView: View {
                     Text(formatSectionDate(date))
                         .font(.headline)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("headerCalendar")
                     Spacer()
                     Text(formatCurrency(totalForDay(date)))
                         .font(.headline.bold())

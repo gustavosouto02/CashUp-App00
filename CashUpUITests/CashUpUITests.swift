@@ -9,17 +9,141 @@ import XCTest
 
 final class CashUpUITests: XCTestCase {
 
+    var app: XCUIApplication!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        app = XCUIApplication()
+        app.launchArguments = ["--uitesting"]  // SwiftData in-memory
+        app.launch()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        app = nil
+    }
+
+    @MainActor
+    private func createExpense(
+        valor: String,
+        descricao: String,
+        categoria: String,
+        subcategoria: String,
+        repeticao: String? = nil
+    ) {
+        let app = XCUIApplication()
+        app.activate()
+
+        app /*@START_MENU_TOKEN@*/.buttons[
+            "expensePageButton"
+        ] /*[[".buttons",".containing(.staticText, identifier: \"Sem despesas este mês\")",".containing(.image, identifier: \"creditcard\")",".containing(.staticText, identifier: \"Despesas do Mês\")",".otherElements",".buttons[\"Despesas do Mês, Sem despesas este mês, Ótimo para o bolso ou adicione um gasto!\"]",".buttons[\"expensePageButton\"]"],[[[-1,6],[-1,5],[-1,4,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]],[[-1,6],[-1,5]]],[0]]@END_MENU_TOKEN@*/
+            .firstMatch.tap()
+        app /*@START_MENU_TOKEN@*/.staticTexts[
+            "addTransactionButton"
+        ] /*[[".buttons",".staticTexts",".staticTexts[\"Registrar\"]",".staticTexts[\"addTransactionButton\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+            .firstMatch.tap()
+        app.buttons["expenseTabButton"].firstMatch.tap()
+        let amountField = app /*@START_MENU_TOKEN@*/.textFields[
+            "amountField"
+        ] /*[[".otherElements",".textFields[\"R$ 0,00\"]",".textFields[\"amountField\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+        amountField.firstMatch.tap()
+        amountField.typeText(valor)
+
+        let descField = app.textFields["descriptionField"]
+        descField.tap()
+        descField.typeText(descricao)
+
+        app.buttons["categoryPickerButton"].firstMatch.tap()
+
+        // 1. Define o elemento que queremos encontrar na lista principal
+        let subCatElement = app.scrollViews.staticTexts[
+            "lista_subcategoria_\(subcategoria)"
+        ].firstMatch
+
+        // 2. Rola a página até que o elemento seja clicável (isHittable)
+        var scrollAttempts = 0
+        while !subCatElement.isHittable && scrollAttempts < 10 {
+            app.swipeUp()
+            scrollAttempts += 1
+        }
+
+        // 3. Clica no elemento encontrado
+        if subCatElement.exists {
+            subCatElement.tap()
+        } else {
+            XCTFail(
+                "Não foi possível encontrar a subcategoria: \(subcategoria)"
+            )
+        }
+
+        if let rep = repeticao {
+            app.buttons["repeatOptionButton"].firstMatch.tap()
+            app.buttons[rep].tap()
+        }
+
+        app.buttons["saveButton"].firstMatch.tap()
+
+        app.buttons["OK"].firstMatch.tap()
+    }
+
+    @MainActor
+    private func createExpenseDefineDate(
+        valor: String,
+        descricao: String,
+        categoria: String,
+        subcategoria: String,
+        repeticao: String? = nil
+    ) {
+        let app = XCUIApplication()
+        app.activate()
+
+        app /*@START_MENU_TOKEN@*/.buttons[
+            "expensePageButton"
+        ] /*[[".buttons",".containing(.staticText, identifier: \"Sem despesas este mês\")",".containing(.image, identifier: \"creditcard\")",".containing(.staticText, identifier: \"Despesas do Mês\")",".otherElements",".buttons[\"Despesas do Mês, Sem despesas este mês, Ótimo para o bolso ou adicione um gasto!\"]",".buttons[\"expensePageButton\"]"],[[[-1,6],[-1,5],[-1,4,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]],[[-1,6],[-1,5]]],[0]]@END_MENU_TOKEN@*/
+            .firstMatch.tap()
+        app /*@START_MENU_TOKEN@*/.staticTexts[
+            "addTransactionButton"
+        ] /*[[".buttons",".staticTexts",".staticTexts[\"Registrar\"]",".staticTexts[\"addTransactionButton\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+            .firstMatch.tap()
+        app.buttons["expenseTabButton"].firstMatch.tap()
+        let amountField = app /*@START_MENU_TOKEN@*/.textFields[
+            "amountField"
+        ] /*[[".otherElements",".textFields[\"R$ 0,00\"]",".textFields[\"amountField\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+        amountField.firstMatch.tap()
+        amountField.typeText(valor)
+
+        let descField = app.textFields["descriptionField"]
+        descField.tap()
+        descField.typeText(descricao)
+
+        app.buttons["categoryPickerButton"].firstMatch.tap()
+
+        // 1. Define o elemento que queremos encontrar na lista principal
+        let subCatElement = app.scrollViews.staticTexts[
+            "lista_subcategoria_\(subcategoria)"
+        ].firstMatch
+
+        // 2. Rola a página até que o elemento seja clicável (isHittable)
+        var scrollAttempts = 0
+        while !subCatElement.isHittable && scrollAttempts < 10 {
+            app.swipeUp()
+            scrollAttempts += 1
+        }
+
+        // 3. Clica no elemento encontrado
+        if subCatElement.exists {
+            subCatElement.tap()
+        } else {
+            XCTFail(
+                "Não foi possível encontrar a subcategoria: \(subcategoria)"
+            )
+        }
+        app.buttons["Date Picker"].firstMatch.tap()
+        app.staticTexts["2"].firstMatch.tap()
+        app.buttons["PopoverDismissRegion"].firstMatch.tap()
+
+        app.buttons["saveButton"].firstMatch.tap()
+        app.buttons["OK"].firstMatch.tap()
+
     }
 
     @MainActor
@@ -29,6 +153,71 @@ final class CashUpUITests: XCTestCase {
         app.launch()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+
+    @MainActor
+    func test_exibeExpenseTodayIsCorrect() throws {
+        let dataHoje = "Hoje"
+        // UI tests must launch the application that they test.
+        createExpense(
+            valor: "30",
+            descricao: "TesteData",
+            categoria: "Comidas e Bebidas",
+            subcategoria: "Café"
+        )
+
+        let headerCalendar = app.staticTexts["headerCalendar"]
+        let app = XCUIApplication()
+        app.activate()
+
+        XCTAssertTrue(
+            app.staticTexts["TesteData"].waitForExistence(timeout: 3),
+            "Despesa deve aparecer na lista"
+        )
+
+        XCTAssertTrue(
+            headerCalendar.waitForExistence(timeout: 3),
+            "Header de data deve existir"
+        )
+
+        XCTAssertEqual(
+            headerCalendar.label,
+            dataHoje,
+            "A data de hoje está  exibida de forma errada"
+        )
+    }
+
+    @MainActor
+    func test_exibeExpenseWithFormatDateCorrect() throws {
+        // 1. Cria a despesa com data definida (já deve selecionar 2 de março internamente)
+        createExpenseDefineDate(
+            valor: "30",
+            descricao: "TesteData",
+            categoria: "Comidas e Bebidas",
+            subcategoria: "Café"
+        )
+        let dataAlvo = "2 de março de 2026"
+
+        let listaTransacoes = app.collectionViews["transactionList"]
+
+        let headerCalendar = listaTransacoes.staticTexts["headerCalendar"]
+
+        var scrollAttempts = 0
+        while !headerCalendar.isHittable && scrollAttempts < 10 {
+            listaTransacoes.swipeUp()
+            scrollAttempts += 1
+        }
+
+        XCTAssertTrue(
+            app.staticTexts["TesteData"].waitForExistence(timeout: 3),
+            "Despesa deve aparecer na lista"
+        )
+        XCTAssertTrue(
+            headerCalendar.waitForExistence(timeout: 3),
+            "Header não encontrado"
+        )
+
+        XCTAssertEqual(headerCalendar.label, dataAlvo)
     }
 
     @MainActor
