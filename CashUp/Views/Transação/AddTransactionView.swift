@@ -70,53 +70,56 @@ struct AddTransactionView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(transactionToEdit == nil ? "Adicionar" : "Salvar") {
-                        if let transactionToEdit = transactionToEdit {
-                            transactionToEdit.amount = addTransactionVM.amount
-                            transactionToEdit.date = addTransactionVM.selectedDate
-                            transactionToEdit.expenseDescription = addTransactionVM.expenseDescription
-                            transactionToEdit.isIncome = addTransactionVM.selectedTransactionType == 1
-                            transactionToEdit.repetition = addTransactionVM.repeatOption != .nunca ?
-                                RepetitionData(repeatOption: addTransactionVM.repeatOption, endDate: addTransactionVM.repeatEndDate) :
-                                nil
+                        Task{
+                            if let transactionToEdit = transactionToEdit {
+                                transactionToEdit.amount = addTransactionVM.amount
+                                transactionToEdit.date = addTransactionVM.selectedDate
+                                transactionToEdit.expenseDescription = addTransactionVM.expenseDescription
+                                transactionToEdit.isIncome = addTransactionVM.selectedTransactionType == 1
+                                transactionToEdit.repetition = addTransactionVM.repeatOption != .nunca ?
+                                    RepetitionData(repeatOption: addTransactionVM.repeatOption, endDate: addTransactionVM.repeatEndDate) :
+                                    nil
 
-                            if let cat = selectedCategoryModel, let sub = selectedSubcategoryModel {
-                                transactionToEdit.categoria = cat
-                                transactionToEdit.subcategoria = sub
-                            } else {
-                                errorMessage = "Selecione uma categoria e subcategoria."
-                                showErrorAlert = true
-                                return
-                            }
-
-
-                            do {
-                                try modelContext.save()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    onEditComplete?()
+                                if let cat = selectedCategoryModel, let sub = selectedSubcategoryModel {
+                                    transactionToEdit.categoria = cat
+                                    transactionToEdit.subcategoria = sub
+                                } else {
+                                    errorMessage = "Selecione uma categoria e subcategoria."
+                                    showErrorAlert = true
+                                    return
                                 }
-                                dismiss()
 
-                            } catch {
-                                print("❌ Erro ao salvar edição: \(error)")
-                                errorMessage = "Não foi possível salvar a transação editada."
-                                showErrorAlert = true
-                            }
-                        } else {
-                            let sucesso = addTransactionVM.criarTransacaoEChamarClosure(
-                                categoriaModelApp: selectedCategoryModel,
-                                subcategoriaModelApp: selectedSubcategoryModel,
-                                modelContext: modelContext
-                            )
 
-                            if sucesso {
-                                showSuccessAlert = true
-                                selectedCategoryModel = nil
-                                selectedSubcategoryModel = nil
+                                do {
+                                    try modelContext.save()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        onEditComplete?()
+                                    }
+                                    dismiss()
+
+                                } catch {
+                                    print("❌ Erro ao salvar edição: \(error)")
+                                    errorMessage = "Não foi possível salvar a transação editada."
+                                    showErrorAlert = true
+                                }
                             } else {
-                                errorMessage = "Por favor, preencha o valor e selecione uma categoria."
-                                showErrorAlert = true
+                                let sucesso = try addTransactionVM.criarTransacaoEChamarClosure(
+                                    categoriaModelApp: selectedCategoryModel,
+                                    subcategoriaModelApp: selectedSubcategoryModel,
+                                    modelContext: modelContext
+                                )
+
+                                if sucesso {
+                                    showSuccessAlert = true
+                                    selectedCategoryModel = nil
+                                    selectedSubcategoryModel = nil
+                                } else {
+                                    errorMessage = "Por favor, preencha o valor e selecione uma categoria."
+                                    showErrorAlert = true
+                                }
                             }
                         }
+                        
                     }
                     .disabled(addTransactionVM.amount <= 0 || selectedCategoryModel == nil || selectedSubcategoryModel == nil)
                 }
@@ -149,11 +152,15 @@ struct AddTransactionView: View {
                 }
 
                 addTransactionVM.onTransactionCreated = { expenseModelCriado, categoriaModelSelecionada, subcategoriaModelSelecionada in
-                    expensesViewModel.addExpense(
-                        expenseData: expenseModelCriado,
-                        categoriaModel: categoriaModelSelecionada,
-                        subcategoriaModel: subcategoriaModelSelecionada
-                    )
+                    do {
+                        try expensesViewModel.addExpense(
+                            expenseData: expenseModelCriado,
+                            categoriaModel: categoriaModelSelecionada,
+                            subcategoriaModel: subcategoriaModelSelecionada
+                        )
+                    } catch {
+                        print("Erro ao adicionar despesa: \(error.localizedDescription)")
+                    }
                 }
             }
         }

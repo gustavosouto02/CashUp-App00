@@ -1,0 +1,12 @@
+name: Run CI
+
+on:
+  pull_request:
+
+jobs:
+  hello:
+    name: Hello World
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo Hello World
