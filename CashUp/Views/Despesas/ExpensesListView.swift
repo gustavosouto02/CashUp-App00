@@ -62,6 +62,7 @@ struct ExpensesListView: View {
                 }
             }
             .listStyle(.plain)
+            .accessibilityIdentifier("transactionList")
             .confirmationDialog(
                 "Apagar Transação Recorrente",
                 isPresented: $showRecurrenceDeleteOptions,
@@ -127,6 +128,7 @@ struct SectionView: View {
                     Text(formatSectionDate(date))
                         .font(.headline)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("headerCalendar")
                     Spacer()
                     Text(formatCurrency(totalForDay(date)))
                         .font(.headline.bold())
@@ -140,6 +142,7 @@ struct SectionView: View {
                     .listRowBackground(Color(.systemGray6))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 4)
+                    .accessibilityIdentifier("subcategoryCellList_<nome>")
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             onDelete(displayableExpense)

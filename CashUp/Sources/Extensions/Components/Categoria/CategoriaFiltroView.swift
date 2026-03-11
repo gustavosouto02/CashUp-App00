@@ -67,6 +67,7 @@ struct CategoriaFiltroView: View {
         .padding(8)
         .background(Color.clear)
         .contentShape(Rectangle())
+        .accessibilityIdentifier("lista_subcategoria_\(subcategoriaModel.nome)")
         .onTapGesture {
             onSubcategoriaSelected(subcategoriaModel)
         }

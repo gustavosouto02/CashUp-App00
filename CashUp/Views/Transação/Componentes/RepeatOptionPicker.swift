@@ -51,6 +51,7 @@ struct RepeatOptionPicker: View {
                             .foregroundStyle(.blue)
                     }
                 }
+                .accessibilityIdentifier("repeatOptionButton")
             }
             .confirmationDialog("Escolha a frequência de repetição", isPresented: $isRepeatDialogPresented, titleVisibility: .visible) {
                 ForEach(RepeatOption.allCases) { option in

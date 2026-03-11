@@ -34,6 +34,7 @@ struct CurrencyAmountField: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 .frame(width: 280, height: 70)
+                .accessibilityIdentifier("amountField")
         }
     }
 
