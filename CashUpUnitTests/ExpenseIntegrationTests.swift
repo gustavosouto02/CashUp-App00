@@ -37,12 +37,10 @@ final class ExpenseIntegrationTests: XCTestCase {
         }
         
         let initialCount = try modelContext.fetchCount(FetchDescriptor<ExpenseModel>())
-        
         XCTAssertEqual(initialCount, 0, "O banco de dados deve iniciar vazio.")
         
         let item = ExpenseModel()
         modelContext.insert(item)
-        
         
         
         let finalCount = try modelContext.fetchCount(FetchDescriptor<ExpenseModel>())
