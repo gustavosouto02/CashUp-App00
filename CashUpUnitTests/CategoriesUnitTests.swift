@@ -8,20 +8,16 @@
 @testable import CashUp
 import XCTest
 import SwiftData
-import SwiftUI
 
+@MainActor
 final class CategoriesUnitTests: XCTestCase {
+    
+    // Setup
+    
+    var modelContainer: ModelContainer!
+    var modelContext: ModelContext!
 
     override func setUpWithError() throws {
-        
-    }
-
-    override func tearDownWithError() throws {
-        
-    }
-
-    @MainActor
-    func test_runSeedInfoCategories() async throws {
         let schema = Schema([
             CategoriaModel.self,
             SubcategoriaModel.self,
@@ -30,51 +26,31 @@ final class CategoriesUnitTests: XCTestCase {
             SubcategoriaPlanejadaModel.self
         ])
         
-        _ = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        let modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-        let modelContext = modelContainer.mainContext
-        
+        modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
+        modelContext = modelContainer.mainContext
+    }
+
+    override func tearDownWithError() throws {
+        modelContainer = nil
+        modelContext = nil
+    }
+    
+    // Test funcs
+
+    func test_runSeedInfoCategories() async throws {
         await popularDadosIniciaisSeNecessario(modelContext: modelContext)
         
         XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 7)
     }
     
-    @MainActor
     func test_uniqueSeedInfoCategories() async throws {
-        let schema = Schema([
-            CategoriaModel.self,
-            SubcategoriaModel.self,
-            ExpenseModel.self,
-            CategoriaPlanejadaModel.self,
-            SubcategoriaPlanejadaModel.self
-        ])
-        
-        _ = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        let modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-        let modelContext = modelContainer.mainContext
-        
         await popularDadosIniciaisSeNecessario(modelContext: modelContext)
         await popularDadosIniciaisSeNecessario(modelContext: modelContext)
         
         XCTAssertNotEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 14)
     }
     
-    
-    @MainActor
     func test_increaseSubCategorieUsageCount() async throws {
-        
-        let schema = Schema([
-            CategoriaModel.self,
-            SubcategoriaModel.self,
-            ExpenseModel.self,
-            CategoriaPlanejadaModel.self,
-            SubcategoriaPlanejadaModel.self
-        ])
-        
-        _ = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-        let modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-        let modelContext = modelContainer.mainContext
-        
         let categoriaRenda = CategoriaModel(
             id: SeedIDs.idRenda,
             nome: "Renda",
