@@ -123,7 +123,7 @@ final class CashUpUnitTests: XCTestCase {
         let viewModel = await ExpensesViewModel(modelContext: context)
         let currentMonth = Date().startOfMonth()
 
-        var totalGastoMensal =
+        let totalGastoMensal =
             await viewModel.calcularTotalGastoParaCategoria(
                 categoriaPlanejada,
                 paraMes: currentMonth

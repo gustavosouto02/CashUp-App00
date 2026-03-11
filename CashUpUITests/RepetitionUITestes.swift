@@ -35,7 +35,7 @@ final class RepetitionUITestes: XCTestCase {
         let app = XCUIApplication()
         app.activate()
         
-        app/*@START_MENU_TOKEN@*/.buttons["expensePageButton"]/*[[".buttons",".containing(.staticText, identifier: \"Sem despesas este mês\")",".containing(.image, identifier: \"creditcard\")",".containing(.staticText, identifier: \"Despesas do Mês\")",".otherElements",".buttons[\"Despesas do Mês, Sem despesas este mês, Ótimo para o bolso ou adicione um gasto!\"]",".buttons[\"expensePageButton\"]"],[[[-1,6],[-1,5],[-1,4,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]],[[-1,6],[-1,5]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+        app.buttons["expensesSummaryCard"].firstMatch.tap()
         app/*@START_MENU_TOKEN@*/.staticTexts["addTransactionButton"]/*[[".buttons",".staticTexts",".staticTexts[\"Registrar\"]",".staticTexts[\"addTransactionButton\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app.buttons["expenseTabButton"].firstMatch.tap()
         let amountField = app/*@START_MENU_TOKEN@*/.textFields["amountField"]/*[[".otherElements",".textFields[\"R$ 0,00\"]",".textFields[\"amountField\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
