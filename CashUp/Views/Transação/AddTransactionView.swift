@@ -66,6 +66,7 @@ struct AddTransactionView: View {
                         dismiss()
                     }
                     .foregroundStyle(.red)
+                    .accessibilityIdentifier("cancelButton")
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -122,6 +123,7 @@ struct AddTransactionView: View {
                         
                     }
                     .disabled(addTransactionVM.amount <= 0 || selectedCategoryModel == nil || selectedSubcategoryModel == nil)
+                    .accessibilityIdentifier("saveButton")
                 }
             }
             .sheet(isPresented: $isCategoryModalPresented) {

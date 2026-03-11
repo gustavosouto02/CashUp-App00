@@ -31,7 +31,7 @@ struct DescriptionField: View {
                             expenseDescription = String(newValue.prefix(characterLimit))
                         }
                     }
-            }
+            }.accessibilityIdentifier("descriptionField")
 
             if expenseDescription.count >= characterLimit {
                 Text("Limite de 20 caracteres atingido")

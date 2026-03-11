@@ -54,6 +54,7 @@ struct CategoryPicker: View {
                     .contentShape(Rectangle()) // Expande o toque
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("categoryPickerButton")
             }
             .background(Color.clear) // ajuda a manter a área ativa
 
