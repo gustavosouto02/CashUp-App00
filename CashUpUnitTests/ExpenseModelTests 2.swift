@@ -8,7 +8,6 @@ final class ExpenseModelTests2: XCTestCase {
     var context: ModelContext!
 
     // MARK: - Setup
-    
     override func setUpWithError() throws {
         try super.setUpWithError()
         let schema = Schema([CategoriaModel.self,

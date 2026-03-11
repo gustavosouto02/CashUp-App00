@@ -6,12 +6,13 @@
 //
 
 import XCTest
+@testable import CashUp
+import SwiftData
 
 final class ExpenseModelUITest: XCTestCase {
-
+    
     // MARK: - Set up
     override func setUpWithError() throws {
-        continueAfterFailure = false
     }
 
     // MARK: - TearDown
@@ -32,10 +33,11 @@ final class ExpenseModelUITest: XCTestCase {
         app/*@START_MENU_TOKEN@*/.buttons["Semanalmente"]/*[[".otherElements.buttons[\"Semanalmente\"]",".buttons[\"Semanalmente\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app/*@START_MENU_TOKEN@*/.buttons["Adicionar"]/*[[".otherElements[\"Adicionar\"].buttons",".otherElements.buttons[\"Adicionar\"]",".buttons[\"Adicionar\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app/*@START_MENU_TOKEN@*/.buttons["OK"]/*[[".otherElements.buttons[\"OK\"]",".buttons",".buttons[\"OK\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Despesas do Mês, Total Gasto:, R$ 2.000,00, Categorias Principais, Comidas e Bebidas, 100%"]/*[[".buttons",".containing(.staticText, identifier: \"R$ 2.000,00\")",".containing(.staticText, identifier: \"Total Gasto:\")",".containing(.staticText, identifier: \"Despesas do Mês\")",".otherElements.buttons[\"Despesas do Mês, Total Gasto:, R$ 2.000,00, Categorias Principais, Comidas e Bebidas, 100%\"]",".buttons[\"Despesas do Mês, Total Gasto:, R$ 2.000,00, Categorias Principais, Comidas e Bebidas, 100%\"]"],[[[-1,5],[-1,4],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app.cells.element(boundBy: 1).swipeLeft()
+        app.buttons["expensesSummaryCard"].firstMatch.tap()
+        let element = app.cells.element(boundBy: 1)
+        element.swipeLeft()
         app/*@START_MENU_TOKEN@*/.staticTexts["Excluir"]/*[[".buttons[\"trash\"].staticTexts",".buttons.staticTexts[\"Excluir\"]",".staticTexts[\"Excluir\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app.otherElements.matching(identifier: "Horizontal scroll bar, 1 page").element(boundBy: 1).tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Apagar toda a série"]/*[[".otherElements.buttons[\"Apagar toda a série\"]",".buttons[\"Apagar toda a série\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
     }
 
     // Teste de performance padrão
