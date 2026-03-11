@@ -20,10 +20,7 @@ final class CategoriesUnitTests: XCTestCase {
     override func setUpWithError() throws {
         let schema = Schema([
             CategoriaModel.self,
-            SubcategoriaModel.self,
-            ExpenseModel.self,
-            CategoriaPlanejadaModel.self,
-            SubcategoriaPlanejadaModel.self
+            SubcategoriaModel.self
         ])
         
         modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
@@ -51,42 +48,85 @@ final class CategoriesUnitTests: XCTestCase {
     }
     
     func test_increaseSubCategorieUsageCount() async throws {
-        let categoriaRenda = CategoriaModel(
-            id: SeedIDs.idRenda,
-            nome: "Renda",
-            icon: "dollarsign",
-            red: 1,
-            green: 1,
-            blue: 1,
-            subcategorias: [
-                SubcategoriaModel(id: SeedIDs.idSubInvestimentos, nome: "Investimentos", icon: "chart.line.uptrend.xyaxis"),
-                SubcategoriaModel(id: SeedIDs.idSubJuros, nome: "Juros", icon: "percent"),
-                SubcategoriaModel(id: SeedIDs.idSubPensao, nome: "Pensão", icon: "person.2.fill"),
-                SubcategoriaModel(id: SeedIDs.idSubRendaGeral, nome: "Renda", icon: "arrow.down.to.line.circle.fill"),
-                SubcategoriaModel(id: SeedIDs.idSubSalario, nome: "Salário", icon: "banknote"),
-                SubcategoriaModel(id: SeedIDs.idSubSalarioFamilia, nome: "Salário Família", icon: "house.and.flag.fill")
-            ]
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+
+        let viewModel = CategoriesViewModel(
+            modelContext: modelContext,
+            transactionType: .despesa
         )
         
-        modelContext.insert(categoriaRenda)
+        let rendaID = SeedIDs.idRenda
+        
+        let firstSubcategorie = try modelContext.fetch(FetchDescriptor<SubcategoriaModel>(
+            predicate: #Predicate { $0.categoria?.id != rendaID }
+        )).first!
+        
+        viewModel.registrarUso(subcategoriaModel: firstSubcategorie)
+        viewModel.registrarUso(subcategoriaModel: firstSubcategorie)
+        viewModel.registrarUso(subcategoriaModel: firstSubcategorie)
+                
+        XCTAssertEqual(firstSubcategorie.usageCount, 3)
+    }
+    
+    func test_addInFavoritesSubCategoriesArray() async throws {
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+
+        let viewModel = CategoriesViewModel(
+            modelContext: modelContext,
+            transactionType: .despesa
+        )
+        
+        let rendaID = SeedIDs.idRenda
+        
+        let firstSubcategorie = try modelContext.fetch(FetchDescriptor<SubcategoriaModel>(
+            predicate: #Predicate { $0.categoria?.id != rendaID }
+        )).first!
+        
+        viewModel.registrarUso(subcategoriaModel: firstSubcategorie)
+                
+        XCTAssertEqual(viewModel.subcategoriasMaisUsadas.first?.nome, firstSubcategorie.nome)
+    }
+    
+    func test_filterFavoritesSubCategories() async throws {
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
 
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,
             transactionType: .receita
         )
         
-        viewModel.registrarUso(subcategoriaModel: categoriaRenda.subcategorias.first!)
-        viewModel.registrarUso(subcategoriaModel: categoriaRenda.subcategorias.first!)
-        viewModel.registrarUso(subcategoriaModel: categoriaRenda.subcategorias[1])
-
-                
-        XCTAssertEqual(viewModel.subcategoriasMaisUsadas.first!.nome, categoriaRenda.subcategorias.first!.nome)
-
+        let rendaID = SeedIDs.idRenda
+        
+        let revenueSubCategories = try modelContext.fetch(FetchDescriptor<SubcategoriaModel>(
+            predicate: #Predicate { $0.categoria?.id == rendaID }
+        ))
+        
+        for revenueSub in revenueSubCategories {
+            viewModel.registrarUso(subcategoriaModel: revenueSub)
+        }
+        
+        let favoritesSubCategories = viewModel.subcategoriasMaisUsadas
+        
+        for favoriteSub in favoritesSubCategories {
+            XCTAssertEqual(favoriteSub.categoria?.id, rendaID)
+        }
     }
     
-    func test_filterSubCategoriesInCategorie() {
-        
-    }
+    func test_filterAllCategories() async throws {
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
 
+        let viewModel = CategoriesViewModel(
+            modelContext: modelContext,
+            transactionType: .despesa
+        )
+        
+        let rendaID = SeedIDs.idRenda
+        
+        let allFilteredCategories = viewModel.fetchTodasCategoriasModel()
+        
+        for categorie in allFilteredCategories {
+            XCTAssertNotEqual(categorie.id, rendaID)
+        }
+    }
 
 }
