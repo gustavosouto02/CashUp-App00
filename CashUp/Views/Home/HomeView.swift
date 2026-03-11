@@ -320,6 +320,6 @@ struct HomeView: View {
             .cornerRadius(12)
         }
         .buttonStyle(PlainButtonStyle())
-        .accessibilityIdentifier("expensePageButton")
+        .accessibilityIdentifier("expensesSummaryCard")
     }
 }
