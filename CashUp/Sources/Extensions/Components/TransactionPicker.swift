@@ -12,8 +12,8 @@ struct TransactionPicker: View {
 
     var body: some View {
         Picker("Tipo de Transação", selection: $selectedTransactionType) {
-            Text("Despesa").tag(0)
-            Text("Receita").tag(1)
+            Text("Despesa").tag(0).accessibilityIdentifier("expenseTabButton")
+            Text("Receita").tag(1).accessibilityIdentifier("incomeTabButton")
         }
         .pickerStyle(SegmentedPickerStyle())
         .frame(maxWidth: .infinity)

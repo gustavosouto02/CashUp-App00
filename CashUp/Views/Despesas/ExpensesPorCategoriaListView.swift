@@ -251,6 +251,9 @@ struct ExpensesPorCategoriaListView: View {
             .padding(.vertical, 12)
             .background(Color(.secondarySystemBackground))
             .contentShape(Rectangle())
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("CategoryRow_\(categoriaModel.nome)")
+            .accessibilityLabel("\(categoriaModel.nome), \(formatCurrency(totalParaCategoria(categoriaModel)))")
             .onTapGesture {
                 withAnimation(.snappy) {
                     let categoriaID = categoriaModel.id
@@ -283,6 +286,7 @@ struct ExpensesPorCategoriaListView: View {
                                 Text(subModel.nome)
                                     .font(.headline)
                                     .foregroundColor(.primary)
+                                    .accessibilityIdentifier("SubcategoryRow_\(subModel.nome)")
                                 Spacer()
                                 Text(formatCurrency(totalParaSubcategoria(subModel)))
                                     .font(.footnote)

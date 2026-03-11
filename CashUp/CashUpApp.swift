@@ -15,7 +15,9 @@ struct CashUpApp: App {
             SubcategoriaPlanejadaModel.self
         ])
         
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        let isUITesting = ProcessInfo.processInfo.arguments.contains("--uitesting")
+        
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isUITesting)
 
         do {
             sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
