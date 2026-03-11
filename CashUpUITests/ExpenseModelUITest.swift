@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import CashUp
-import SwiftData
+//@testable import CashUp
+//import SwiftData
 
 final class ExpenseModelUITest: XCTestCase {
     
@@ -29,9 +29,8 @@ final class ExpenseModelUITest: XCTestCase {
     // MARK: - Tests
     // teste de UI que cria um gasto de 500 e deleta ele logo depois.
     func testCreatingAndDeleteExpense() throws {
-        let app = XCUIApplication()
-        app.launch()
-        app/*@START_MENU_TOKEN@*/.images["plus.circle.fill"]/*[[".buttons[\"Registrar\"].images",".buttons",".images[\"Add\"]",".images[\"plus.circle.fill\"]"],[[[-1,3],[-1,2],[-1,1,1],[-1,0]],[[-1,3],[-1,2]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+
+        app.staticTexts["addTransactionButtonHome"].firstMatch.tap()
         app/*@START_MENU_TOKEN@*/.textFields["R$ 0,00"]/*[[".otherElements.textFields[\"R$ 0,00\"]",".textFields[\"R$ 0,00\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app.textFields["R$ 0,00"].firstMatch.typeText("50")
         app/*@START_MENU_TOKEN@*/.staticTexts["Selecionar categoria"]/*[[".buttons[\"Selecionar categoria\"].staticTexts",".buttons.staticTexts[\"Selecionar categoria\"]",".staticTexts[\"Selecionar categoria\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
