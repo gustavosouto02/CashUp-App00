@@ -20,6 +20,7 @@ final class CashUpUITestsLaunchTests: XCTestCase {
     @MainActor
     func testLaunch() throws {
         let app = XCUIApplication()
+        app.launchArguments = ["--uitesting"]
         app.launch()
 
         // Insert steps here to perform after app launch but before taking a screenshot,

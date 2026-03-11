@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @main
 struct CashUpApp: App {
@@ -7,20 +7,30 @@ struct CashUpApp: App {
     @State private var isShowingWelcomeScreen: Bool = true
 
     init() {
+        let isUITesting = ProcessInfo.processInfo.arguments.contains(
+            "--uitesting"
+        )
+
+        _isShowingWelcomeScreen = State(initialValue: !isUITesting)
+
         let schema = Schema([
             CategoriaModel.self,
             SubcategoriaModel.self,
             ExpenseModel.self,
             CategoriaPlanejadaModel.self,
-            SubcategoriaPlanejadaModel.self
+            SubcategoriaPlanejadaModel.self,
         ])
-        
-        let isUITesting = ProcessInfo.processInfo.arguments.contains("--uitesting")
-        
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: isUITesting)
+
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: isUITesting
+        )
 
         do {
-            sharedModelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            sharedModelContainer = try ModelContainer(
+                for: schema,
+                configurations: [modelConfiguration]
+            )
         } catch {
             print("Erro ao criar container: \(error)")
             do {
@@ -36,11 +46,15 @@ struct CashUpApp: App {
             ZStack {
                 if isShowingWelcomeScreen {
                     WelcomeView(isShowingWelcomeScreen: $isShowingWelcomeScreen)
-                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
+                        .transition(
+                            .opacity.animation(.easeInOut(duration: 0.5))
+                        )
                 } else {
                     let context = sharedModelContainer.mainContext
                     HomeView(modelContext: context)
-                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
+                        .transition(
+                            .opacity.animation(.easeInOut(duration: 0.5))
+                        )
                 }
             }
             .preferredColorScheme(.dark)

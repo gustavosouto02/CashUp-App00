@@ -11,12 +11,19 @@ import SwiftData
 
 final class ExpenseModelUITest: XCTestCase {
     
+    var app: XCUIApplication!
+    
     // MARK: - Set up
     override func setUpWithError() throws {
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launchArguments = ["--uitesting"] // ← banco in-memory, começa vazio
+        app.launch()
     }
 
     // MARK: - TearDown
     override func tearDownWithError() throws {
+        app = nil
     }
 
     // MARK: - Tests
