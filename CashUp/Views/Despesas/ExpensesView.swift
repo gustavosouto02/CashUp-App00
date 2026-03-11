@@ -65,6 +65,7 @@ struct ExpensesView: View {
                             Text("Registrar")
                         }
                         .font(.headline)
+                        .accessibilityIdentifier("addTransactionButton")
                     }
                 }
             }

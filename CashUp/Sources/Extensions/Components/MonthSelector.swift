@@ -19,7 +19,7 @@ struct MonthSelector: View {
             }) {
                 Image(systemName: "chevron.left")
                     .font(.title2)
-            }
+            }.accessibilityIdentifier("prevMonthButton")
 
             Spacer()
 
@@ -27,6 +27,7 @@ struct MonthSelector: View {
                 .font(.headline)
                 .bold()
                 .minimumScaleFactor(0.8)
+                .accessibilityIdentifier("currentMonthLabel")
 
             Spacer()
 
@@ -37,6 +38,7 @@ struct MonthSelector: View {
                 Image(systemName: "chevron.right")
                     .font(.title2)
             }
+            .accessibilityIdentifier("nextMonthButton")
         }
         .padding(.horizontal)
         .frame(height: 40)
