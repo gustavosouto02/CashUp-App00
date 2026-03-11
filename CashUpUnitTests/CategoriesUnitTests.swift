@@ -20,7 +20,8 @@ final class CategoriesUnitTests: XCTestCase {
     override func setUpWithError() throws {
         let schema = Schema([
             CategoriaModel.self,
-            SubcategoriaModel.self
+            SubcategoriaModel.self,
+            ExpenseModel.self,
         ])
         
         modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
@@ -128,5 +129,30 @@ final class CategoriesUnitTests: XCTestCase {
             XCTAssertNotEqual(categorie.id, rendaID)
         }
     }
-
+    
+    func test_integrationExpenseAndRegisterCount() async throws {
+        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        
+        let viewModel = CategoriesViewModel(
+            modelContext: modelContext,
+            transactionType: .despesa
+        )
+        
+        let expenseViewModel = ExpensesViewModel(modelContext: modelContext)
+        
+        let categoriesComidasEBebidas = viewModel.findCategoriaModel(by: SeedIDs.idComidasEBebidas)
+        let subCategorieFastFood = viewModel.findSubcategoriaModel(by: SeedIDs.idSubFastFood)
+        
+        let expense1 = ExpenseModel(id: UUID(), amount: 100, date: Date(), expenseDescription: "Comi no MacDonalds", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
+        
+        let expense2 = ExpenseModel(id: UUID(), amount: 150, date: Date(), expenseDescription: "Comi no MacDonalds2", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
+        
+        try expenseViewModel.addExpense(expenseData: expense1, categoriaModel: categoriesComidasEBebidas!, subcategoriaModel: subCategorieFastFood!)
+        viewModel.registrarUso(subcategoriaModel: subCategorieFastFood!)
+        try expenseViewModel.addExpense(expenseData: expense2, categoriaModel: categoriesComidasEBebidas!, subcategoriaModel: subCategorieFastFood!)
+        viewModel.registrarUso(subcategoriaModel: subCategorieFastFood!)
+        
+        XCTAssertEqual(expenseViewModel.transacoesExibidas[1].id, expense1.id)
+        XCTAssertEqual(subCategorieFastFood!.usageCount, 2)
+    }
 }
