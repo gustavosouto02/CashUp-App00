@@ -30,7 +30,9 @@ final class ExpenseModelUITest: XCTestCase {
     // teste de UI que cria um gasto de 500 e deleta ele logo depois.
     func testCreatingAndDeleteExpense() throws {
 
-        app.staticTexts["addTransactionButtonHome"].firstMatch.tap()
+        let addButton = app.staticTexts["addTransactionButtonHome"].firstMatch
+            XCTAssertTrue(addButton.waitForExistence(timeout: 5))
+            addButton.tap()
         app/*@START_MENU_TOKEN@*/.textFields["R$ 0,00"]/*[[".otherElements.textFields[\"R$ 0,00\"]",".textFields[\"R$ 0,00\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app.textFields["R$ 0,00"].firstMatch.typeText("50")
         app/*@START_MENU_TOKEN@*/.staticTexts["Selecionar categoria"]/*[[".buttons[\"Selecionar categoria\"].staticTexts",".buttons.staticTexts[\"Selecionar categoria\"]",".staticTexts[\"Selecionar categoria\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()

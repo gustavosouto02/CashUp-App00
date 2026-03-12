@@ -26,11 +26,7 @@ final class testesUILA: XCTestCase {
   
     @MainActor
     func testAddCategoriaAoPlanejamento() throws {
-        let app = XCUIApplication()
-        app.launch()
-        app.activate()
-       
-        app.activate()
+
         app/*@START_MENU_TOKEN@*/.buttons.containing(.staticText, identifier: "Planejamento do Mês")/*[[".buttons",".containing(.staticText, identifier: \"R$ 39,89\")",".containing(.staticText, identifier: \"Restante do Orçamento\")",".containing(.staticText, identifier: \"Planejamento do Mês\")",".otherElements.buttons[\"Planejamento do Mês, Restante do Orçamento, R$ 39,89, \/ R$ 60,00\"]",".buttons[\"Planejamento do Mês, Restante do Orçamento, R$ 39,89, \/ R$ 60,00\"]"],[[[-1,5],[-1,4],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[2,0]]@END_MENU_TOKEN@*/.firstMatch.tap()
       
    
