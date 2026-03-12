@@ -17,6 +17,9 @@ final class RepetitionUITestes: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["--uitesting"] // SwiftData in-memory
         app.launch()
+        
+        let homeTitle = app.navigationBars["Visão Geral"]
+            XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
     }
     
     override func tearDownWithError() throws {
