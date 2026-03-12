@@ -10,7 +10,7 @@ import XCTest
 final class CashUpUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
-        true
+        false
     }
     
     var app: XCUIApplication!

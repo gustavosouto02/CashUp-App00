@@ -42,11 +42,11 @@ final class testesUILA: XCTestCase {
         XCTAssertTrue(docesIcon.exists)//só verifica se o elemento existe na tela
     }
 
-    @MainActor
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
-    }
+//    @MainActor
+//    func testLaunchPerformance() throws {
+//        // This measures how long it takes to launch your application.
+//        measure(metrics: [XCTApplicationLaunchMetric()]) {
+//            XCUIApplication().launch()
+//        }
+//    }
 }

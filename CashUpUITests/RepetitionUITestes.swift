@@ -35,7 +35,6 @@ final class RepetitionUITestes: XCTestCase {
         subcategoria: String,
         repeticao: String? = nil
     ) {
-        app.activate()
         
         let summaryCard = app.buttons["expensesSummaryCard"].firstMatch
             XCTAssertTrue(summaryCard.waitForExistence(timeout: 5))
