@@ -32,10 +32,11 @@ final class RepetitionUITestes: XCTestCase {
         subcategoria: String,
         repeticao: String? = nil
     ) {
-        let app = XCUIApplication()
         app.activate()
         
-        app.buttons["expensesSummaryCard"].firstMatch.tap()
+        let summaryCard = app.buttons["expensesSummaryCard"].firstMatch
+            XCTAssertTrue(summaryCard.waitForExistence(timeout: 5))
+            summaryCard.tap()
         app/*@START_MENU_TOKEN@*/.staticTexts["addTransactionButton"]/*[[".buttons",".staticTexts",".staticTexts[\"Registrar\"]",".staticTexts[\"addTransactionButton\"]"],[[[-1,3],[-1,2],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app.buttons["expenseTabButton"].firstMatch.tap()
         let amountField = app/*@START_MENU_TOKEN@*/.textFields["amountField"]/*[[".otherElements",".textFields[\"R$ 0,00\"]",".textFields[\"amountField\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
