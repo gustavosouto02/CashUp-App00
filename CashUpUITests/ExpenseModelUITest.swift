@@ -19,6 +19,9 @@ final class ExpenseModelUITest: XCTestCase {
         app = XCUIApplication()
         app.launchArguments = ["--uitesting"] // ← banco in-memory, começa vazio
         app.launch()
+        
+        let homeTitle = app.navigationBars["Visão Geral"]
+            XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
     }
 
     // MARK: - TearDown

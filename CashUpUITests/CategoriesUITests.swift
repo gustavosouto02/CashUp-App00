@@ -17,6 +17,9 @@ final class CategoriesUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments.append("--uitesting")
         app.launch()
+        
+        let homeTitle = app.navigationBars["Visão Geral"]
+            XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
     }
 
     override func tearDownWithError() throws {
