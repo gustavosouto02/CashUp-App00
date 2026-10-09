@@ -1,70 +1,56 @@
-//
-//  AddTransactionViewModel.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 27/05/25.
-//
-
 import Foundation
 import SwiftUI
-import SwiftData
 
-class AddTransactionViewModel: ObservableObject {
-    @Published var selectedTransactionType: Int = 0 // 0: Despesa, 1: Receita
+@MainActor
+final class AddTransactionViewModel: ObservableObject {
+    static let limiteMaximoAnosData = 100
+
+    @Published var selectedTransactionType: Int = 0
     @Published var amount: Double = 0.0
     @Published var expenseDescription: String = ""
     @Published var selectedDate: Date = Date()
     @Published var repeatOption: RepeatOption = .nunca
-    @Published var repeatEndDate: Date? = nil
+    @Published var repeatEndDate: Date?
     @Published var isRepeatDialogPresented: Bool = false
+    @Published var selectedCategoria: CategoriaModel?
+    @Published var selectedSubcategoria: SubcategoriaModel?
+    @Published var errorMessage: String?
 
-    init() {}
+    private let transacaoEmEdicao: ExpenseModel?
+    private let calendar: Calendar
 
-   init(from expense: ExpenseModel) {
-       self.amount = expense.amount
-       self.selectedDate = expense.date
-       self.expenseDescription = expense.expenseDescription
-       self.selectedTransactionType = expense.isIncome ? 1 : 0
-       self.repeatOption = expense.repetition?.repeatOption ?? .nunca
-       self.repeatEndDate = expense.repetition?.endDate ?? Date()
-   }
-    
-    var onTransactionCreated: ((
-        _ expenseModel: ExpenseModel,
-        _ categoriaModel: CategoriaModel,
-        _ subcategoriaModel: SubcategoriaModel
-    ) throws -> Void)?
+    init(transacaoEmEdicao: ExpenseModel? = nil, calendar: Calendar = .current) {
+        self.transacaoEmEdicao = transacaoEmEdicao
+        self.calendar = calendar
+        guard let transacao = transacaoEmEdicao else { return }
+        amount = transacao.amount
+        selectedDate = transacao.date
+        expenseDescription = transacao.expenseDescription
+        selectedTransactionType = transacao.isIncome ? 1 : 0
+        repeatOption = transacao.repetition?.repeatOption ?? .nunca
+        repeatEndDate = transacao.repetition?.endDate
+        selectedCategoria = transacao.categoria
+        selectedSubcategoria = transacao.subcategoria
+    }
 
-    private lazy var currencyFormatter: NumberFormatter = {
-        let f = NumberFormatter()
-        f.numberStyle = .currency
-        f.locale = Locale(identifier: "pt_BR")
-        f.maximumFractionDigits = 2
-        f.minimumFractionDigits = 2
-        return f
-    }()
+    var isEditando: Bool { transacaoEmEdicao != nil }
 
-    func formattedAmount() -> String {
-        currencyFormatter.string(from: NSNumber(value: amount)) ?? currencyFormatter.string(from: NSNumber(value: 0.0))!
+    var podeSalvar: Bool {
+        amount > 0 && selectedCategoria != nil && selectedSubcategoria != nil
+    }
+
+    var tituloDaTela: String {
+        selectedTransactionType == 0 ? "Registrar Despesa" : "Registrar Receita"
     }
 
     func formatDate(_ date: Date) -> String {
+        if calendar.isDateInToday(date) { return "Hoje" }
+        if calendar.isDateInYesterday(date) { return "Ontem" }
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "pt_BR")
-        let calendar = Calendar.current
-        if calendar.isDateInToday(date) {
-            return "Hoje"
-        } else if calendar.isDateInYesterday(date) {
-            return "Ontem"
-        } else {
-            formatter.dateStyle = .medium
-            formatter.timeStyle = .none
-            return formatter.string(from: date)
-        }
-    }
-
-    var repeatOptions: [RepeatOption] {
-        RepeatOption.allCases
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
     }
 
     func setRepeatOption(_ option: RepeatOption) {
@@ -74,90 +60,62 @@ class AddTransactionViewModel: ObservableObject {
         }
     }
 
+    func resolverIsIncome() -> Bool {
+        selectedCategoria?.id == SeedIDs.idRenda || selectedTransactionType == 1
+    }
 
-    func criarTransacaoEChamarClosure(
-        categoriaModelApp: CategoriaModel?,
-        subcategoriaModelApp: SubcategoriaModel?,
-        modelContext: ModelContext
-    ) throws -> Bool {
-        
-        guard let selectedCategoriaModel = categoriaModelApp,
-              let selectedSubcategoriaModel = subcategoriaModelApp,
-              amount > 0 else {
-            print("Validação falhou: CategoriaModel, SubcategoriaModel ou Valor ausente/inválido.")
+    func salvar(usando expensesViewModel: ExpensesViewModel) -> Bool {
+        do {
+            try validarCampos()
+            if let transacao = transacaoEmEdicao {
+                try aplicarEdicao(em: transacao, usando: expensesViewModel)
+            } else {
+                try expensesViewModel.addExpense(montarNovaTransacao())
+            }
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
             return false
         }
+    }
 
-        let categoriaID = selectedCategoriaModel.id
-        let categoriaPredicate: Predicate<CategoriaModel> = #Predicate { categoria in
-            categoria.id == categoriaID
+    private func validarCampos() throws {
+        guard amount > 0 else { throw CashUpDomainError.valorInvalido }
+        guard selectedCategoria != nil, selectedSubcategoria != nil else {
+            throw CashUpDomainError.categoriaAusente
         }
-
-
-        guard let categoriaPersistida = try? modelContext.fetch(
-            FetchDescriptor<CategoriaModel>(predicate: categoriaPredicate)
-        ).first else {
-            print("Falha ao buscar categoria persistida.")
-            return false
-        }
-
-
-        let subcategoriaID = selectedSubcategoriaModel.id
-        let subcategoriaPredicate: Predicate<SubcategoriaModel> = #Predicate { subcategoria in
-            subcategoria.id == subcategoriaID
-        }
-
-
-        guard let subcategoriaPersistida = try? modelContext.fetch(
-            FetchDescriptor<SubcategoriaModel>(predicate: subcategoriaPredicate)
-        ).first else {
-            print("Falha ao buscar subcategoria persistida.")
-            return false
-        }
-
-
-
-        let isRenda = categoriaPersistida.id == SeedIDs.idRenda
-        let isIncome = isRenda || selectedTransactionType == 1
-
-        let repetitionDataPayload: RepetitionData?
+        let limite = calendar.date(byAdding: .year, value: Self.limiteMaximoAnosData, to: Date()) ?? Date()
+        guard selectedDate <= limite else { throw CashUpDomainError.dataMuitoDistante }
         if repeatOption != .nunca {
-            repetitionDataPayload = RepetitionData(repeatOption: repeatOption, endDate: repeatEndDate)
-        } else {
-            repetitionDataPayload = nil
+            try RepetitionData.validar(dataFim: repeatEndDate, inicio: selectedDate, calendar: calendar)
         }
+    }
 
-        let novaExpenseModel = ExpenseModel(
+    private func montarNovaTransacao() -> ExpenseModel {
+        ExpenseModel(
             amount: amount,
             date: selectedDate,
-            expenseDescription: self.expenseDescription,
-            isIncome: isIncome,
-            repetition: repetitionDataPayload,
-            categoria: categoriaPersistida,
-            subcategoria: subcategoriaPersistida
+            expenseDescription: expenseDescription,
+            isIncome: resolverIsIncome(),
+            repetition: montarRepeticao(preservando: nil),
+            categoria: selectedCategoria,
+            subcategoria: selectedSubcategoria
         )
-
-        try onTransactionCreated?(novaExpenseModel, categoriaPersistida, subcategoriaPersistida)
-
-        resetFields()
-        return true
     }
 
-
-    func resetFields() {
-        amount = 0.0
-        expenseDescription = ""
-        selectedDate = Date()
-        repeatOption = .nunca
-        repeatEndDate = nil
+    private func aplicarEdicao(em transacao: ExpenseModel, usando expensesViewModel: ExpensesViewModel) throws {
+        transacao.repetition = montarRepeticao(preservando: transacao.repetition)
+        transacao.amount = amount
+        transacao.date = selectedDate
+        transacao.expenseDescription = expenseDescription
+        transacao.categoria = selectedCategoria
+        transacao.subcategoria = selectedSubcategoria
+        transacao.isIncome = resolverIsIncome()
+        try expensesViewModel.salvarEdicao()
     }
-    
-    func loadTransaction(_ expense: ExpenseModel) {
-            self.amount = expense.amount
-            self.selectedDate = expense.date
-            self.expenseDescription = expense.expenseDescription
-            self.selectedTransactionType = expense.isIncome ? 1 : 0
-            self.repeatOption = expense.repetition?.repeatOption ?? .nunca
-            self.repeatEndDate = expense.repetition?.endDate ?? Date()
-        }
+
+    private func montarRepeticao(preservando atual: RepetitionData?) -> RepetitionData? {
+        let base = atual ?? RepetitionData(repeatOption: .nunca, endDate: nil)
+        return base.atualizando(opcao: repeatOption, dataFim: repeatEndDate)
+    }
 }

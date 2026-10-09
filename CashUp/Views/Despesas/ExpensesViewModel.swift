@@ -1,10 +1,3 @@
-//
-//  ExpensesViewModel.swift
-//  CashUp
-//
-//  Created by [Seu Nome] on [Data].
-//
-
 import Foundation
 import SwiftData
 import SwiftUI
@@ -59,26 +52,29 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
     }
 
-    func addExpense(expenseData: ExpenseModel,
-                    categoriaModel: CategoriaModel,
-                    subcategoriaModel: SubcategoriaModel) throws {
+    func addExpense(_ expense: ExpenseModel) throws {
+        try validar(expense)
+        modelContext.insert(expense)
+        try persistir()
+    }
 
-        guard let futureLimit = Calendar.current.date(byAdding: .year, value: 100, to: .now),
-              expenseData.date <= futureLimit else {
-            throw NSError(domain: "ExpenseValidation", code: 1, userInfo: [
-                NSLocalizedDescriptionKey: "A data da despesa não pode ser superior a 100 anos no futuro."
-            ])
-        }
+    func salvarEdicao() throws {
+        try persistir()
+    }
 
-        modelContext.insert(expenseData)
-        print("ExpenseModel inserido com ID: \(expenseData.id), Desc: \(expenseData.expenseDescription)")
+    private func validar(_ expense: ExpenseModel) throws {
+        let limite = Calendar.current.date(byAdding: .year, value: 100, to: .now) ?? .now
+        guard expense.date <= limite else { throw CashUpDomainError.dataMuitoDistante }
+    }
+
+    private func persistir() throws {
         do {
             try modelContext.save()
-            print("Contexto salvo apósT adicionar despesa.")
-            loadDisplayableExpenses()
         } catch {
-            print("Erro ao salvar contexto após adicionar despesa: \(error.localizedDescription)")
+            modelContext.rollback()
+            throw CashUpDomainError.persistencia(error.localizedDescription)
         }
+        loadDisplayableExpenses()
     }
 
     func removeExpense(_ expenseToRemove: DisplayableExpense, scope: RecurringExpenseDeletionScope? = nil) {

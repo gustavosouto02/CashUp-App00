@@ -92,16 +92,8 @@ struct ExpensesListView: View {
                 )
             }
             .sheet(item: $selectedTransaction) { transaction in
-                AddTransactionView(
-                    transactionToEdit: transaction,
-                    onEditComplete: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            viewModel.loadDisplayableExpenses()
-                        }
-                    }
-                )
-                .environmentObject(viewModel)
-                .id(UUID()) // ✅ Isso é crucial!
+                AddTransactionView(transacaoEmEdicao: transaction)
+                    .environmentObject(viewModel)
             }
         }
     }

@@ -121,24 +121,20 @@ final class ExpenseModelTests: XCTestCase {
         // Given
         let addTransactionVM = AddTransactionViewModel()
         let expenseVM = ExpensesViewModel(modelContext: context)
-        addTransactionVM.amount = 3000.00
         let categoria = CategoriaModel(nome: "teste", icon: "plus", red: 20, green: 10, blue: 20)
         let subcategoria = SubcategoriaModel(nome: "subTeste", categoria: categoria)
-        
-        // When
         context.insert(categoria)
         context.insert(subcategoria)
-        let criado = try addTransactionVM.criarTransacaoEChamarClosure(categoriaModelApp: categoria, subcategoriaModelApp: subcategoria, modelContext: context)
-        addTransactionVM.onTransactionCreated = { expenseModelCriado, categoriaModelSelecionada, subcategoriaModelSelecionada in
-            try expenseVM.addExpense(
-                expenseData: expenseModelCriado,
-                categoriaModel: categoriaModelSelecionada,
-                subcategoriaModel: subcategoriaModelSelecionada
-            )
-        }
-        
+        addTransactionVM.amount = 3000.00
+        addTransactionVM.selectedCategoria = categoria
+        addTransactionVM.selectedSubcategoria = subcategoria
+
+        // When
+        let criado = addTransactionVM.salvar(usando: expenseVM)
+
         // Then
         XCTAssertTrue(criado)
+        XCTAssertNil(addTransactionVM.errorMessage)
         let count = try context.fetchCount(FetchDescriptor<ExpenseModel>())
         XCTAssertEqual(count, 1, "Deve existir 1 ExpenseModel no banco após a criação.")
         let expense = try context.fetch(FetchDescriptor<ExpenseModel>())

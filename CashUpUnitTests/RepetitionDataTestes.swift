@@ -81,7 +81,7 @@ final class RepetitionDataTestes: XCTestCase {
     // Despesa sem repetição de data, deve aparecer apenas uma vez no próprio mês, em nenhum outro
     func test_ExpenseOnlyInMonth() {
 
-        let expense = makeExpense(date: date, repetition: nil)
+        let expense = makeExpense(date: Date.make(year: 2026, month: 3, day: 15), repetition: nil)
 
         let month = interval(year: 2026, month: 3)
 
@@ -138,7 +138,7 @@ final class RepetitionDataTestes: XCTestCase {
 
     func test_WeeklyOcurrence() {
         let expense = makeExpense(
-            date: date,
+            date: Date.make(year: 2026, month: 3, day: 2),
             repetition: RepetitionData(
                 repeatOption: .semanalmente,
                 endDate: nil
@@ -152,7 +152,9 @@ final class RepetitionDataTestes: XCTestCase {
         )
         .sorted { $0.date < $1.date }
 
-        for i in 1..<ocurrences.count {
+        XCTAssertEqual(ocurrences.count, 5)
+
+        for i in 1..<max(ocurrences.count, 1) {
             let days = calendar.dateComponents(
                 [.day],
                 from: calendar.startOfDay(for: ocurrences[i - 1].date),

@@ -87,7 +87,7 @@ struct HomeView: View {
                 TipsView()
             }
             .fullScreenCover(isPresented: $isAddTransactionPresented) {
-                AddTransactionView( transactionToEdit: nil)
+                AddTransactionView()
                     .environmentObject(homeViewModel.expensesViewModel)
             }
             .onAppear {
