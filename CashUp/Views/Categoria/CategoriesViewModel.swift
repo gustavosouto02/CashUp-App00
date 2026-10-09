@@ -1,113 +1,40 @@
-//
-//  CategoriesViewModel.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
 import Foundation
 import SwiftData
 import SwiftUI
 
-enum TransactionTypeFilter {
-    case despesa
-    case receita
-}
-
 @MainActor
-class CategoriesViewModel: ObservableObject {
-
-    var modelContext: ModelContext
-    private var transactionType: TransactionTypeFilter
+final class CategoriesViewModel: ObservableObject {
+    private let repository: CategoriaRepositoryProtocol
+    let transactionType: TransactionTypeFilter
 
     var subcategoriasMaisUsadas: [SubcategoriaModel] {
-        fetchSubcategoriasMaisUsadasInterno()
+        (try? repository.fetchSubcategoriasMaisUsadas(filtro: transactionType, limite: 6)) ?? []
     }
 
-    init(modelContext: ModelContext, transactionType: TransactionTypeFilter) {
-        self.modelContext = modelContext
+    init(repository: CategoriaRepositoryProtocol, transactionType: TransactionTypeFilter) {
+        self.repository = repository
         self.transactionType = transactionType
     }
 
+    convenience init(modelContext: ModelContext, transactionType: TransactionTypeFilter) {
+        self.init(repository: SwiftDataCategoriaRepository(context: modelContext), transactionType: transactionType)
+    }
+
     func fetchTodasCategoriasModel() -> [CategoriaModel] {
-        var predicate: Predicate<CategoriaModel>?
-        let rendaID = SeedIDs.idRenda
-
-        switch transactionType {
-        case .despesa:
-            predicate = #Predicate<CategoriaModel> { $0.id != rendaID }
-        case .receita:
-            predicate = #Predicate<CategoriaModel> { $0.id == rendaID }
-        }
-
-        let fetchDescriptor = FetchDescriptor<CategoriaModel>(predicate: predicate)
-
-        do {
-            return try modelContext.fetch(fetchDescriptor).sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
-        } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel filtradas: \(error.localizedDescription, privacy: .public)")
-            return []
-        }
+        (try? repository.fetchCategorias(filtro: transactionType)) ?? []
     }
 
     func findCategoriaModel(by id: UUID) -> CategoriaModel? {
-        let predicate = #Predicate<CategoriaModel> { $0.id == id }
-        var descriptor = FetchDescriptor(predicate: predicate)
-        descriptor.fetchLimit = 1
-        do {
-            return try modelContext.fetch(descriptor).first
-        } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
+        try? repository.fetchCategoria(id: id)
     }
 
     func findSubcategoriaModel(by id: UUID) -> SubcategoriaModel? {
-        let predicate = #Predicate<SubcategoriaModel> { $0.id == id }
-        var descriptor = FetchDescriptor(predicate: predicate)
-        descriptor.fetchLimit = 1
-        do {
-            return try modelContext.fetch(descriptor).first
-        } catch {
-            CashUpLogger.persistence.error("Erro ao buscar SubcategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
-            return nil
-        }
+        try? repository.fetchSubcategoria(id: id)
     }
 
     func registrarUso(subcategoriaModel: SubcategoriaModel) {
         subcategoriaModel.usageCount += 1
+        try? repository.save()
         objectWillChange.send()
-    }
-
-    private func fetchSubcategoriasMaisUsadasInterno() -> [SubcategoriaModel] {
-        let rendaID = SeedIDs.idRenda
-        let predicate: Predicate<SubcategoriaModel> = {
-            switch transactionType {
-            case .despesa:
-                return #Predicate<SubcategoriaModel> { $0.usageCount > 0 && $0.categoria?.id != rendaID }
-            case .receita:
-                return #Predicate<SubcategoriaModel> { $0.usageCount > 0 && $0.categoria?.id == rendaID }
-            }
-        }()
-
-        let fetchDescriptor = FetchDescriptor<SubcategoriaModel>(predicate: predicate)
-
-        do {
-            return try modelContext.fetch(fetchDescriptor)
-                .sorted { $0.usageCount > $1.usageCount }
-                .prefix(6)
-                .map { $0 }
-        } catch {
-            CashUpLogger.persistence.error("Erro ao buscar subcategorias mais usadas (filtradas): \(error.localizedDescription, privacy: .public)")
-            return []
-        }
-    }
-
-    func getTransactionTypeFilter() -> TransactionTypeFilter {
-        return self.transactionType
-    }
-
-    func getModelContextForEditing() -> ModelContext {
-        return self.modelContext
     }
 }

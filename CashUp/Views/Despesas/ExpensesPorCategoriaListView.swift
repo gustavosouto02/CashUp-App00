@@ -217,7 +217,6 @@ struct ExpensesPorCategoriaListView: View {
                 isIncome: data.isIncome,
                 viewModel: viewModel
             )
-            .environment(\.modelContext, viewModel.modelContext)
         }
         .onAppear {
             if localSelectedTransactionType != viewModel.selectedTransactionType {

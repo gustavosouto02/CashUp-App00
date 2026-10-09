@@ -66,7 +66,6 @@ final class HomeViewModelTests: XCTestCase {
         expensesViewModel = ExpensesViewModel(modelContext: context)
         planningViewModel = PlanningViewModel(modelContext: context)
         sut = HomeViewModel(
-            modelContext: context,
             planningViewModel: planningViewModel,
             expensesViewModel: expensesViewModel
         )

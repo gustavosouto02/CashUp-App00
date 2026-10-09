@@ -13,6 +13,9 @@ import Charts
 struct PlanningPlanejarView: View {
     @ObservedObject var viewModel: PlanningViewModel
     
+    @Environment(\.modelContext) private var modelContext
+    var categoriaRepository: CategoriaRepositoryProtocol? = nil
+
     @Binding var isEditing: Bool
     @Binding var subcategoriasPlanejadasSelecionadasParaDelecao: Set<UUID>
     @State private var isCategorySheetPresented = false
@@ -20,14 +23,15 @@ struct PlanningPlanejarView: View {
     @State private var selectedCategoryFromSheet: CategoriaModel? = nil
     @State private var showResetConfirmation = false
     @State private var showDuplicateAlert = false
-    
-    
+
     @Query var categoriasPlanejadasDoMesQuery: [CategoriaPlanejadaModel]
 
    init(viewModel: PlanningViewModel,
+        categoriaRepository: CategoriaRepositoryProtocol? = nil,
         isEditing: Binding<Bool>,
         subcategoriasSelecionadas: Binding<Set<UUID>>) {
        self.viewModel = viewModel
+       self.categoriaRepository = categoriaRepository
        self._isEditing = isEditing
        self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
 
@@ -38,7 +42,7 @@ struct PlanningPlanejarView: View {
 
        _categoriasPlanejadasDoMesQuery = Query(filter: predicate, sort: [], animation: .default)
    }
-    
+
     var body: some View {
         ZStack {
             ScrollView {
@@ -51,17 +55,13 @@ struct PlanningPlanejarView: View {
                 }
             }
             .fullScreenCover(isPresented: $isCategorySheetPresented) {
-                let categoriesVM = CategoriesViewModel(
-                    modelContext: viewModel.modelContext,
-                    transactionType: .despesa
-                )
                 CategorySelectionSheet(
-                    viewModel: categoriesVM,
+                    categoriaRepository: categoriaRepository ?? SwiftDataCategoriaRepository(context: modelContext),
+                    transactionType: .despesa,
                     selectedSubcategoryModel: $selectedSubcategoryFromSheet,
                     isPresented: $isCategorySheetPresented,
                     selectedCategoryModel: $selectedCategoryFromSheet
                 )
-                .environment(\.modelContext, viewModel.modelContext)
             }
             .onChange(of: selectedSubcategoryFromSheet) { oldValue, newValue in
                 guard let subModel = newValue else {

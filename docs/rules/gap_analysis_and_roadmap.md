@@ -103,7 +103,7 @@ gantt
     section Fase 1 - Fundação & CRUD
     Limpeza de Débitos Técnicos (DT-01/02) :done, p1, 2026-10-09, 3d
     Habilitar CRUD de Categorias (L-01)    :active, p2, 2026-10-12, 4d
-    Camada de Repositórios & Protocols (L-09): p3, 2026-10-16, 5d
+    Camada de Repositórios & Protocols (L-09): done, p3, 2026-10-09, 2026-10-09
     section Fase 2 - Segurança & Onboarding
     Autenticação Biométrica Face ID (L-02) : p4, 2026-10-21, 4d
     Fluxo de Onboarding Interativo (L-03)  : p5, 2026-10-25, 4d
