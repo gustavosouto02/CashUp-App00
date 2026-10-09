@@ -1,6 +1,6 @@
 //
-//  testesUILA.swift
-//  CashUp
+//  PlanningUITests.swift
+//  CashUpUITests
 //
 //  Created by Letícia Delmilio Soares on 11/03/26.
 //
@@ -8,7 +8,7 @@
 
 import XCTest
 
-final class testesUILA: XCTestCase {
+final class PlanningUITests: XCTestCase {
 
     var app: XCUIApplication!
     
@@ -31,9 +31,6 @@ final class testesUILA: XCTestCase {
     func testAddCategoriaAoPlanejamento() throws {
 
         app/*@START_MENU_TOKEN@*/.buttons.containing(.staticText, identifier: "Planejamento do Mês")/*[[".buttons",".containing(.staticText, identifier: \"R$ 39,89\")",".containing(.staticText, identifier: \"Restante do Orçamento\")",".containing(.staticText, identifier: \"Planejamento do Mês\")",".otherElements.buttons[\"Planejamento do Mês, Restante do Orçamento, R$ 39,89, \/ R$ 60,00\"]",".buttons[\"Planejamento do Mês, Restante do Orçamento, R$ 39,89, \/ R$ 60,00\"]"],[[[-1,5],[-1,4],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[2,0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-      
-   
-        print(app.debugDescription)
         app/*@START_MENU_TOKEN@*/.staticTexts["Adicionar Categoria ao Planejamento"]/*[[".buttons[\"Adicionar Categoria ao Planejamento\"].staticTexts",".buttons.staticTexts[\"Adicionar Categoria ao Planejamento\"]",".staticTexts[\"Adicionar Categoria ao Planejamento\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
         app/*@START_MENU_TOKEN@*/.images["birthday.cake"]/*[[".otherElements.images[\"birthday.cake\"]",".images[\"birthday.cake\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
       
@@ -42,11 +39,4 @@ final class testesUILA: XCTestCase {
         XCTAssertTrue(docesIcon.exists)//só verifica se o elemento existe na tela
     }
 
-//    @MainActor
-//    func testLaunchPerformance() throws {
-//        // This measures how long it takes to launch your application.
-//        measure(metrics: [XCTApplicationLaunchMetric()]) {
-//            XCUIApplication().launch()
-//        }
-//    }
 }

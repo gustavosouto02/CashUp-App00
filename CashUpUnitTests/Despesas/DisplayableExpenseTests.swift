@@ -1,6 +1,6 @@
 //
-//  testeLAUnit.swift
-//  CashUp
+//  DisplayableExpenseTests.swift
+//  CashUpUnitTests
 //
 //  Created by Letícia Delmilio Soares on 11/03/26.
 //
@@ -11,15 +11,9 @@ import SwiftData
 
 @testable import CashUp
 
-final class testeLAUnit: XCTestCase {
-    
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+final class DisplayableExpenseTests: XCTestCase {
+
+    private let marco = Date.make(year: 2026, month: 3, day: 10)
     
     //MARK: TESTE UNITÁRIO
     // Testes unitários verificam o comportamento de uma classe isoladamente,
@@ -28,7 +22,7 @@ final class testeLAUnit: XCTestCase {
         let categoria = CategoriaModel(nome: "Doces", icon: "birthday.cake", red: 0.1, green: 0.2, blue: 0.3)
         // ACT: executa a ação que queremos testar
         let categoriaPlanejada = CategoriaPlanejadaModel(
-            mesAno: Date(),
+            mesAno: marco,
             categoriaOriginal: categoria
         )
         // ASSERT: verifica se o resultado foi o esperado
@@ -37,7 +31,7 @@ final class testeLAUnit: XCTestCase {
     
     func testCategoriaPlanejadaTemID() {
         // Cria uma categoria planejada e verifica se um ID foi gerado automaticamente
-        let categoria = CategoriaPlanejadaModel(mesAno: Date())
+        let categoria = CategoriaPlanejadaModel(mesAno: marco)
         
         XCTAssertNotNil(categoria.id)
     }
@@ -57,7 +51,7 @@ final class testeLAUnit: XCTestCase {
         
         let expense = ExpenseModel(
             amount: 20,
-            date: Date(),
+            date: marco,
             expenseDescription: "Lanche",
             isIncome: false,
             categoria: categoria,
@@ -88,7 +82,7 @@ final class testeLAUnit: XCTestCase {
         
         let expense = ExpenseModel(
             amount: 15,
-            date: Date(),
+            date: marco,
             expenseDescription: "Lanche",
             isIncome: false,
             categoria: categoria,
@@ -119,7 +113,7 @@ final class testeLAUnit: XCTestCase {
         
         let expense = ExpenseModel(
             amount: 30,
-            date: Date(),
+            date: marco,
             expenseDescription: "Jantar",
             isIncome: false,
             categoria: categoria,
@@ -127,19 +121,10 @@ final class testeLAUnit: XCTestCase {
         )
         
         // ACT
-        let displayable = DisplayableExpense(from: expense, occurrenceDate: Date())
+        let displayable = DisplayableExpense(from: expense, occurrenceDate: marco)
         //    Quando um DisplayableExpense é criado a partir de um ExpenseModel recorrente,
         //    ele deve guardar o ID da despesa original.
         //ASSERT
         XCTAssertEqual(displayable.originalExpenseID, expense.id)
     }
-    
-    
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }

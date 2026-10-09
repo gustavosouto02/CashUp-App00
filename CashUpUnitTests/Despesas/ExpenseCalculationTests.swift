@@ -1,6 +1,6 @@
 //
-//  UnitTestLACalucularGastos.swift
-//  CashUp
+//  ExpenseCalculationTests.swift
+//  CashUpUnitTests
 //
 //  Created by Andreas Gomes Marchi on 10/03/26.
 //
@@ -11,7 +11,9 @@ import SwiftUI
 import SwiftData
 
 
-final class UnitTestLACalucularGastos: XCTestCase {
+final class ExpenseCalculationTests: XCTestCase {
+
+    private let marco = Date.make(year: 2026, month: 3, day: 10)
     
     // O teste roda na MainActor pois SwiftData exigi execução na thread principal
     @MainActor func testCalcularTotalGastoParaCategoria() throws {
@@ -44,7 +46,7 @@ final class UnitTestLACalucularGastos: XCTestCase {
         // Cria uma categoria planejada que referencia a categoria original
         // Essa é a categoria usada na função que queremos testar
         let categoriaPlanejada = CategoriaPlanejadaModel(
-            mesAno: Date(),
+            mesAno: marco,
             categoriaOriginal: categoria
         )
 
@@ -53,12 +55,14 @@ final class UnitTestLACalucularGastos: XCTestCase {
         // Despesa 1 pertence à categoria "Comida"
         let despesa1 = ExpenseModel(
             amount: 50,
+            date: marco,
             categoria: categoria
         )
 
         // Despesa 2 também pertence à categoria "Comida"
         let despesa2 = ExpenseModel(
             amount: 30,
+            date: marco,
             categoria: categoria
         )
 
@@ -66,6 +70,7 @@ final class UnitTestLACalucularGastos: XCTestCase {
         // Ela serve para garantir que o filtro da função funcione corretamente
         let despesa3 = ExpenseModel(
             amount: 100,
+            date: marco,
             categoria: nil
         )
 
@@ -85,7 +90,7 @@ final class UnitTestLACalucularGastos: XCTestCase {
         // Executa a função que queremos testar
         let total = viewModel.calcularTotalGastoParaCategoria(
             categoriaPlanejada,
-            paraMes: Date()
+            paraMes: marco
         )
 
         // Verifica se o valor retornado é o esperado

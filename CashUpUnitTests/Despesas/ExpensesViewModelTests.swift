@@ -1,5 +1,5 @@
 //
-//  CashUpUnitTests.swift
+//  ExpensesViewModelTests.swift
 //  CashUpUnitTests
 //
 //  Created by Gustavo Souto Pereira on 10/03/26.
@@ -11,7 +11,9 @@ import XCTest
 
 @testable import CashUp
 
-final class CashUpUnitTests: XCTestCase {
+final class ExpensesViewModelTests: XCTestCase {
+
+    private let marco = Date.make(year: 2026, month: 3, day: 1)
 
     var container: ModelContainer!
     var context: ModelContext!
@@ -53,7 +55,7 @@ final class CashUpUnitTests: XCTestCase {
 
         expenseValid1 = ExpenseModel(
             amount: 100,
-            date: Date(),
+            date: Date.make(year: 2026, month: 3, day: 5),
             expenseDescription: "Teste válido 1",
             isIncome: false,
             categoria: categoria,
@@ -61,12 +63,13 @@ final class CashUpUnitTests: XCTestCase {
         )
         expenseValid2 = ExpenseModel(
             amount: 123,
-            date: Calendar.current.date(byAdding: .day, value: 10, to: .now)!,
+            date: Date.make(year: 2026, month: 3, day: 15),
             expenseDescription: "Teste válido 2",
             isIncome: false,
             categoria: categoria,
             subcategoria: subcategoria
         )
+        // A regra "dataMuitoDistante" é relativa a hoje (+100 anos); por isso só este caso usa .now.
         expenseInvalid = ExpenseModel(
             amount: 100,
             date: Calendar.current.date(byAdding: .year, value: 130, to: .now)!,
@@ -77,7 +80,7 @@ final class CashUpUnitTests: XCTestCase {
         )
         categoriaPlanejada = CategoriaPlanejadaModel(
             id: UUID(),
-            mesAno: Date().startOfMonth(),
+            mesAno: marco,
             categoriaOriginal: categoria
         )
 
@@ -89,7 +92,9 @@ final class CashUpUnitTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        sut = nil
+        context = nil
+        container = nil
     }
 
     @MainActor func test_DateIsValid() async throws {
@@ -108,12 +113,11 @@ final class CashUpUnitTests: XCTestCase {
 
     func test_TotalAmountIsValid() async throws {
         let viewModel = await ExpensesViewModel(modelContext: context)
-        let currentMonth = Date().startOfMonth()
 
         let totalGastoMensal =
             await viewModel.calcularTotalGastoParaCategoria(
                 categoriaPlanejada,
-                paraMes: currentMonth
+                paraMes: marco
             )
 
         XCTAssertEqual(
@@ -132,22 +136,4 @@ final class CashUpUnitTests: XCTestCase {
 
         XCTAssertEqual(total, 223, "O valor do calculo está incorreto")
     }
-    
-    
-    
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

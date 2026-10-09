@@ -75,7 +75,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
     }
 
     func testEditarSerieComDataFuturaContinuaGerandoOcorrencias() throws {
-        let inicioFuturo = Calendar.current.date(byAdding: .month, value: 2, to: Date())!
+        let inicioFuturo = Date.make(year: 2027, month: 6, day: 5)
         let serie = try inserirSerieMensal(inicio: inicioFuturo)
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: serie)
         viewModel.amount = 1500
@@ -137,7 +137,8 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
         viewModel.amount = 42
         viewModel.selectedCategoria = categoria
         viewModel.selectedSubcategoria = subcategoria
-        viewModel.selectedDate = Date()
+        viewModel.selectedDate = Date.make(year: 2026, month: 3, day: 10)
+        expensesViewModel.currentMonth = Date.make(year: 2026, month: 3, day: 1)
 
         XCTAssertTrue(viewModel.salvar(usando: expensesViewModel))
 

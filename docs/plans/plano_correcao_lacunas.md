@@ -22,7 +22,8 @@
 |---|---|---|---|
 | 1 | ✅ Concluída | 2026-10-08 | 53 testes unitários verdes no iPhone 17 Pro (iOS 26.4). `RepeatOption` movido para `Models/RepeatOption.swift` com `nextDate(after:)`. Os dois testes dependentes de `Date()` em `RepetitionDataTestes` foram fixados em março/2026 por bloquearem o verde (antecipação da Etapa 3). |
 | 2 | ✅ Concluída | 2026-10-08 | 64 testes verdes. `ExpensesViewModel` reduzido a um caminho de leitura (`transactions(in:)`); `calcular*` honram `paraMes`; `RecurringScopeDialogModifier` único para as duas listas; regra Renda e limpeza de categoria ao trocar tipo no `AddTransactionViewModel`. |
-| 3 a 10 | ⏳ Pendente | | |
+| 3 | ✅ Concluída | 2026-10-08 | 81 testes unitários verdes (84 menos 3 placeholders apagados). Nenhum teste monta dados com `Date()` comparados a mês fixo; `Date.make` vive em `CashUpUnitTests/Helpers/Date+Testing.swift`. Arquivos renomeados para `<Nome>Tests.swift` em subpastas `Transacao/`, `Despesas/`, `Categoria/`; UI: `PlanningUITests`, `RepetitionUITests`, `ExpensesUITests`. `CashUpUITestsLaunchTests` (só screenshot) e os `testLaunchPerformance` comentados apagados. 7 testes de UI verdes; `ExpensesUITests` ajustado ao rótulo "Toda a série" do diálogo da etapa 2. |
+| 4 a 10 | ⏳ Pendente | | |
 
 ---
 
