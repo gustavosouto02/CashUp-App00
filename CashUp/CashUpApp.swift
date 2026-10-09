@@ -4,12 +4,16 @@ import SwiftUI
 @main
 struct CashUpApp: App {
     let sharedModelContainer: ModelContainer
-    @State private var isShowingWelcomeScreen: Bool = true
+    private let isUITesting: Bool
+    private let settings: AppSettingsProtocol
+    private let biometricService: BiometricAuthServiceProtocol
     @State private var mostrarAvisoPersistencia: Bool
 
     init() {
         let isUITesting = ProcessInfo.processInfo.arguments.contains("--uitesting")
-        _isShowingWelcomeScreen = State(initialValue: !isUITesting)
+        self.isUITesting = isUITesting
+        settings = isUITesting ? UserDefaultsAppSettings.volatil() : UserDefaultsAppSettings()
+        biometricService = BiometricAuthService()
 
         let resultado = Self.makeContainer(inMemory: isUITesting)
         sharedModelContainer = resultado.container
@@ -47,15 +51,12 @@ struct CashUpApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                if isShowingWelcomeScreen {
-                    WelcomeView(isShowingWelcomeScreen: $isShowingWelcomeScreen)
-                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
-                } else {
-                    HomeView(modelContext: sharedModelContainer.mainContext)
-                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
-                }
-            }
+            RootView(
+                modelContainer: sharedModelContainer,
+                settings: settings,
+                biometricService: biometricService,
+                mostrarBoasVindas: !isUITesting
+            )
             .preferredColorScheme(.dark)
             .alert("Não foi possível abrir seus dados", isPresented: $mostrarAvisoPersistencia) {
                 Button("Entendi") {}

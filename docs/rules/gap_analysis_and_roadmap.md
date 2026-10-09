@@ -40,7 +40,7 @@ A inspeção detalhada do código-fonte revelou um núcleo funcional sólido, co
 │ Dicas & Educação         │ Tela Dicas (Regra 50/30) │ ⚠️ UI Estática   │
 ├──────────────────────────┼──────────────────────────┼──────────────────┤
 │ Onboarding & Segurança   │ Splash Screen (2.5s)     │ ✅ 100% Funcional│
-│                          │ Biometria (Face ID)      │ ❌ Arquivo Vazio │
+│                          │ Biometria (Face ID)      │ ✅ 100% Funcional│
 │                          │ Tour de Boas-Vindas      │ ❌ Arquivo Vazio │
 └──────────────────────────┴──────────────────────────┴──────────────────┘
 ```
@@ -63,10 +63,8 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 
 ### DT-03 — Arquivos Estruturais Vazios (Placeholders)
 - **Diagnóstico**: Arquivos criados na árvore de pastas que contêm apenas cabeçalho de comentário ou corpo vazio:
-  - `CashUp/Views/Boas Vindas/Biometria/AuthViewModel.swift` (vazio)
   - `CashUp/Views/Boas Vindas/Onboarding/OnboardingViewModel.swift` (vazio)
   - `CashUp/Views/Boas Vindas/Onboarding/OnboardingView.swift` (vazio)
-  - `CashUp/Views/Boas Vindas/Biometria/BiometricView.swift` (apenas `Text("Logo")`)
   - `CashUp/Views/Dicas/TipsViewModel.swift` (vazio)
   - `CashUp/Views/Dicas/Tip.swift` (vazio)
 - **Ação Recomendada**: Implementar as funcionalidades planejadas ou consolidar a árvore evitando arquivos zumbis.
@@ -105,7 +103,7 @@ gantt
     Habilitar CRUD de Categorias (L-01)    :active, p2, 2026-10-12, 4d
     Camada de Repositórios & Protocols (L-09): done, p3, 2026-10-09, 2026-10-09
     section Fase 2 - Segurança & Onboarding
-    Autenticação Biométrica Face ID (L-02) : p4, 2026-10-21, 4d
+    Autenticação Biométrica Face ID (L-02) : done, p4, 2026-10-09, 2026-10-09
     Fluxo de Onboarding Interativo (L-03)  : p5, 2026-10-25, 4d
     section Fase 3 - Proatividade & Relatórios
     Alertas Locais de Orçamento (L-04)     : p6, 2026-10-29, 4d
