@@ -147,9 +147,9 @@ final class CategoriesUnitTests: XCTestCase {
         
         let expense2 = ExpenseModel(id: UUID(), amount: 150, date: Date(), expenseDescription: "Comi no MacDonalds2", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
         
-        try expenseViewModel.addExpense(expenseData: expense1, categoriaModel: categoriesComidasEBebidas!, subcategoriaModel: subCategorieFastFood!)
+        try expenseViewModel.addExpense(expense1)
         viewModel.registrarUso(subcategoriaModel: subCategorieFastFood!)
-        try expenseViewModel.addExpense(expenseData: expense2, categoriaModel: categoriesComidasEBebidas!, subcategoriaModel: subCategorieFastFood!)
+        try expenseViewModel.addExpense(expense2)
         viewModel.registrarUso(subcategoriaModel: subCategorieFastFood!)
         
         XCTAssertEqual(expenseViewModel.transacoesExibidas[1].id, expense1.id)

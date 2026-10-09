@@ -1,23 +1,3 @@
-//
-//  RepeatOptionPicker.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 27/05/25.
-//
-
-import SwiftUI
-
-enum RepeatOption: String, CaseIterable, Identifiable, Codable {
-    case nunca = "Nunca"
-    case diariamente = "Diariamente"
-    case semanalmente = "Semanalmente"
-    case aCada10Dias = "A cada 10 dias"
-    case mensalmente = "Mensalmente"
-    case anualmente = "Anualmente"
-    
-    var id: String { self.rawValue }
-}
-
 import SwiftUI
 
 struct RepeatOptionPicker: View {

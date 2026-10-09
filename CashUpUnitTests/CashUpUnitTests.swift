@@ -95,27 +95,14 @@ final class CashUpUnitTests: XCTestCase {
     @MainActor func test_DateIsValid() async throws {
         let viewModel = ExpensesViewModel(modelContext: context)
 
-        XCTAssertNoThrow(
-            try viewModel.addExpense(
-                expenseData: expenseValid1,
-                categoriaModel: categoria,
-                subcategoriaModel: subcategoria
-            )
-        )
+        XCTAssertNoThrow(try viewModel.addExpense(expenseValid1))
     }
 
     @MainActor func test_DateIsInvalid() async throws {
         let viewModel = ExpensesViewModel(modelContext: context)
 
-        XCTAssertThrowsError(
-            try viewModel.addExpense(
-                expenseData: expenseInvalid,
-                categoriaModel: categoria,
-                subcategoriaModel: subcategoria
-            )
-        ) { error in
-            XCTAssertEqual((error as NSError).domain, "ExpenseValidation")
-            XCTAssertEqual((error as NSError).code, 1)
+        XCTAssertThrowsError(try viewModel.addExpense(expenseInvalid)) { error in
+            XCTAssertEqual(error as? CashUpDomainError, .dataMuitoDistante)
         }
     }
 

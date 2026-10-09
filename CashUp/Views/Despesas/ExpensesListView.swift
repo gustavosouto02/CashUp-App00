@@ -1,10 +1,3 @@
-//
-//  ExpensesListView.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
 import SwiftData
 import SwiftUI
 
@@ -12,7 +5,6 @@ struct ExpensesListView: View {
     @ObservedObject var viewModel: ExpensesViewModel
 
     @State private var expenseToDelete: DisplayableExpense? = nil
-    @State private var showRecurrenceDeleteOptions: Bool = false
     @State private var selectedTransaction: ExpenseModel? = nil
 
     private var transacoesDoMesParaExibicao: [DisplayableExpense] {
@@ -49,13 +41,9 @@ struct ExpensesListView: View {
                             if displayableExpense.isRecurringInstance
                                 && displayableExpense.originalExpenseID != nil
                             {
-                                self.expenseToDelete = displayableExpense
-                                self.showRecurrenceDeleteOptions = true
+                                expenseToDelete = displayableExpense
                             } else {
-                                viewModel.removeExpense(
-                                    displayableExpense,
-                                    scope: .entireSeries
-                                )
+                                viewModel.excluir(displayableExpense, scope: .entireSeries)
                             }
                         }
                     )
@@ -63,45 +51,13 @@ struct ExpensesListView: View {
             }
             .listStyle(.plain)
             .accessibilityIdentifier("transactionList")
-            .confirmationDialog(
-                "Apagar Transação Recorrente",
-                isPresented: $showRecurrenceDeleteOptions,
-                presenting: expenseToDelete
-            ) { expense in
-                Button("Apagar somente esta ocorrência") {
-                    viewModel.removeExpense(expense, scope: .thisOccurrenceOnly)
-                    self.expenseToDelete = nil
-                }
-                Button("Apagar esta e todas as futuras") {
-                    viewModel.removeExpense(
-                        expense,
-                        scope: .thisAndAllFutureOccurrences
-                    )
-                    self.expenseToDelete = nil
-                }
-                Button("Apagar toda a série", role: .destructive) {
-                    viewModel.removeExpense(expense, scope: .entireSeries)
-                    self.expenseToDelete = nil
-                }
-                Button("Cancelar", role: .cancel) {
-                    self.expenseToDelete = nil
-                }
-            } message: { expense in
-                Text(
-                    "A transação \"\(expense.expenseDescription)\" de \(formatCurrency(expense.amount)) em \(expense.date.formatted(date: .numeric, time: .omitted)) é recorrente. Como você gostaria de apagá-la?"
-                )
+            .recurringDeletionDialog(expense: $expenseToDelete) { expense, scope in
+                viewModel.excluir(expense, scope: scope)
             }
+            .errorAlert($viewModel.errorMessage)
             .sheet(item: $selectedTransaction) { transaction in
-                AddTransactionView(
-                    transactionToEdit: transaction,
-                    onEditComplete: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            viewModel.loadDisplayableExpenses()
-                        }
-                    }
-                )
-                .environmentObject(viewModel)
-                .id(UUID()) // ✅ Isso é crucial!
+                AddTransactionView(transacaoEmEdicao: transaction)
+                    .environmentObject(viewModel)
             }
         }
     }
