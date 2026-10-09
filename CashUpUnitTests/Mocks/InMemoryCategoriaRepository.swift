@@ -4,6 +4,9 @@ import Foundation
 @MainActor
 final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
     var categorias: [CategoriaModel] = []
+    var shouldFailSave: Bool = false
+    var saveCallCount: Int = 0
+    var rollbackCallCount: Int = 0
 
     init(categorias: [CategoriaModel] = []) {
         self.categorias = categorias
@@ -42,5 +45,33 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
 
     func fetchSubcategoria(id: UUID) throws -> SubcategoriaModel? {
         categorias.flatMap { $0.subcategorias }.first { $0.id == id }
+    }
+
+
+    // MARK: - Escrita (feature futura: edição de categorias via repositório)
+
+    func insert(_ categoria: CategoriaModel) {
+        categorias.append(categoria)
+    }
+
+    func delete(_ categoria: CategoriaModel) {
+        categorias.removeAll { $0.id == categoria.id }
+    }
+
+    func delete(_ subcategoria: SubcategoriaModel) {
+        for cat in categorias {
+            cat.subcategorias.removeAll { $0.id == subcategoria.id }
+        }
+    }
+
+    func save() throws {
+        saveCallCount += 1
+        if shouldFailSave {
+            throw CashUpDomainError.persistencia("Falha forçada no save")
+        }
+    }
+
+    func rollback() {
+        rollbackCallCount += 1
     }
 }
