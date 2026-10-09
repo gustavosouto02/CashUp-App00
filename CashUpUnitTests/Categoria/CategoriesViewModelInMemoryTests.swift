@@ -33,13 +33,13 @@ final class CategoriesViewModelInMemoryTests: XCTestCase {
         XCTAssertEqual(maisUsadas.first?.nome, "Almoço")
     }
 
-    func testRegistrarUsoIncrementaESalva() {
+    func testRegistrarUsoIncrementaSemSalvar() {
         let sub = sut.subcategoriasMaisUsadas.first!
         let contagemAnterior = sub.usageCount
 
         sut.registrarUso(subcategoriaModel: sub)
 
         XCTAssertEqual(sub.usageCount, contagemAnterior + 1)
-        XCTAssertEqual(repository.saveCallCount, 1)
+        XCTAssertEqual(repository.saveCallCount, 0)
     }
 }

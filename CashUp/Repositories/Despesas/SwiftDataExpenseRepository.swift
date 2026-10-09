@@ -21,15 +21,19 @@ final class SwiftDataExpenseRepository: ExpenseRepositoryProtocol {
         return try context.fetch(descriptor).first
     }
 
-    func insert(_ expense: ExpenseModel) throws {
+    func insert(_ expense: ExpenseModel) {
         context.insert(expense)
     }
 
-    func delete(_ expense: ExpenseModel) throws {
+    func delete(_ expense: ExpenseModel) {
         context.delete(expense)
     }
 
     func save() throws {
         try context.save()
+    }
+
+    func rollback() {
+        context.rollback()
     }
 }

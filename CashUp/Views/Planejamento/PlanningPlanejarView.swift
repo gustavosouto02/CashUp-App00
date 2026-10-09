@@ -14,7 +14,6 @@ struct PlanningPlanejarView: View {
     @ObservedObject var viewModel: PlanningViewModel
     
     @Environment(\.modelContext) private var modelContext
-    var categoriaRepository: CategoriaRepositoryProtocol? = nil
 
     @Binding var isEditing: Bool
     @Binding var subcategoriasPlanejadasSelecionadasParaDelecao: Set<UUID>
@@ -27,11 +26,9 @@ struct PlanningPlanejarView: View {
     @Query var categoriasPlanejadasDoMesQuery: [CategoriaPlanejadaModel]
 
    init(viewModel: PlanningViewModel,
-        categoriaRepository: CategoriaRepositoryProtocol? = nil,
         isEditing: Binding<Bool>,
         subcategoriasSelecionadas: Binding<Set<UUID>>) {
        self.viewModel = viewModel
-       self.categoriaRepository = categoriaRepository
        self._isEditing = isEditing
        self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
 
@@ -56,7 +53,7 @@ struct PlanningPlanejarView: View {
             }
             .fullScreenCover(isPresented: $isCategorySheetPresented) {
                 CategorySelectionSheet(
-                    categoriaRepository: categoriaRepository ?? SwiftDataCategoriaRepository(context: modelContext),
+                    categoriaRepository: SwiftDataCategoriaRepository(context: modelContext),
                     transactionType: .despesa,
                     selectedSubcategoryModel: $selectedSubcategoryFromSheet,
                     isPresented: $isCategorySheetPresented,

@@ -11,11 +11,10 @@ struct HomeView: View {
     @State private var dadosIniciaisGarantidos = false
 
     init(modelContext: ModelContext) {
-        let expenseRepository = SwiftDataExpenseRepository(context: modelContext)
-        let planningRepository = SwiftDataPlanningRepository(context: modelContext)
+        // Dentro do autoclosure: só roda na primeira criação do @StateObject.
         _homeViewModel = StateObject(wrappedValue: {
-            let planningVM = PlanningViewModel(repository: planningRepository)
-            let expensesVM = ExpensesViewModel(repository: expenseRepository)
+            let planningVM = PlanningViewModel(repository: SwiftDataPlanningRepository(context: modelContext))
+            let expensesVM = ExpensesViewModel(repository: SwiftDataExpenseRepository(context: modelContext))
             return HomeViewModel(
                 planningViewModel: planningVM,
                 expensesViewModel: expensesVM

@@ -17,16 +17,6 @@ struct CategorySelectionSheet: View {
         self._selectedCategoryModel = selectedCategoryModel
     }
 
-    init(viewModel: CategoriesViewModel,
-         selectedSubcategoryModel: Binding<SubcategoriaModel?>,
-         isPresented: Binding<Bool>,
-         selectedCategoryModel: Binding<CategoriaModel?>) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        self._selectedSubcategoryModel = selectedSubcategoryModel
-        self._isPresented = isPresented
-        self._selectedCategoryModel = selectedCategoryModel
-    }
-
     var body: some View {
         NavigationStack {
             CategoriesView(

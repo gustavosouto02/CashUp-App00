@@ -40,4 +40,48 @@ final class PlanningViewModelInMemoryTests: XCTestCase {
         XCTAssertTrue(sut.getCategoriasPlanejadasForCurrentMonth().isEmpty)
         XCTAssertTrue(repository.categoriasPlanejadas.isEmpty)
     }
+
+    func testFalhaAoVerificarCategoriaExistenteNaoDuplica() {
+        let cat = CategoriaModel(id: UUID(), nome: "Educação", icon: "book", red: 0.1, green: 0.2, blue: 0.3)
+        let sub = SubcategoriaModel(nome: "Cursos", icon: "graduationcap", categoria: cat, usageCount: 0)
+        _ = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: sub)
+        repository.mesesComFalhaNoFetch = [sut.currentMonth.startOfMonth()]
+
+        let sucesso = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: sub)
+
+        XCTAssertFalse(sucesso)
+        XCTAssertEqual(repository.categoriasPlanejadas.count, 1)
+    }
+
+    func testFalhaNoSaveFazRollback() {
+        let cat = CategoriaModel(id: UUID(), nome: "Educação", icon: "book", red: 0.1, green: 0.2, blue: 0.3)
+        let sub = SubcategoriaModel(nome: "Cursos", icon: "graduationcap", categoria: cat, usageCount: 0)
+        repository.shouldFailSave = true
+
+        let sucesso = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: sub)
+
+        XCTAssertFalse(sucesso)
+        XCTAssertEqual(repository.rollbackCallCount, 1)
+    }
+
+    func testCopiaComFalhaNoFetchDoProximoMesNaoDuplica() throws {
+        let cat = CategoriaModel(id: UUID(), nome: "Educação", icon: "book", red: 0.1, green: 0.2, blue: 0.3)
+        let sub = SubcategoriaModel(nome: "Cursos", icon: "graduationcap", categoria: cat, usageCount: 0)
+        _ = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: sub)
+        let proximoMes = try XCTUnwrap(Calendar.current.date(byAdding: .month, value: 1, to: sut.currentMonth.startOfMonth()))
+        repository.mesesComFalhaNoFetch = [proximoMes.startOfMonth()]
+
+        let resultado = sut.copyCurrentMonthPlanningToNextMonth()
+
+        XCTAssertEqual(resultado.title, "Erro")
+        XCTAssertEqual(repository.categoriasPlanejadas.count, 1)
+    }
+
+    func testCopiaComFalhaNoFetchDoMesAtualRetornaErro() {
+        repository.mesesComFalhaNoFetch = [sut.currentMonth.startOfMonth()]
+
+        let resultado = sut.copyCurrentMonthPlanningToNextMonth()
+
+        XCTAssertEqual(resultado.title, "Erro")
+    }
 }

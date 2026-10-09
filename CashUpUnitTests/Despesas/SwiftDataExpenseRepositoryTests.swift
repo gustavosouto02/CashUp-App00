@@ -34,7 +34,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Mercado"
         )
-        try sut.insert(expense)
+        sut.insert(expense)
         try sut.save()
 
         let todas = try sut.fetchAll()
@@ -50,7 +50,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Aluguel"
         )
-        try sut.insert(expense)
+        sut.insert(expense)
         try sut.save()
 
         let encontrada = try sut.fetch(id: id)
@@ -67,12 +67,12 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
             date: Date.make(year: 2026, month: 3, day: 12),
             expenseDescription: "Lanche"
         )
-        try sut.insert(expense)
+        sut.insert(expense)
         try sut.save()
 
         XCTAssertEqual(try sut.fetchAll().count, 1)
 
-        try sut.delete(expense)
+        sut.delete(expense)
         try sut.save()
 
         XCTAssertEqual(try sut.fetchAll().count, 0)

@@ -8,7 +8,12 @@ final class CategoriesViewModel: ObservableObject {
     let transactionType: TransactionTypeFilter
 
     var subcategoriasMaisUsadas: [SubcategoriaModel] {
-        (try? repository.fetchSubcategoriasMaisUsadas(filtro: transactionType, limite: 6)) ?? []
+        do {
+            return try repository.fetchSubcategoriasMaisUsadas(filtro: transactionType, limite: 6)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar subcategorias mais usadas (filtradas): \(error.localizedDescription, privacy: .public)")
+            return []
+        }
     }
 
     init(repository: CategoriaRepositoryProtocol, transactionType: TransactionTypeFilter) {
@@ -21,20 +26,35 @@ final class CategoriesViewModel: ObservableObject {
     }
 
     func fetchTodasCategoriasModel() -> [CategoriaModel] {
-        (try? repository.fetchCategorias(filtro: transactionType)) ?? []
+        do {
+            return try repository.fetchCategorias(filtro: transactionType)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel filtradas: \(error.localizedDescription, privacy: .public)")
+            return []
+        }
     }
 
     func findCategoriaModel(by id: UUID) -> CategoriaModel? {
-        try? repository.fetchCategoria(id: id)
+        do {
+            return try repository.fetchCategoria(id: id)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
     }
 
     func findSubcategoriaModel(by id: UUID) -> SubcategoriaModel? {
-        try? repository.fetchSubcategoria(id: id)
+        do {
+            return try repository.fetchSubcategoria(id: id)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar SubcategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
     }
 
     func registrarUso(subcategoriaModel: SubcategoriaModel) {
+        // Sem save aqui: a contagem é persistida junto com a transação, sem gravar outras mudanças pendentes do contexto.
         subcategoriaModel.usageCount += 1
-        try? repository.save()
         objectWillChange.send()
     }
 }

@@ -44,6 +44,7 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
                 return
             }
         }
+        XCTAssertEqual(repository.rollbackCallCount, 1)
     }
 
     func testExcluirTransacaoSimplesAtualizaRepositorio() throws {

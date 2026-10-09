@@ -27,7 +27,12 @@ final class PlanningViewModel: ObservableObject {
     }
 
     func getCategoriasPlanejadasForCurrentMonth() -> [CategoriaPlanejadaModel] {
-        (try? repository.fetchCategoriasPlanejadas(mes: currentMonth)) ?? []
+        do {
+            return try repository.fetchCategoriasPlanejadas(mes: currentMonth)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error.localizedDescription, privacy: .public)")
+            return []
+        }
     }
 
     private func salvarContexto(operacao: String = "Operação Desconhecida") -> Bool {
@@ -36,6 +41,7 @@ final class PlanningViewModel: ObservableObject {
             objectWillChange.send()
             return true
         } catch {
+            repository.rollback()
             CashUpLogger.persistence.error("Erro ao salvar contexto após \(operacao, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return false
         }
@@ -43,7 +49,15 @@ final class PlanningViewModel: ObservableObject {
 
     func adicionarSubcategoriaAoPlanejamento(subcategoriaModel: SubcategoriaModel, toCategoriaModel: CategoriaModel) -> Bool {
         let mesReferencia = currentMonth.startOfMonth()
-        guard let categoriaPlanejada = try? repository.fetchCategoriaPlanejada(mes: mesReferencia, categoriaID: toCategoriaModel.id) else {
+        let categoriaPlanejadaExistente: CategoriaPlanejadaModel?
+        do {
+            categoriaPlanejadaExistente = try repository.fetchCategoriaPlanejada(mes: mesReferencia, categoriaID: toCategoriaModel.id)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
+            return false
+        }
+
+        guard let categoriaPlanejada = categoriaPlanejadaExistente else {
             CashUpLogger.persistence.error("Tentativa de adicionar subcategoria a uma CategoriaPlanejadaModel inexistente para o mês.")
             return false
         }
@@ -69,12 +83,17 @@ final class PlanningViewModel: ObservableObject {
     func adicionarNovaCategoriaAoPlanejamento(categoriaModel: CategoriaModel, comSubcategoriaInicial subcategoriaModel: SubcategoriaModel) -> Bool {
         let mesReferencia = currentMonth.startOfMonth()
 
-        if (try? repository.fetchCategoriaPlanejada(mes: mesReferencia, categoriaID: categoriaModel.id)) != nil {
-            return adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subcategoriaModel, toCategoriaModel: categoriaModel)
+        do {
+            if try repository.fetchCategoriaPlanejada(mes: mesReferencia, categoriaID: categoriaModel.id) != nil {
+                return adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subcategoriaModel, toCategoriaModel: categoriaModel)
+            }
+        } catch {
+            CashUpLogger.persistence.error("Erro ao verificar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
+            return false
         }
 
         let novaCategoriaPlanejada = CategoriaPlanejadaModel(mesAno: mesReferencia, categoriaOriginal: categoriaModel)
-        try? repository.insert(novaCategoriaPlanejada)
+        repository.insert(novaCategoriaPlanejada)
 
         let novaSubPlanejada = SubcategoriaPlanejadaModel(
             valorPlanejado: 0.0,
@@ -93,11 +112,14 @@ final class PlanningViewModel: ObservableObject {
         var affectedParentCategorias = Set<CategoriaPlanejadaModel>()
 
         for id in idsSubcategoriasPlanejadas {
-            if let subParaDeletar = try? repository.fetchSubcategoriaPlanejada(id: id) {
+            do {
+                guard let subParaDeletar = try repository.fetchSubcategoriaPlanejada(id: id) else { continue }
                 if let parent = subParaDeletar.categoriaPlanejada {
                     affectedParentCategorias.insert(parent)
                 }
-                try? repository.delete(subParaDeletar)
+                repository.delete(subParaDeletar)
+            } catch {
+                CashUpLogger.persistence.error("Erro ao buscar SubcategoriaPlanejadaModel (ID: \(id, privacy: .public)) para deleção: \(error.localizedDescription, privacy: .public)")
             }
         }
 
@@ -107,7 +129,7 @@ final class PlanningViewModel: ObservableObject {
             }
 
             if remainingSubcategories?.isEmpty ?? true {
-                try? repository.delete(catPlan)
+                repository.delete(catPlan)
             }
         }
 
@@ -118,7 +140,7 @@ final class PlanningViewModel: ObservableObject {
         let planejamentosDoMes = getCategoriasPlanejadasForCurrentMonth()
         if planejamentosDoMes.isEmpty { return }
         for planejamento in planejamentosDoMes {
-            try? repository.delete(planejamento)
+            repository.delete(planejamento)
         }
         _ = salvarContexto(operacao: "zerarPlanejamentoDoMes")
     }
@@ -216,12 +238,25 @@ final class PlanningViewModel: ObservableObject {
         let nextMonthStart = nextMonthDateUnsafe.startOfMonth()
         let ptBRLocale = Locale(identifier: "pt_BR")
 
-        let categoriasPlanejadasAtuais = (try? repository.fetchCategoriasPlanejadas(mes: currentMonthStart)) ?? []
+        let categoriasPlanejadasAtuais: [CategoriaPlanejadaModel]
+        do {
+            categoriasPlanejadasAtuais = try repository.fetchCategoriasPlanejadas(mes: currentMonthStart)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
+            return ("Erro", "Falha ao buscar planejamento atual.")
+        }
+
         if categoriasPlanejadasAtuais.isEmpty {
             return ("Nenhum Planejamento", "Não há planejamento no mês atual para copiar.")
         }
 
-        let categoriasPlanejadasProximoMesExistentes = (try? repository.fetchCategoriasPlanejadas(mes: nextMonthStart)) ?? []
+        let categoriasPlanejadasProximoMesExistentes: [CategoriaPlanejadaModel]
+        do {
+            categoriasPlanejadasProximoMesExistentes = try repository.fetchCategoriasPlanejadas(mes: nextMonthStart)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do próximo mês: \(error.localizedDescription, privacy: .public)")
+            return ("Erro", "Falha ao verificar planejamento existente no próximo mês.")
+        }
 
         var countCopied = 0
         var countSkipped = 0
@@ -243,7 +278,7 @@ final class PlanningViewModel: ObservableObject {
                 mesAno: nextMonthStart,
                 categoriaOriginal: categoriaOriginal
             )
-            try? repository.insert(novaCategoriaPlanejadaProximoMes)
+            repository.insert(novaCategoriaPlanejadaProximoMes)
 
             var novasSubcategoriasPlanejadas: [SubcategoriaPlanejadaModel] = []
             if let subcategoriasAtuais = categoriaAtualPlanejada.subcategoriasPlanejadas {
@@ -288,6 +323,7 @@ final class PlanningViewModel: ObservableObject {
 
             return (title, message.isEmpty ? "Nenhuma ação de cópia necessitou ser realizada." : message)
         } catch {
+            repository.rollback()
             CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao salvar o planejamento copiado: \(error.localizedDescription)")
         }

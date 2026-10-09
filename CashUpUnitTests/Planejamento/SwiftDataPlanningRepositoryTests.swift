@@ -38,8 +38,8 @@ final class SwiftDataPlanningRepositoryTests: XCTestCase {
         let plano1 = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: cat)
         let plano2 = CategoriaPlanejadaModel(mesAno: outroMes, categoriaOriginal: cat)
 
-        try sut.insert(plano1)
-        try sut.insert(plano2)
+        sut.insert(plano1)
+        sut.insert(plano2)
         try sut.save()
 
         let planosMarco = try sut.fetchCategoriasPlanejadas(mes: mes)
@@ -54,7 +54,7 @@ final class SwiftDataPlanningRepositoryTests: XCTestCase {
         context.insert(cat)
 
         let plano = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: cat)
-        try sut.insert(plano)
+        sut.insert(plano)
         try sut.save()
 
         let encontrado = try sut.fetchCategoriaPlanejada(mes: mes, categoriaID: catID)
@@ -75,14 +75,14 @@ final class SwiftDataPlanningRepositoryTests: XCTestCase {
         let subPlano = SubcategoriaPlanejadaModel(valorPlanejado: 200.0, subcategoriaOriginal: sub, categoriaPlanejada: plano)
         plano.subcategoriasPlanejadas = [subPlano]
 
-        try sut.insert(plano)
+        sut.insert(plano)
         try sut.save()
 
-        try sut.delete(subPlano)
+        sut.delete(subPlano)
         try sut.save()
         XCTAssertNil(try sut.fetchSubcategoriaPlanejada(id: subPlano.id))
 
-        try sut.delete(plano)
+        sut.delete(plano)
         try sut.save()
         XCTAssertTrue(try sut.fetchCategoriasPlanejadas(mes: mes).isEmpty)
     }

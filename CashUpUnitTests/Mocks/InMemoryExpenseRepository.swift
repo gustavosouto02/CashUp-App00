@@ -6,6 +6,7 @@ final class InMemoryExpenseRepository: ExpenseRepositoryProtocol {
     var expenses: [ExpenseModel] = []
     var shouldFailSave: Bool = false
     var saveCallCount: Int = 0
+    var rollbackCallCount: Int = 0
 
     init(expenses: [ExpenseModel] = []) {
         self.expenses = expenses
@@ -19,11 +20,11 @@ final class InMemoryExpenseRepository: ExpenseRepositoryProtocol {
         expenses.first { $0.id == id }
     }
 
-    func insert(_ expense: ExpenseModel) throws {
+    func insert(_ expense: ExpenseModel) {
         expenses.append(expense)
     }
 
-    func delete(_ expense: ExpenseModel) throws {
+    func delete(_ expense: ExpenseModel) {
         expenses.removeAll { $0.id == expense.id }
     }
 
@@ -32,5 +33,9 @@ final class InMemoryExpenseRepository: ExpenseRepositoryProtocol {
         if shouldFailSave {
             throw CashUpDomainError.persistencia("Falha forçada no save")
         }
+    }
+
+    func rollback() {
+        rollbackCallCount += 1
     }
 }

@@ -34,19 +34,23 @@ final class SwiftDataPlanningRepository: PlanningRepositoryProtocol {
         return try context.fetch(descriptor).first
     }
 
-    func insert(_ categoriaPlanejada: CategoriaPlanejadaModel) throws {
+    func insert(_ categoriaPlanejada: CategoriaPlanejadaModel) {
         context.insert(categoriaPlanejada)
     }
 
-    func delete(_ categoriaPlanejada: CategoriaPlanejadaModel) throws {
+    func delete(_ categoriaPlanejada: CategoriaPlanejadaModel) {
         context.delete(categoriaPlanejada)
     }
 
-    func delete(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel) throws {
+    func delete(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel) {
         context.delete(subcategoriaPlanejada)
     }
 
     func save() throws {
         try context.save()
+    }
+
+    func rollback() {
+        context.rollback()
     }
 }

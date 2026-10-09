@@ -40,7 +40,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
 
     func addExpense(_ expense: ExpenseModel) throws {
         try validar(expense)
-        try repository.insert(expense)
+        repository.insert(expense)
         try persistir()
     }
 
@@ -57,6 +57,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         do {
             try repository.save()
         } catch {
+            repository.rollback()
             throw CashUpDomainError.persistencia(error.localizedDescription)
         }
         loadDisplayableExpenses()
@@ -67,7 +68,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             let original = try buscarTransacao(id: originalID)
             try aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
         } else {
-            try repository.delete(try buscarTransacao(id: expense.id))
+            repository.delete(try buscarTransacao(id: expense.id))
         }
         try persistir()
     }
@@ -86,7 +87,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         switch scope {
         case .thisOccurrenceOnly:
             guard var repeticao = original.repetition else {
-                try repository.delete(original)
+                repository.delete(original)
                 return
             }
             var excluidas = repeticao.excludedDates ?? []
@@ -100,14 +101,14 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             guard var repeticao = original.repetition,
                   let novoFim = calendar.date(byAdding: .day, value: -1, to: diaDaOcorrencia),
                   novoFim >= calendar.startOfDay(for: original.date) else {
-                try repository.delete(original)
+                repository.delete(original)
                 return
             }
             repeticao.endDate = novoFim
             original.repetition = repeticao
 
         case .entireSeries:
-            try repository.delete(original)
+            repository.delete(original)
         }
     }
 
@@ -201,11 +202,21 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     private func fetchExpense(id: UUID) -> ExpenseModel? {
-        try? repository.fetch(id: id)
+        do {
+            return try repository.fetch(id: id)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar ExpenseModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
     }
 
     private func fetchAll() -> [ExpenseModel] {
-        (try? repository.fetchAll()) ?? []
+        do {
+            return try repository.fetchAll()
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar ExpenseModel: \(error.localizedDescription, privacy: .public)")
+            return []
+        }
     }
 }
 

@@ -57,27 +57,24 @@ final class SwiftDataCategoriaRepository: CategoriaRepositoryProtocol {
         return try context.fetch(descriptor).first
     }
 
-    func contarTransacoes(categoriaID: UUID) throws -> Int {
-        let predicate = #Predicate<ExpenseModel> { expense in
-            expense.categoria?.id == categoriaID
-        }
-        let descriptor = FetchDescriptor<ExpenseModel>(predicate: predicate)
-        return try context.fetchCount(descriptor)
-    }
 
-    func insert(_ categoria: CategoriaModel) throws {
+    func insert(_ categoria: CategoriaModel) {
         context.insert(categoria)
     }
 
-    func delete(_ categoria: CategoriaModel) throws {
+    func delete(_ categoria: CategoriaModel) {
         context.delete(categoria)
     }
 
-    func delete(_ subcategoria: SubcategoriaModel) throws {
+    func delete(_ subcategoria: SubcategoriaModel) {
         context.delete(subcategoria)
     }
 
     func save() throws {
         try context.save()
+    }
+
+    func rollback() {
+        context.rollback()
     }
 }

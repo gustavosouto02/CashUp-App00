@@ -5,7 +5,9 @@ import Foundation
 final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
     var categoriasPlanejadas: [CategoriaPlanejadaModel] = []
     var shouldFailSave: Bool = false
+    var mesesComFalhaNoFetch: Set<Date> = []
     var saveCallCount: Int = 0
+    var rollbackCallCount: Int = 0
 
     init(categoriasPlanejadas: [CategoriaPlanejadaModel] = []) {
         self.categoriasPlanejadas = categoriasPlanejadas
@@ -13,6 +15,7 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
 
     func fetchCategoriasPlanejadas(mes: Date) throws -> [CategoriaPlanejadaModel] {
         let mesInicio = mes.startOfMonth()
+        try falharSeNecessario(mes: mesInicio)
         return categoriasPlanejadas
             .filter { $0.mesAno == mesInicio }
             .sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
@@ -20,6 +23,7 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
 
     func fetchCategoriaPlanejada(mes: Date, categoriaID: UUID) throws -> CategoriaPlanejadaModel? {
         let mesInicio = mes.startOfMonth()
+        try falharSeNecessario(mes: mesInicio)
         return categoriasPlanejadas.first { catPlan in
             catPlan.mesAno == mesInicio && (catPlan.categoriaOriginal?.id == categoriaID)
         }
@@ -31,15 +35,15 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
             .first { $0.id == id }
     }
 
-    func insert(_ categoriaPlanejada: CategoriaPlanejadaModel) throws {
+    func insert(_ categoriaPlanejada: CategoriaPlanejadaModel) {
         categoriasPlanejadas.append(categoriaPlanejada)
     }
 
-    func delete(_ categoriaPlanejada: CategoriaPlanejadaModel) throws {
+    func delete(_ categoriaPlanejada: CategoriaPlanejadaModel) {
         categoriasPlanejadas.removeAll { $0.id == categoriaPlanejada.id }
     }
 
-    func delete(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel) throws {
+    func delete(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel) {
         for catPlan in categoriasPlanejadas {
             catPlan.subcategoriasPlanejadas?.removeAll { $0.id == subcategoriaPlanejada.id }
         }
@@ -49,6 +53,16 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
         saveCallCount += 1
         if shouldFailSave {
             throw CashUpDomainError.persistencia("Falha forçada no save")
+        }
+    }
+
+    func rollback() {
+        rollbackCallCount += 1
+    }
+
+    private func falharSeNecessario(mes: Date) throws {
+        if mesesComFalhaNoFetch.contains(mes) {
+            throw CashUpDomainError.persistencia("Falha forçada no fetch")
         }
     }
 }

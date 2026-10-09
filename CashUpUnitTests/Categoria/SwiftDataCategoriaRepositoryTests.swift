@@ -32,8 +32,8 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
         let renda = CategoriaModel(id: SeedIDs.idRenda, nome: "Renda", icon: "banknote", red: 0, green: 1, blue: 0)
         let comida = CategoriaModel(id: UUID(), nome: "Comida", icon: "cart", red: 1, green: 0, blue: 0)
 
-        try sut.insert(renda)
-        try sut.insert(comida)
+        sut.insert(renda)
+        sut.insert(comida)
         try sut.save()
 
         let despesas = try sut.fetchCategorias(filtro: .despesa)
@@ -56,7 +56,7 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
 
         cat.subcategorias = [sub1, sub2, subZero]
 
-        try sut.insert(cat)
+        sut.insert(cat)
         try sut.save()
 
         let maisUsadas = try sut.fetchSubcategoriasMaisUsadas(filtro: .despesa, limite: 2)
@@ -65,40 +65,19 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
         XCTAssertEqual(maisUsadas.last?.nome, "Cinema")
     }
 
-    func testContarTransacoesDaCategoria() throws {
-        let cat = CategoriaModel(id: UUID(), nome: "Transporte", icon: "car", red: 0.5, green: 0.5, blue: 0.5)
-        try sut.insert(cat)
-        try sut.save()
-
-        let countInicial = try sut.contarTransacoes(categoriaID: cat.id)
-        XCTAssertEqual(countInicial, 0)
-
-        let expense = ExpenseModel(
-            amount: 30.0,
-            date: Date.make(year: 2026, month: 3, day: 5),
-            expenseDescription: "Combustível",
-            categoria: cat
-        )
-        context.insert(expense)
-        try context.save()
-
-        let countFinal = try sut.contarTransacoes(categoriaID: cat.id)
-        XCTAssertEqual(countFinal, 1)
-    }
-
     func testDeletarCategoriaESubcategoria() throws {
         let cat = CategoriaModel(id: UUID(), nome: "Saúde", icon: "heart", red: 1, green: 0, blue: 0)
         let sub = SubcategoriaModel(nome: "Farmácia", icon: "cross", categoria: cat, usageCount: 1)
         cat.subcategorias = [sub]
 
-        try sut.insert(cat)
+        sut.insert(cat)
         try sut.save()
 
-        try sut.delete(sub)
+        sut.delete(sub)
         try sut.save()
         XCTAssertNil(try sut.fetchSubcategoria(id: sub.id))
 
-        try sut.delete(cat)
+        sut.delete(cat)
         try sut.save()
         XCTAssertNil(try sut.fetchCategoria(id: cat.id))
     }
