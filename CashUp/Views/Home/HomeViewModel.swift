@@ -1,17 +1,9 @@
-//
-//  HomeViewModel.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
 import Combine
 import Foundation
-import SwiftData
 import SwiftUI
 
 @MainActor
-class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject {
     let planningViewModel: PlanningViewModel
     let expensesViewModel: ExpensesViewModel
 
@@ -41,8 +33,7 @@ class HomeViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(modelContext: ModelContext,
-         planningViewModel: PlanningViewModel,
+    init(planningViewModel: PlanningViewModel,
          expensesViewModel: ExpensesViewModel) {
         self.planningViewModel = planningViewModel
         self.expensesViewModel = expensesViewModel
@@ -86,7 +77,6 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        // Qualquer mudança nos dois VMs vira UMA atualização no próximo ciclo do main actor.
         Publishers.Merge(planningViewModel.objectWillChange, expensesViewModel.objectWillChange)
             .sink { [weak self] _ in self?.agendarAtualizacao() }
             .store(in: &cancellables)
@@ -105,7 +95,6 @@ class HomeViewModel: ObservableObject {
     }
 
     func updateCardData() {
-        // Uma única leitura do banco por atualização; tudo abaixo deriva desta lista.
         let transacoesDoMes = expensesViewModel.transactions(in: currentMonth)
         let despesasDoMes = transacoesDoMes.filter { !$0.isIncome }
 

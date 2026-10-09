@@ -1,10 +1,3 @@
-//
-//  HomeView.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
 import SwiftData
 import SwiftUI
 
@@ -20,10 +13,9 @@ struct HomeView: View {
     init(modelContext: ModelContext) {
         // Dentro do autoclosure: só roda na primeira criação do @StateObject.
         _homeViewModel = StateObject(wrappedValue: {
-            let planningVM = PlanningViewModel(modelContext: modelContext)
-            let expensesVM = ExpensesViewModel(modelContext: modelContext)
+            let planningVM = PlanningViewModel(repository: SwiftDataPlanningRepository(context: modelContext))
+            let expensesVM = ExpensesViewModel(repository: SwiftDataExpenseRepository(context: modelContext))
             return HomeViewModel(
-                modelContext: modelContext,
                 planningViewModel: planningVM,
                 expensesViewModel: expensesVM
             )

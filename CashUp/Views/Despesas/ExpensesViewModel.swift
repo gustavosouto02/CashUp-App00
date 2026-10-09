@@ -10,7 +10,7 @@ enum RecurringExpenseDeletionScope {
 
 @MainActor
 final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
-    var modelContext: ModelContext
+    private let repository: ExpenseRepositoryProtocol
     private let calendar: Calendar
 
     @Published var currentMonth: Date = Date().startOfMonth() {
@@ -28,23 +28,19 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     @Published var transacoesExibidas: [DisplayableExpense] = []
     @Published var errorMessage: String?
 
-    init(modelContext: ModelContext, calendar: Calendar = .current) {
-        self.modelContext = modelContext
+    init(repository: ExpenseRepositoryProtocol, calendar: Calendar = .current) {
+        self.repository = repository
         self.calendar = calendar
         loadDisplayableExpenses()
     }
 
-    var availableCategories: [CategoriaModel] {
-        do {
-            return try modelContext.fetch(FetchDescriptor<CategoriaModel>()).sorted { $0.nome < $1.nome }
-        } catch {
-            return []
-        }
+    convenience init(modelContext: ModelContext, calendar: Calendar = .current) {
+        self.init(repository: SwiftDataExpenseRepository(context: modelContext), calendar: calendar)
     }
 
     func addExpense(_ expense: ExpenseModel) throws {
         try validar(expense)
-        modelContext.insert(expense)
+        repository.insert(expense)
         try persistir()
     }
 
@@ -59,9 +55,9 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
 
     private func persistir() throws {
         do {
-            try modelContext.save()
+            try repository.save()
         } catch {
-            modelContext.rollback()
+            repository.rollback()
             throw CashUpDomainError.persistencia(error.localizedDescription)
         }
         loadDisplayableExpenses()
@@ -72,7 +68,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             let original = try buscarTransacao(id: originalID)
             aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
         } else {
-            modelContext.delete(try buscarTransacao(id: expense.id))
+            repository.delete(try buscarTransacao(id: expense.id))
         }
         try persistir()
     }
@@ -91,7 +87,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         switch scope {
         case .thisOccurrenceOnly:
             guard var repeticao = original.repetition else {
-                modelContext.delete(original)
+                repository.delete(original)
                 return
             }
             var excluidas = repeticao.excludedDates ?? []
@@ -105,22 +101,21 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             guard var repeticao = original.repetition,
                   let novoFim = calendar.date(byAdding: .day, value: -1, to: diaDaOcorrencia),
                   novoFim >= calendar.startOfDay(for: original.date) else {
-                modelContext.delete(original)
+                repository.delete(original)
                 return
             }
             repeticao.endDate = novoFim
             original.repetition = repeticao
 
         case .entireSeries:
-            modelContext.delete(original)
+            repository.delete(original)
         }
     }
 
     private func buscarTransacao(id: UUID) throws -> ExpenseModel {
-        let predicate = #Predicate<ExpenseModel> { $0.id == id }
         let encontrada: ExpenseModel?
         do {
-            encontrada = try modelContext.fetch(FetchDescriptor(predicate: predicate)).first
+            encontrada = try repository.fetch(id: id)
         } catch {
             throw CashUpDomainError.persistencia(error.localizedDescription)
         }
@@ -196,16 +191,6 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         return totaisPorSubcategoria(in: mes)[id] ?? 0
     }
 
-    func findCategoriaModel(by id: UUID) -> CategoriaModel? {
-        let predicate = #Predicate<CategoriaModel> { $0.id == id }
-        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
-    }
-
-    func findSubcategoriaModel(by id: UUID) -> SubcategoriaModel? {
-        let predicate = #Predicate<SubcategoriaModel> { $0.id == id }
-        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
-    }
-
     func navigateMonth(isNext: Bool) {
         if let newDate = calendar.date(byAdding: .month, value: isNext ? 1 : -1, to: currentMonth) {
             currentMonth = newDate.startOfMonth()
@@ -217,12 +202,21 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     private func fetchExpense(id: UUID) -> ExpenseModel? {
-        let predicate = #Predicate<ExpenseModel> { $0.id == id }
-        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
+        do {
+            return try repository.fetch(id: id)
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar ExpenseModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
     }
 
     private func fetchAll() -> [ExpenseModel] {
-        (try? modelContext.fetch(FetchDescriptor<ExpenseModel>())) ?? []
+        do {
+            return try repository.fetchAll()
+        } catch {
+            CashUpLogger.persistence.error("Erro ao buscar ExpenseModel: \(error.localizedDescription, privacy: .public)")
+            return []
+        }
     }
 }
 

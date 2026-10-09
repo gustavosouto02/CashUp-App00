@@ -1,25 +1,17 @@
-//
-//  CategorySelectionSheet.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 13/05/25.
-//
-
 import SwiftUI
-import SwiftData
 
 struct CategorySelectionSheet: View {
     @Binding var selectedSubcategoryModel: SubcategoriaModel?
     @Binding var isPresented: Bool
     @Binding var selectedCategoryModel: CategoriaModel?
-    @ObservedObject var viewModel: CategoriesViewModel
+    @StateObject private var viewModel: CategoriesViewModel
 
-    init(viewModel: CategoriesViewModel,
+    init(categoriaRepository: CategoriaRepositoryProtocol,
+         transactionType: TransactionTypeFilter,
          selectedSubcategoryModel: Binding<SubcategoriaModel?>,
          isPresented: Binding<Bool>,
          selectedCategoryModel: Binding<CategoriaModel?>) {
-        
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: CategoriesViewModel(repository: categoriaRepository, transactionType: transactionType))
         self._selectedSubcategoryModel = selectedSubcategoryModel
         self._isPresented = isPresented
         self._selectedCategoryModel = selectedCategoryModel
@@ -32,7 +24,6 @@ struct CategorySelectionSheet: View {
                 onSubcategoriaModelSelected: { subcategoriaModelSelecionada in
                     selectedSubcategoryModel = subcategoriaModelSelecionada
                     selectedCategoryModel = subcategoriaModelSelecionada.categoria
-                    
                     withAnimation {
                         isPresented = false
                     }

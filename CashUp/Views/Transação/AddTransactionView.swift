@@ -45,10 +45,8 @@ struct AddTransactionView: View {
             }
             .sheet(isPresented: $isCategoryModalPresented) {
                 CategorySelectionSheet(
-                    viewModel: CategoriesViewModel(
-                        modelContext: modelContext,
-                        transactionType: addTransactionVM.selectedTransactionType == 0 ? .despesa : .receita
-                    ),
+                    categoriaRepository: SwiftDataCategoriaRepository(context: modelContext),
+                    transactionType: addTransactionVM.selectedTransactionType == 0 ? .despesa : .receita,
                     selectedSubcategoryModel: $addTransactionVM.selectedSubcategoria,
                     isPresented: $isCategoryModalPresented,
                     selectedCategoryModel: $addTransactionVM.selectedCategoria

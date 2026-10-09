@@ -1,10 +1,3 @@
-//
-//  CategoriesView.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -13,7 +6,7 @@ struct CategoriesView: View {
 
     @State private var isEditing = false
     @State private var selectedCategoriaModelID: UUID? = nil
-    
+
     var onSubcategoriaModelSelected: (SubcategoriaModel) -> Void
 
     init(viewModel: CategoriesViewModel, onSubcategoriaModelSelected: @escaping (SubcategoriaModel) -> Void) {
@@ -22,7 +15,6 @@ struct CategoriesView: View {
     }
 
     var body: some View {
-
         NavigationStack {
             VStack(spacing: 0) {
                 Divider()
@@ -40,7 +32,7 @@ struct CategoriesView: View {
                                 onSubcategoriaModelSelected(subcategoriaModel)
                             },
                             subcategoriasFrequentes: viewModel.subcategoriasMaisUsadas,
-                            transactionType: viewModel.getTransactionTypeFilter()
+                            transactionType: viewModel.transactionType
                         )
                     }
                     .padding(.vertical)
@@ -56,10 +48,8 @@ struct CategoriesView: View {
             }
             .navigationDestination(isPresented: $isEditing) {
                 CategoriesViewEdit()
-                     .environmentObject(viewModel)
-                     .environment(\.modelContext, viewModel.modelContext)
+                    .environmentObject(viewModel)
             }
         }
-
     }
 }
