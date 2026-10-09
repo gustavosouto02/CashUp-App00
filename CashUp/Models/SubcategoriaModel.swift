@@ -18,6 +18,10 @@ final class SubcategoriaModel {
     var usageCount: Int = 0
     @Relationship
     var categoria: CategoriaModel?
+
+    /// Inversa de `ExpenseModel.subcategoria`: apagar a subcategoria anula a referência nas transações.
+    @Relationship(deleteRule: .nullify, inverse: \ExpenseModel.subcategoria)
+    var transacoes: [ExpenseModel] = []
     
     init(id: UUID = UUID(),
          nome: String = "",

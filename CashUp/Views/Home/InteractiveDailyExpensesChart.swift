@@ -119,15 +119,9 @@ struct InteractiveDailyExpensesChart: View {
                                     if self.selectedDate != nil {
                                         deselectionTask?.cancel()
                                         deselectionTask = Task {
-                                            do {
-                                                try await Task.sleep(for: .seconds(3))
-                                                if !Task.isCancelled {
-                                                     self.selectedDate = nil
-                                                }
-                                            } catch {
-                                                if !(error is CancellationError) {
-                                                    print("Deselection timer error: \(error)")
-                                                }
+                                            try? await Task.sleep(for: .seconds(3))
+                                            if !Task.isCancelled {
+                                                self.selectedDate = nil
                                             }
                                         }
                                     }

@@ -3,6 +3,7 @@ import SwiftUI
 
 @Model
 final class ExpenseModel {
+    @Attribute(.unique)
     var id: UUID
     var amount: Double
     var date: Date
@@ -11,7 +12,9 @@ final class ExpenseModel {
     @Attribute(.externalStorage)
     var repetition: RepetitionData?
 
+    @Relationship(deleteRule: .nullify)
     var categoria: CategoriaModel?
+    @Relationship(deleteRule: .nullify)
     var subcategoria: SubcategoriaModel?
 
     init(id: UUID = UUID(),

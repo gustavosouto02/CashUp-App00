@@ -64,7 +64,7 @@ struct SubcategoryDetailView: View {
     private var transactionList: some View {
         List {
             ForEach(sections) { section in
-                Section(header: Text(formatSectionDate(section.date))) {
+                Section(header: Text(SectionDateFormatter.titulo(para: section.date))) {
                     ForEach(section.expenses) { expense in
                         row(for: expense)
                     }

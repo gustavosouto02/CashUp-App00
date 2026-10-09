@@ -34,12 +34,6 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         loadDisplayableExpenses()
     }
 
-    func configure(with newModelContext: ModelContext) {
-        guard modelContext !== newModelContext else { return }
-        modelContext = newModelContext
-        loadDisplayableExpenses()
-    }
-
     var availableCategories: [CategoriaModel] {
         do {
             return try modelContext.fetch(FetchDescriptor<CategoriaModel>()).sorted { $0.nome < $1.nome }

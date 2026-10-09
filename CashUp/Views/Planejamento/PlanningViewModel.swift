@@ -16,13 +16,7 @@ class PlanningViewModel: ObservableObject {
     var modelContext: ModelContext
 
     @Published var selectedTab: Int = 0
-    @Published var currentMonth: Date {
-        didSet {
-            if oldValue.startOfMonth() != currentMonth.startOfMonth() {
-                objectWillChange.send()
-            }
-        }
-    }
+    @Published var currentMonth: Date
 
     @Published var copyPlanningAlertTitle: String = ""
     @Published var copyPlanningAlertMessage: String = ""
@@ -49,18 +43,17 @@ class PlanningViewModel: ObservableObject {
             let categorias = try modelContext.fetch(fetchDescriptor)
             return categorias.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
         } catch {
-            print("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error.localizedDescription, privacy: .public)")
             return []
         }
     }
     private func salvarContexto(operacao: String = "Operação Desconhecida") -> Bool {
         do {
             try modelContext.save()
-            print("Contexto salvo com sucesso após: \(operacao)")
             objectWillChange.send()
             return true
         } catch {
-            print("Erro ao salvar contexto após \(operacao): \(error)")
+            CashUpLogger.persistence.error("Erro ao salvar contexto após \(operacao, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return false
         }
     }
@@ -80,17 +73,16 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriaPlanejadaExistente = try modelContext.fetch(fetchDescriptorCatPlan).first
         } catch {
-            print("Erro ao buscar CategoriaPlanejadaModel existente: \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
             return false
         }
 
         guard let categoriaPlanejada = categoriaPlanejadaExistente else {
-            print("Erro lógico: Tentando adicionar subcategoria a uma CategoriaPlanejadaModel que não existe para o mês e categoria. Use adicionarNovaCategoriaAoPlanejamento ou crie a CategoriaPlanejada primeiro.")
+            CashUpLogger.persistence.error("Tentativa de adicionar subcategoria a uma CategoriaPlanejadaModel inexistente para o mês.")
             return false
         }
 
         if categoriaPlanejada.subcategoriasPlanejadas?.contains(where: { $0.subcategoriaOriginal?.id == subcategoriaModel.id }) == true {
-            print("Subcategoria '\(subcategoriaModel.nome)' já existe no planejamento para '\(categoriaPlanejada.nomeCategoriaOriginal)' este mês.")
             return false
         }
         
@@ -105,7 +97,6 @@ class PlanningViewModel: ObservableObject {
         }
         categoriaPlanejada.subcategoriasPlanejadas?.append(novaSubPlanejada)
         
-        print("Subcategoria '\(subcategoriaModel.nome)' adicionada ao planejamento de '\(categoriaPlanejada.nomeCategoriaOriginal)'.")
         return salvarContexto(operacao: "adicionarSubcategoriaAoPlanejamento")
     }
     
@@ -122,11 +113,10 @@ class PlanningViewModel: ObservableObject {
         
         do {
             if (try modelContext.fetch(fetchDescriptorCatPlan).first) != nil {
-                print("Categoria '\(categoriaModel.nome)' já possui um planejamento. Adicionando subcategoria '\(subcategoriaModel.nome)' ao planejamento existente.")
                 return adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subcategoriaModel, toCategoriaModel: categoriaModel)
             }
         } catch {
-            print("Erro ao verificar CategoriaPlanejadaModel existente: \(error)")
+            CashUpLogger.persistence.error("Erro ao verificar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
             return false
         }
         
@@ -141,13 +131,11 @@ class PlanningViewModel: ObservableObject {
 
         novaCategoriaPlanejada.subcategoriasPlanejadas = [novaSubPlanejada]
         
-        print("Nova categoria '\(categoriaModel.nome)' com subcategoria inicial '\(subcategoriaModel.nome)' adicionada ao planejamento.")
         return salvarContexto(operacao: "adicionarNovaCategoriaAoPlanejamento")
     }
 
     func removerSubcategoriasPlanejadasSelecionadas(idsSubcategoriasPlanejadas: Set<UUID>) {
         guard !idsSubcategoriasPlanejadas.isEmpty else {
-            print("Nenhuma subcategoria selecionada para deleção.")
             return
         }
 
@@ -164,10 +152,9 @@ class PlanningViewModel: ObservableObject {
                         affectedParentCategorias.insert(parent)
                     }
                     modelContext.delete(subParaDeletar)
-                    print("SubcategoriaPlanejadaModel com ID \(id) marcada para deleção.")
                 }
             } catch {
-                print("Erro ao buscar SubcategoriaPlanejadaModel (ID: \(id)) para deleção: \(error)")
+                CashUpLogger.persistence.error("Erro ao buscar SubcategoriaPlanejadaModel (ID: \(id, privacy: .public)) para deleção: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -177,7 +164,6 @@ class PlanningViewModel: ObservableObject {
             }
 
             if remainingSubcategories?.isEmpty ?? true {
-                print("CategoriaPlanejadaModel '\(catPlan.nomeCategoriaOriginal)' ficou vazia e será deletada.")
                 modelContext.delete(catPlan)
             }
         }
@@ -188,13 +174,11 @@ class PlanningViewModel: ObservableObject {
     func zerarPlanejamentoDoMes() {
         let planejamentosDoMes = getCategoriasPlanejadasForCurrentMonth()
         if planejamentosDoMes.isEmpty {
-            print("Nenhum planejamento para zerar neste mês.")
             return
         }
         for planejamento in planejamentosDoMes {
             modelContext.delete(planejamento)
         }
-        print("Todos os planejamentos para o mês \(currentMonth.formatted(.dateTime.month(.wide).year())) foram marcados para deleção.")
         _ = salvarContexto(operacao: "zerarPlanejamentoDoMes")
     }
 
@@ -236,9 +220,6 @@ class PlanningViewModel: ObservableObject {
                     let cleanedString = novoValorString.replacingOccurrences(of: ",", with: ".")
                     if let doubleValue = Double(cleanedString) {
                         subItem.valorPlanejado = doubleValue
-                    } else {
-
-                        print("Input inválido para valor planejado: \(novoValorString)")
                     }
                 }
                 objectWillChange.send()
@@ -303,7 +284,7 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriasPlanejadasAtuais = try modelContext.fetch(currentMonthFetchDescriptor)
         } catch {
-            print("Erro ao buscar planejamento do mês atual: \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao buscar planejamento atual.")
         }
 
@@ -317,7 +298,7 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriasPlanejadasProximoMesExistentes = try modelContext.fetch(nextMonthFetchDescriptor)
         } catch {
-            print("Erro ao buscar planejamento do próximo mês: \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do próximo mês: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao verificar planejamento existente no próximo mês.")
         }
 
@@ -327,12 +308,11 @@ class PlanningViewModel: ObservableObject {
 
         for categoriaAtualPlanejada in categoriasPlanejadasAtuais {
             guard let categoriaOriginal = categoriaAtualPlanejada.categoriaOriginal else {
-                print("Aviso: Categoria planejada atual (ID: \(categoriaAtualPlanejada.id)) sem categoria original. Pulando.")
+                CashUpLogger.persistence.error("Categoria planejada \(categoriaAtualPlanejada.id, privacy: .public) sem categoria original.")
                 continue
             }
 
             if categoriasPlanejadasProximoMesExistentes.contains(where: { $0.categoriaOriginal?.id == categoriaOriginal.id }) {
-                print("Planejamento para '\(categoriaOriginal.nome)' já existe no próximo mês. Pulando.")
                 countSkipped += 1
                 skippedCategoryNames.append(categoriaOriginal.nome)
                 continue
@@ -348,7 +328,7 @@ class PlanningViewModel: ObservableObject {
             if let subcategoriasAtuais = categoriaAtualPlanejada.subcategoriasPlanejadas {
                 for subAtualPlanejada in subcategoriasAtuais {
                     guard let subcategoriaOriginal = subAtualPlanejada.subcategoriaOriginal else {
-                        print("Aviso: Subcategoria planejada (ID: \(subAtualPlanejada.id)) sem subcategoria original. Pulando.")
+                        CashUpLogger.persistence.error("Subcategoria planejada \(subAtualPlanejada.id, privacy: .public) sem subcategoria original.")
                         continue
                     }
                     let novaSubcategoriaProximoMes = SubcategoriaPlanejadaModel(
@@ -388,7 +368,7 @@ class PlanningViewModel: ObservableObject {
             return (title, message.isEmpty ? "Nenhuma ação de cópia necessitou ser realizada." : message)
 
         } catch {
-            print("Erro ao salvar o planejamento copiado: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao salvar o planejamento copiado: \(error.localizedDescription)")
         }
     }

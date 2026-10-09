@@ -82,11 +82,11 @@ struct PlanningRestanteView: View {
                         .font(.subheadline)
                         .padding(.bottom, 2)
 
-                    Text(formatCurrency(restante))
+                    Text(BRLCurrencyFormatter.string(from: restante))
                         .font(.title.bold())
                         .foregroundStyle(restante < 0 ? .red : .primary)
 
-                    Text("Total Planejado: \(formatCurrency(totalPlanejado))") //
+                    Text("Total Planejado: \(BRLCurrencyFormatter.string(from: totalPlanejado))") //
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
@@ -122,7 +122,7 @@ struct PlanningRestanteView: View {
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                 Spacer()
-                Text("\(formatCurrency(restanteCategoria)) restante")
+                Text("\(BRLCurrencyFormatter.string(from: restanteCategoria)) restante")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(restanteCategoria < 0 ? .red : .secondary)
                     .minimumScaleFactor(0.5)
@@ -146,7 +146,7 @@ struct PlanningRestanteView: View {
                                 .font(.headline)
                             
                             Spacer()
-                            Text("\(formatCurrency(gastoNaSub)) / \(formatCurrency(limiteDaSub))")
+                            Text("\(BRLCurrencyFormatter.string(from: gastoNaSub)) / \(BRLCurrencyFormatter.string(from: limiteDaSub))")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -170,12 +170,5 @@ struct PlanningRestanteView: View {
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
         .frame(maxWidth: .infinity, alignment: .top)
-    }
-    
-    private func formatCurrency(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR") //
-        return formatter.string(from: NSNumber(value: value)) ?? "R$0,00"
     }
 }

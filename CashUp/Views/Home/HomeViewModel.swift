@@ -5,8 +5,6 @@
 //  Created by Gustavo Souto Pereira on 19/05/25.
 //
 
-
-
 import Combine
 import Foundation
 import SwiftData
@@ -14,7 +12,7 @@ import SwiftUI
 
 @MainActor
 class HomeViewModel: ObservableObject {
-        let planningViewModel: PlanningViewModel
+    let planningViewModel: PlanningViewModel
     let expensesViewModel: ExpensesViewModel
 
     @Published var currentMonth: Date {
@@ -28,7 +26,7 @@ class HomeViewModel: ObservableObject {
                 if expensesViewModel.currentMonth.startOfMonth() != newStart {
                     expensesViewModel.currentMonth = newStart
                 }
-                updateCardData()
+                agendarAtualizacao()
             }
         }
     }
@@ -88,100 +86,87 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        planningViewModel.objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.updateCardData() }
-            .store(in: &cancellables)
-
-        expensesViewModel.objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.updateCardData() }
+        // Qualquer mudança nos dois VMs vira UMA atualização no próximo ciclo do main actor.
+        Publishers.Merge(planningViewModel.objectWillChange, expensesViewModel.objectWillChange)
+            .sink { [weak self] _ in self?.agendarAtualizacao() }
             .store(in: &cancellables)
     }
 
-    var totalGastoEmCategoriasPlanejadas: Double {
-        expensesViewModel.calcularTotalGastoEmCategoriasPlanejadas(
-            paraMes: currentMonth,
-            categoriasPlanejadas: self.categoriasPlanejadas
-        )
+    private var atualizacaoAgendada = false
+
+    private func agendarAtualizacao() {
+        guard !atualizacaoAgendada else { return }
+        atualizacaoAgendada = true
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.atualizacaoAgendada = false
+            self.updateCardData()
+        }
     }
 
     func updateCardData() {
-        let despesasDoMesDisplayable = expensesViewModel.expenses(in: currentMonth)
-        let receitasDoMesDisplayable = expensesViewModel.incomes(in: currentMonth)
+        // Uma única leitura do banco por atualização; tudo abaixo deriva desta lista.
+        let transacoesDoMes = expensesViewModel.transactions(in: currentMonth)
+        let despesasDoMes = transacoesDoMes.filter { !$0.isIncome }
 
-        totalSpentMonth = despesasDoMesDisplayable.reduce(0) { $0 + $1.amount }
-        totalIncomeMonth = receitasDoMesDisplayable.reduce(0) { $0 + $1.amount }
+        totalSpentMonth = despesasDoMes.reduce(0) { $0 + $1.amount }
+        totalIncomeMonth = transacoesDoMes.filter(\.isIncome).reduce(0) { $0 + $1.amount }
 
-        totalPlanejadoMes = planningViewModel.valorTotalPlanejadoParaMesAtual()
-        let fetchedCategoriasPlanejadas = planningViewModel.getCategoriasPlanejadasForCurrentMonth()
-        self.categoriasPlanejadas = fetchedCategoriasPlanejadas
+        categoriasPlanejadas = planningViewModel.getCategoriasPlanejadasForCurrentMonth()
+        totalPlanejadoMes = categoriasPlanejadas.reduce(0) { $0 + planningViewModel.totalParaCategoriaPlanejada($1) }
 
-        let gastoCalculadoEmPlanejadas = expensesViewModel.calcularTotalGastoEmCategoriasPlanejadas(
-            paraMes: currentMonth,
-            categoriasPlanejadas: self.categoriasPlanejadas
+        let idsSubcategoriasPlanejadas = Set(
+            categoriasPlanejadas
+                .flatMap { $0.subcategoriasPlanejadas ?? [] }
+                .compactMap { $0.subcategoriaOriginal?.id }
         )
-        totalRestantePlanejadoMes = totalPlanejadoMes - gastoCalculadoEmPlanejadas
+        let gastoEmPlanejadas = despesasDoMes
+            .filter { $0.subcategoria.map { idsSubcategoriasPlanejadas.contains($0.id) } ?? false }
+            .reduce(0) { $0 + $1.amount }
+        totalRestantePlanejadoMes = totalPlanejadoMes - gastoEmPlanejadas
 
-        let gastosPorCategoriaDisplayable = Dictionary(grouping: despesasDoMesDisplayable, by: { $0.categoria })
-
-        let valoresPlanejados: [UUID: Double] = self.categoriasPlanejadas.reduce(into: [:]) { acc, plano in
+        let valoresPlanejados: [UUID: Double] = categoriasPlanejadas.reduce(into: [:]) { acc, plano in
             if let id = plano.categoriaOriginal?.id {
                 acc[id] = plano.valorTotalPlanejado
             }
         }
 
-        categoriasResumo = gastosPorCategoriaDisplayable.compactMap { (categoriaOpt, transacoesDisplayable) in
-            guard let categoria = categoriaOpt else { return nil }
-            let totalCategoria = transacoesDisplayable.reduce(0) { $0 + $1.amount }
-            let percentual = totalSpentMonth > 0 ? totalCategoria / totalSpentMonth : 0
-            let valorPlanejadoParaCategoria = valoresPlanejados[categoria.id]
-            let progresso: Double?
-            if let vp = valorPlanejadoParaCategoria, vp > 0 {
-                progresso = min(totalCategoria / vp, 1.0)
-            } else {
-                progresso = nil
+        let totalGasto = totalSpentMonth
+        categoriasResumo = Dictionary(grouping: despesasDoMes, by: { $0.categoria })
+            .compactMap { categoriaOpt, transacoes -> CategoriaResumo? in
+                guard let categoria = categoriaOpt else { return nil }
+                let totalCategoria = transacoes.reduce(0) { $0 + $1.amount }
+                let progresso = valoresPlanejados[categoria.id].flatMap { vp in
+                    vp > 0 ? min(totalCategoria / vp, 1.0) : nil
+                }
+                return CategoriaResumo(
+                    categoria: categoria,
+                    total: totalCategoria,
+                    percentual: totalGasto > 0 ? totalCategoria / totalGasto : 0,
+                    progressoPlanejado: progresso
+                )
             }
+            .sorted { $0.total > $1.total }
 
-            return CategoriaResumo(
-                categoria: categoria,
-                total: totalCategoria,
-                percentual: percentual,
-                progressoPlanejado: progresso
-            )
-        }
-        .sorted { $0.total > $1.total }
-
-        updateDailyExpenseChartData(for: currentMonth, allDisplayableExpensesInMonth: despesasDoMesDisplayable)
+        dailyExpenseChartData = Self.dailyItems(for: currentMonth, despesas: despesasDoMes)
     }
 
-    private func updateDailyExpenseChartData(for month: Date, allDisplayableExpensesInMonth: [DisplayableExpense]) {
-        var dailyData: [DailyExpenseItem] = []
-        let calendar = Calendar.current
-        
+    private static func dailyItems(for month: Date, despesas: [DisplayableExpense], calendar: Calendar = .current) -> [DailyExpenseItem] {
         let startOfMonth = month.startOfMonth()
-        
-        guard let monthInterval = calendar.dateInterval(of: .month, for: startOfMonth),
-              let daysInMonth = calendar.range(of: .day, in: .month, for: startOfMonth)?.count else {
-            self.dailyExpenseChartData = []
-            return
-        }
-        
-        let firstDayOfMonthDate = monthInterval.start
+        guard let daysInMonth = calendar.range(of: .day, in: .month, for: startOfMonth)?.count else { return [] }
 
-        for dayOffset in 0..<daysInMonth {
-            guard let currentDateForDay = calendar.date(byAdding: .day, value: dayOffset, to: firstDayOfMonthDate) else { continue }
-            
-            let expensesForSpecificDay = allDisplayableExpensesInMonth.filter { displayableExpense in
-                calendar.isDate(displayableExpense.date, inSameDayAs: currentDateForDay)
-            }
-            let totalForSpecificDay = expensesForSpecificDay.reduce(0) { $0 + $1.amount }
-            
-            dailyData.append(DailyExpenseItem(date: currentDateForDay,
-                                              totalExpenses: totalForSpecificDay,
-                                              isToday: calendar.isDateInToday(currentDateForDay)))
+        let totalPorDia = despesas.reduce(into: [Date: Double]()) { acc, item in
+            acc[calendar.startOfDay(for: item.date), default: 0] += item.amount
         }
-        self.dailyExpenseChartData = dailyData
+
+        return (0..<daysInMonth).compactMap { offset in
+            guard let dia = calendar.date(byAdding: .day, value: offset, to: startOfMonth) else { return nil }
+            return DailyExpenseItem(
+                date: dia,
+                totalExpenses: totalPorDia[calendar.startOfDay(for: dia)] ?? 0,
+                isToday: calendar.isDateInToday(dia)
+            )
+        }
     }
 
     func loadHomeData(for month: Date) {
@@ -191,13 +176,6 @@ class HomeViewModel: ObservableObject {
         } else {
             updateCardData()
         }
-    }
-
-    func formatCurrency(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: NSNumber(value: value)) ?? "R$0,00"
     }
 }
 
@@ -210,7 +188,7 @@ struct CategoriaResumo: Identifiable {
 }
 
 struct DailyExpenseItem: Identifiable {
-    let id = UUID()
+    var id: Date { date }
     var date: Date
     var totalExpenses: Double
     var isToday: Bool = false
