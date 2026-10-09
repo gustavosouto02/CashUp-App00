@@ -1,15 +1,13 @@
 //
-//  ExpenseModelUITest.swift
+//  ExpensesUITests.swift
 //  CashUpUITests
 //
 //  Created by Paulo Henrique Costa Alves on 10/03/26.
 //
 
 import XCTest
-//@testable import CashUp
-//import SwiftData
 
-final class ExpenseModelUITest: XCTestCase {
+final class ExpensesUITests: XCTestCase {
     
     var app: XCUIApplication!
     
@@ -48,13 +46,16 @@ final class ExpenseModelUITest: XCTestCase {
         let element = app.cells.element(boundBy: 1)
         element.swipeLeft()
         app/*@START_MENU_TOKEN@*/.staticTexts["Excluir"]/*[[".buttons[\"trash\"].staticTexts",".buttons.staticTexts[\"Excluir\"]",".staticTexts[\"Excluir\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Apagar toda a série"]/*[[".otherElements.buttons[\"Apagar toda a série\"]",".buttons[\"Apagar toda a série\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+
+        // Diálogo de escopo da série (RecurringScopeDialogModifier, etapa 2)
+        let todaASerie = app.buttons["Toda a série"].firstMatch
+        XCTAssertTrue(todaASerie.waitForExistence(timeout: 5), "O diálogo de escopo da série deve aparecer")
+        todaASerie.tap()
+
+        XCTAssertFalse(
+            element.waitForExistence(timeout: 2),
+            "A despesa recorrente deve sumir da lista após apagar toda a série"
+        )
     }
 
-    // Teste de performance padrão
-//    func testLaunchPerformance() throws {
-//        measure(metrics: [XCTApplicationLaunchMetric()]) {
-//            XCUIApplication().launch()
-//        }
-//    }
 }

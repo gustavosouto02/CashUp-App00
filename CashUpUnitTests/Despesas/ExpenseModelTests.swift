@@ -38,10 +38,11 @@ final class ExpenseModelTests: XCTestCase {
         // Given
         let categoria = CategoriaModel(nome: "teste", icon: "plus", red: 20, green: 10, blue: 20)
         let subcategoria = SubcategoriaModel(nome: "subTeste", categoria: categoria)
-        let repetitionDataPayload = RepetitionData(repeatOption: .mensalmente, endDate: Date(timeIntervalSinceNow: 100000000))
+        let inicio = Date.make(year: 2026, month: 3, day: 10)
+        let repetitionDataPayload = RepetitionData(repeatOption: .mensalmente, endDate: Date.make(year: 2029, month: 3, day: 10))
         let expenseModel = ExpenseModel(
             amount: 3000,
-            date: Date(),
+            date: inicio,
             expenseDescription: "",
             isIncome: true,
             repetition: repetitionDataPayload,
@@ -50,11 +51,13 @@ final class ExpenseModelTests: XCTestCase {
         )
         
         // When
-        let occurrences = expenseModel.generateOccurrences(forDateInterval: DateInterval(start: Date(), end: Date(timeIntervalSinceNow: 10000000)), calendar: Calendar.current)
+        let occurrences = expenseModel.generateOccurrences(
+            forDateInterval: DateInterval(start: inicio, end: Date.make(year: 2026, month: 7, day: 1)),
+            calendar: Calendar.current
+        )
         
         // Then
-        XCTAssertFalse(occurrences.isEmpty)
-        XCTAssert(occurrences.count > 1)
+        XCTAssertEqual(occurrences.count, 4, "Março, abril, maio e junho de 2026")
     }
     
     func testTotalIncomeForCurrentMonth_ReturnsCorrectSum() throws {

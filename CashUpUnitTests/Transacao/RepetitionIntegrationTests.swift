@@ -1,5 +1,5 @@
 //
-//  RepetitionIntegrationTestes.swift
+//  RepetitionIntegrationTests.swift
 //  CashUpUnitTests
 //
 //  Created by Gustavo Souto Pereira on 11/03/26.
@@ -12,9 +12,9 @@ import XCTest
 @testable import CashUp
 
 @MainActor
-final class RepetitionIntegrationTestes: XCTestCase {
+final class RepetitionIntegrationTests: XCTestCase {
     
-    var calendar = Calendar.current.self
+    let calendar = Calendar.current
     var container: ModelContainer!
     var context: ModelContext!
     var expenseViewModel: ExpensesViewModel!
@@ -93,11 +93,11 @@ final class RepetitionIntegrationTestes: XCTestCase {
     // teste remover despesa com .thisOcurrenceOnly
     func test_RemoveExpenseOnly() throws {
         
-        // DADO uma despesa mensal no mês atual
-        let date = Date()
+        // DADO uma despesa mensal em março/2026
+        let date = Date.make(year: 2026, month: 3, day: 15)
         try insertExpense(date: date, repeatOption: .mensalmente)
         
-        expenseViewModel.currentMonth = date
+        expenseViewModel.currentMonth = Date.make(year: 2026, month: 3, day: 1)
         expenseViewModel.loadDisplayableExpenses()
         
         guard let displayable = expenseViewModel.transacoesExibidas.first else {

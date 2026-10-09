@@ -1,5 +1,5 @@
 //
-//  RepetitionDataTestes.swift
+//  RepetitionDataTests.swift
 //  CashUpUnitTests
 //
 //  Created by Gustavo Souto Pereira on 10/03/26.
@@ -12,10 +12,9 @@ import XCTest
 @testable import CashUp
 
 @MainActor
-final class RepetitionDataTestes: XCTestCase {
+final class RepetitionDataTests: XCTestCase {
 
-    var calendar = Calendar.current.self
-    var date = Date()
+    let calendar = Calendar.current
     var expenseViewModel: ExpensesViewModel!
     var repetition: RepetitionData!
     var container: ModelContainer!
@@ -23,8 +22,6 @@ final class RepetitionDataTestes: XCTestCase {
 
     @MainActor
     override func setUpWithError() throws {
-        calendar = Calendar.current
-        date = Date()
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try ModelContainer(
             for: ExpenseModel.self,
@@ -163,27 +160,7 @@ final class RepetitionDataTestes: XCTestCase {
                 7,
                 "Cada ocorrência deve ser consecutiva e ter exatamente 7 dias de diferença"
             )
-            print(
-                "Ocorrência \(i) e \(i+1) devem ter exatamente \(days) dias de diferença "
-            )
         }
     }
 }
 
-extension Date {
-    static func make(year: Int, month: Int, day: Int) -> Date {
-        var c = DateComponents()
-        c.year = year
-        c.month = month
-        c.day = day
-        c.hour = 12
-        c.minute = 0
-        c.second = 0
-        return Calendar.current.date(from: c)!
-    }
-
-    func startOfMonth() -> Date {
-        let cal = Calendar.current
-        return cal.date(from: cal.dateComponents([.year, .month], from: self))!
-    }
-}

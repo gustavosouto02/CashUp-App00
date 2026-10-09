@@ -139,13 +139,14 @@ final class CategoriesUnitTests: XCTestCase {
         )
         
         let expenseViewModel = ExpensesViewModel(modelContext: modelContext)
+        expenseViewModel.currentMonth = Date.make(year: 2026, month: 3, day: 1)
         
         let categoriesComidasEBebidas = viewModel.findCategoriaModel(by: SeedIDs.idComidasEBebidas)
         let subCategorieFastFood = viewModel.findSubcategoriaModel(by: SeedIDs.idSubFastFood)
         
-        let expense1 = ExpenseModel(id: UUID(), amount: 100, date: Date(), expenseDescription: "Comi no MacDonalds", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
+        let expense1 = ExpenseModel(id: UUID(), amount: 100, date: Date.make(year: 2026, month: 3, day: 10), expenseDescription: "Comi no MacDonalds", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
         
-        let expense2 = ExpenseModel(id: UUID(), amount: 150, date: Date(), expenseDescription: "Comi no MacDonalds2", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
+        let expense2 = ExpenseModel(id: UUID(), amount: 150, date: Date.make(year: 2026, month: 3, day: 12), expenseDescription: "Comi no MacDonalds2", isIncome: false, repetition: nil, categoria: categoriesComidasEBebidas, subcategoria: subCategorieFastFood)
         
         try expenseViewModel.addExpense(expense1)
         viewModel.registrarUso(subcategoriaModel: subCategorieFastFood!)

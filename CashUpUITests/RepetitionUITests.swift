@@ -1,5 +1,5 @@
 //
-//  RepetitionUITestes.swift
+//  RepetitionUITests.swift
 //  CashUpUITests
 //
 //  Created by Gustavo Souto Pereira on 10/03/26.
@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 
-final class RepetitionUITestes: XCTestCase {
+final class RepetitionUITests: XCTestCase {
     
     var app: XCUIApplication!
     
