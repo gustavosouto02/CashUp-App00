@@ -28,6 +28,7 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     @Published var transacoesExibidas: [DisplayableExpense] = []
+    @Published var errorMessage: String?
 
     var availableCategories: [CategoriaModel] {
         let fetchDescriptor = FetchDescriptor<CategoriaModel>()
@@ -77,98 +78,71 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         loadDisplayableExpenses()
     }
 
-    func removeExpense(_ expenseToRemove: DisplayableExpense, scope: RecurringExpenseDeletionScope? = nil) {
-        let calendar = Calendar.current
-        
-        if expenseToRemove.isRecurringInstance,
-           let originalID = expenseToRemove.originalExpenseID,
-           let effectiveScope = scope {
-            
-            let predicate = #Predicate<ExpenseModel> { $0.id == originalID }
-            let fetchDescriptor = FetchDescriptor(predicate: predicate)
-            
-            do {
-                guard let originalExpenseModel = try modelContext.fetch(fetchDescriptor).first else {
-                    print("ExpenseModel original (ID: \(originalID)) não encontrada para modificação/deleção.")
-                    loadDisplayableExpenses()
-                    return
-                }
-
-                var repetitionDataCopy = originalExpenseModel.repetition
-
-                if repetitionDataCopy == nil && (effectiveScope == .thisOccurrenceOnly || effectiveScope == .thisAndAllFutureOccurrences) {
-                    print("Erro: Tentando modificar dados de repetição que não existem para a ExpenseModel original. ID: \(originalID)")
-                    loadDisplayableExpenses()
-                    return
-                }
-
-                switch effectiveScope {
-                case .thisOccurrenceOnly:
-                    if repetitionDataCopy != nil {
-                        let dateToExclude = calendar.startOfDay(for: expenseToRemove.date)
-                        if repetitionDataCopy!.excludedDates == nil {
-                            repetitionDataCopy!.excludedDates = []
-                        }
-                        if !(repetitionDataCopy!.excludedDates?.contains(where: { calendar.isDate($0, inSameDayAs: dateToExclude) }) ?? false) {
-                            repetitionDataCopy!.excludedDates?.append(dateToExclude)
-                            print("Data \(dateToExclude) adicionada às excludedDates para a recorrência ID: \(originalID)")
-                        }
-                    }
-                    
-                case .thisAndAllFutureOccurrences:
-                    if repetitionDataCopy != nil {
-                        let newEndDate = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: expenseToRemove.date))
-                        
-                        if let validNewEndDate = newEndDate, validNewEndDate >= calendar.startOfDay(for: originalExpenseModel.date) {
-                            repetitionDataCopy!.endDate = validNewEndDate // Modifica a cópia
-                            print("EndDate da recorrência ID: \(originalID) atualizado para \(validNewEndDate)")
-                        } else {
-                            print("Nova data final inválida ou antes do início para recorrência ID: \(originalID). Deletando a série inteira como fallback.")
-                            modelContext.delete(originalExpenseModel)
-                            repetitionDataCopy = nil
-                        }
-                    }
-                case .entireSeries:
-                    print("Deletando toda a série recorrente original com ID: \(originalID)")
-                    modelContext.delete(originalExpenseModel)
-                    repetitionDataCopy = nil
-                }
-
-                if effectiveScope != .entireSeries && !(effectiveScope == .thisAndAllFutureOccurrences && repetitionDataCopy == nil) {
-                     originalExpenseModel.repetition = repetitionDataCopy
-                }
-                
-                try modelContext.save()
-                print("Modificações/Deleção da recorrência (ID: \(originalID)) salvas.")
-                
-            } catch {
-                print("Erro ao processar remoção/modificação da despesa recorrente (ID: \(originalID)): \(error.localizedDescription)")
-            }
-
-        } else if !expenseToRemove.isRecurringInstance || expenseToRemove.originalExpenseID == nil {
-            let idToDelete = expenseToRemove.id
-            print("Tentando remover ExpenseModel única ou base (ID: \(idToDelete)) diretamente.")
-            let predicate = #Predicate<ExpenseModel> { $0.id == idToDelete }
-            let fetchDescriptor = FetchDescriptor(predicate: predicate)
-            
-            do {
-                if let expenseModelRealParaDeletar = try modelContext.fetch(fetchDescriptor).first {
-                    modelContext.delete(expenseModelRealParaDeletar)
-                    try modelContext.save()
-                    print("ExpenseModel (ID: \(idToDelete)) removida do banco com sucesso.")
-                } else {
-                    print("ExpenseModel (ID: \(idToDelete)) não encontrada no banco para remoção.")
-                }
-            } catch {
-                print("Erro ao remover despesa (ID: \(idToDelete)) do banco: \(error.localizedDescription)")
-            }
+    func removeExpense(_ expense: DisplayableExpense, scope: RecurringExpenseDeletionScope) throws {
+        if expense.isRecurringInstance, let originalID = expense.originalExpenseID {
+            let original = try buscarTransacao(id: originalID)
+            aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
         } else {
-            print("Remoção de instância virtual sem escopo definido ou originalID não resultará em ação no banco (além da UI).")
+            modelContext.delete(try buscarTransacao(id: expense.id))
         }
-        
-        loadDisplayableExpenses()
+        try persistir()
     }
-    
+
+    func excluir(_ expense: DisplayableExpense, scope: RecurringExpenseDeletionScope) {
+        do {
+            try removeExpense(expense, scope: scope)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func buscarTransacao(id: UUID) throws -> ExpenseModel {
+        let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.id == id })
+        let encontrada: ExpenseModel?
+        do {
+            encontrada = try modelContext.fetch(descriptor).first
+        } catch {
+            throw CashUpDomainError.persistencia(error.localizedDescription)
+        }
+        guard let encontrada else {
+            loadDisplayableExpenses()
+            throw CashUpDomainError.transacaoNaoEncontrada
+        }
+        return encontrada
+    }
+
+    private func aplicarEscopoDeExclusao(_ scope: RecurringExpenseDeletionScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
+        let calendar = Calendar.current
+        let diaDaOcorrencia = calendar.startOfDay(for: dataDaOcorrencia)
+
+        switch scope {
+        case .thisOccurrenceOnly:
+            guard var repeticao = original.repetition else {
+                modelContext.delete(original)
+                return
+            }
+            var excluidas = repeticao.excludedDates ?? []
+            if !excluidas.contains(where: { calendar.isDate($0, inSameDayAs: diaDaOcorrencia) }) {
+                excluidas.append(diaDaOcorrencia)
+            }
+            repeticao.excludedDates = excluidas
+            original.repetition = repeticao
+
+        case .thisAndAllFutureOccurrences:
+            guard var repeticao = original.repetition,
+                  let novoFim = calendar.date(byAdding: .day, value: -1, to: diaDaOcorrencia),
+                  novoFim >= calendar.startOfDay(for: original.date) else {
+                modelContext.delete(original)
+                return
+            }
+            repeticao.endDate = novoFim
+            original.repetition = repeticao
+
+        case .entireSeries:
+            modelContext.delete(original)
+        }
+    }
+
     func loadDisplayableExpenses() {
         let monthToLoad = currentMonth.startOfMonth()
         let calendar = Calendar.current
@@ -186,7 +160,7 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             let allDisplayableTransactions: [DisplayableExpense] = allExpenses.flatMap { expense in
                 if let repetition = expense.repetition, repetition.repeatOption != .nunca {
                     return expense.generateOccurrences(forDateInterval: monthInterval, calendar: calendar)
-                } else if monthInterval.contains(expense.date) {
+                } else if monthInterval.containsExcludingEnd(expense.date) {
                     return [DisplayableExpense(from: expense)]
                 } else {
                     return []
@@ -220,7 +194,7 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                     let occurrences = expense.generateOccurrences(forDateInterval: monthInterval, calendar: calendar)
                     allDisplayableTransactions.append(contentsOf: occurrences)
                 } else {
-                    if monthInterval.contains(expense.date) {
+                    if monthInterval.containsExcludingEnd(expense.date) {
                         allDisplayableTransactions.append(DisplayableExpense(from: expense))
                     }
                 }

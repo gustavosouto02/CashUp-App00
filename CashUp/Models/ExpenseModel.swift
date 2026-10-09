@@ -36,17 +36,16 @@ final class ExpenseModel {
 extension ExpenseModel {
     func generateOccurrences(forDateInterval queryInterval: DateInterval, calendar: Calendar = .current) -> [DisplayableExpense] {
         guard let repetitionData = repetition, repetitionData.repeatOption != .nunca else {
-            return queryInterval.contains(date) ? [DisplayableExpense(from: self)] : []
+            return queryInterval.containsExcludingEnd(date) ? [DisplayableExpense(from: self)] : []
         }
 
         let excludedDays = Set((repetitionData.excludedDates ?? []).map { calendar.startOfDay(for: $0) })
-        let seriesEnd = repetitionData.endDate ?? queryInterval.end
-        let loopEnd = min(seriesEnd, queryInterval.end)
+        let seriesEnd = repetitionData.endDate
 
         var occurrences: [DisplayableExpense] = []
         var current = date
 
-        while current <= loopEnd {
+        while current < queryInterval.end, seriesEnd.map({ current <= $0 }) ?? true {
             let isInsideQuery = current >= queryInterval.start
             let isExcluded = excludedDays.contains(calendar.startOfDay(for: current))
             if isInsideQuery && !isExcluded {

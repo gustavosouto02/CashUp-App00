@@ -5,7 +5,17 @@ import SwiftUI
 final class AddTransactionViewModel: ObservableObject {
     static let limiteMaximoAnosData = 100
 
-    @Published var selectedTransactionType: Int = 0
+    @Published var selectedTransactionType: Int = 0 {
+        didSet {
+            guard oldValue != selectedTransactionType, selectedCategoria != nil else { return }
+            let categoriaEhRenda = selectedCategoria?.id == SeedIDs.idRenda
+            let categoriaCompativel = (selectedTransactionType == 1) == categoriaEhRenda
+            if !categoriaCompativel {
+                selectedCategoria = nil
+                selectedSubcategoria = nil
+            }
+        }
+    }
     @Published var amount: Double = 0.0
     @Published var expenseDescription: String = ""
     @Published var selectedDate: Date = Date()

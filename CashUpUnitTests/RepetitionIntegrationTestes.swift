@@ -106,7 +106,7 @@ final class RepetitionIntegrationTestes: XCTestCase {
         }
         
         // QUANDO o usuário exclui somente esta ocorrência
-        expenseViewModel.removeExpense(displayable, scope: .thisOccurrenceOnly)
+        try expenseViewModel.removeExpense(displayable, scope: .thisOccurrenceOnly)
         
         // ENTÃO o model ainda existe no banco
         let modelsBanco = try context.fetch(FetchDescriptor<ExpenseModel>())

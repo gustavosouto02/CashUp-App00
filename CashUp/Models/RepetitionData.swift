@@ -20,11 +20,13 @@ struct RepetitionData: Codable, Equatable {
 
     static func validar(dataFim: Date?, inicio: Date, calendar: Calendar = .current) throws {
         guard let dataFim else { return }
-        guard calendar.startOfDay(for: dataFim) >= calendar.startOfDay(for: inicio) else {
+        let inicioDia = calendar.startOfDay(for: inicio)
+        let dataFimDia = calendar.startOfDay(for: dataFim)
+        guard dataFimDia >= inicioDia else {
             throw CashUpDomainError.dataFimAnteriorAoInicio
         }
-        let limite = calendar.date(byAdding: .year, value: limiteMaximoAnos, to: inicio) ?? inicio
-        guard dataFim <= limite else {
+        let limiteDia = calendar.date(byAdding: .year, value: limiteMaximoAnos, to: inicioDia) ?? inicioDia
+        guard dataFimDia <= limiteDia else {
             throw CashUpDomainError.dataFimMuitoDistante
         }
     }

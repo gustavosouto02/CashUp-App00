@@ -64,6 +64,42 @@ final class GenerateOccurrencesBoundsTests: XCTestCase {
         XCTAssertTrue(occurrences.isEmpty)
     }
 
+    func testSerieDiariaIniciadaAMeiaNoiteNaoVazaParaOMesSeguinte() {
+        let inicio = calendar.startOfDay(for: Date.make(year: 2026, month: 3, day: 1))
+        let expense = makeExpense(date: inicio, repetition: RepetitionData(repeatOption: .diariamente, endDate: nil))
+
+        let marco = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 3), calendar: calendar)
+        let abril = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 4), calendar: calendar)
+
+        XCTAssertEqual(marco.count, 31)
+        XCTAssertEqual(marco.last.map { calendar.component(.day, from: $0.date) }, 31)
+        XCTAssertEqual(abril.count, 30)
+        XCTAssertEqual(abril.first?.date, monthInterval(year: 2026, month: 4).start)
+    }
+
+    func testSerieDiariaComFimAMeiaNoiteDoMesSeguinteNaoVaza() {
+        let inicio = calendar.startOfDay(for: Date.make(year: 2026, month: 3, day: 1))
+        let fim = monthInterval(year: 2026, month: 4).start
+        let expense = makeExpense(date: inicio, repetition: RepetitionData(repeatOption: .diariamente, endDate: fim))
+
+        let marco = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 3), calendar: calendar)
+        let abril = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 4), calendar: calendar)
+
+        XCTAssertEqual(marco.count, 31)
+        XCTAssertEqual(abril.count, 1)
+    }
+
+    func testTransacaoUnicaAMeiaNoiteDoPrimeiroDiaPertenceSoAoProprioMes() {
+        let primeiroDeAbril = monthInterval(year: 2026, month: 4).start
+        let expense = makeExpense(date: primeiroDeAbril, repetition: nil)
+
+        let marco = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 3), calendar: calendar)
+        let abril = expense.generateOccurrences(forDateInterval: monthInterval(year: 2026, month: 4), calendar: calendar)
+
+        XCTAssertTrue(marco.isEmpty)
+        XCTAssertEqual(abril.count, 1)
+    }
+
     func testDatasExcluidasSaoIgnoradas() {
         let inicio = Date.make(year: 2026, month: 1, day: 10)
         let excluida = Date.make(year: 2026, month: 3, day: 10)

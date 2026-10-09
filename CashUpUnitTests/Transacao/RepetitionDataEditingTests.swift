@@ -47,6 +47,15 @@ final class RepetitionDataEditingTests: XCTestCase {
         }
     }
 
+    func testValidarAceitaUltimoDiaDoLimiteMesmoComHoraPosteriorAoInicio() {
+        let calendar = Calendar.current
+        let inicioAsNove = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: inicio)!
+        let ultimoDia = calendar.date(byAdding: .year, value: RepetitionData.limiteMaximoAnos, to: inicio)!
+        let ultimoDiaAsCatorze = calendar.date(bySettingHour: 14, minute: 0, second: 0, of: ultimoDia)!
+
+        XCTAssertNoThrow(try RepetitionData.validar(dataFim: ultimoDiaAsCatorze, inicio: inicioAsNove))
+    }
+
     func testValidarRejeitaDataFimAlemDoLimite() {
         let alemDoLimite = Date.make(year: 2026 + RepetitionData.limiteMaximoAnos + 1, month: 3, day: 10)
 
