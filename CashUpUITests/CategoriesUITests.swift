@@ -19,7 +19,7 @@ final class CategoriesUITests: XCTestCase {
         app.launch()
         
         let homeTitle = app.navigationBars["Visão Geral"]
-            XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
+        XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
     }
 
     override func tearDownWithError() throws {
@@ -27,19 +27,22 @@ final class CategoriesUITests: XCTestCase {
     }
 
     func test_createPlanningAndVerifySubCategorieExist() {
-        app/*@START_MENU_TOKEN@*/.buttons["Planejamento do Mês, Vamos planejar os gastos?, Defina suas metas para este mês."]/*[[".buttons",".containing(.staticText, identifier: \"Vamos planejar os gastos?\")",".containing(.image, identifier: \"pencil.and.list.clipboard\")",".containing(.staticText, identifier: \"Planejamento do Mês\")",".otherElements.buttons[\"Planejamento do Mês, Vamos planejar os gastos?, Defina suas metas para este mês.\"]",".buttons[\"Planejamento do Mês, Vamos planejar os gastos?, Defina suas metas para este mês.\"]"],[[[-1,5],[-1,4],[-1,0,1]],[[-1,3],[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Adicionar Categoria ao Planejamento"]/*[[".buttons",".containing(.staticText, identifier: \"Adicionar Categoria ao Planejamento\")",".containing(.image, identifier: \"plus.circle.fill\")",".otherElements.buttons[\"Adicionar Categoria ao Planejamento\"]",".buttons[\"Adicionar Categoria ao Planejamento\"]"],[[[-1,4],[-1,3],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app.images.matching(identifier: "wineglass.fill").element(boundBy: 0).tap()
+        app.buttons["Planejamento do Mês, Vamos planejar os gastos?, Defina suas metas para este mês."].firstMatch.tap()
+        app.buttons["Adicionar Categoria ao Planejamento"].firstMatch.tap()
         
-        XCTAssertTrue(app.staticTexts["Bebidas"].exists)
+        let bebidasItem = app.images["lista_subcategoria_Bebidas"].firstMatch
+        XCTAssertTrue(bebidasItem.waitForExistence(timeout: 5), "A subcategoria Bebidas deve aparecer na seleção")
+        bebidasItem.tap()
+        
+        XCTAssertTrue(app.staticTexts["Bebidas"].waitForExistence(timeout: 5))
     }
     
     func test_registerExpenseAndVerifySubCategorieExist() {
-        app/*@START_MENU_TOKEN@*/.staticTexts["Registrar"]/*[[".buttons[\"Registrar\"].staticTexts",".buttons.staticTexts[\"Registrar\"]",".staticTexts[\"Registrar\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.staticTexts["Selecionar categoria"]/*[[".buttons[\"Selecionar categoria\"].staticTexts",".buttons.staticTexts[\"Selecionar categoria\"]",".staticTexts[\"Selecionar categoria\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["puzzlepiece"]/*[[".otherElements.buttons[\"puzzlepiece\"]",".buttons[\"puzzlepiece\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+        app.staticTexts["Registrar"].firstMatch.tap()
+        app.staticTexts["Selecionar categoria"].firstMatch.tap()
+        app.buttons["puzzlepiece"].firstMatch.tap()
         
-        XCTAssertTrue(app.staticTexts["Roupas"].exists)
+        XCTAssertTrue(app.staticTexts["Roupas"].waitForExistence(timeout: 5))
     }
 
 }

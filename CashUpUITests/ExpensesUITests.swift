@@ -19,7 +19,7 @@ final class ExpensesUITests: XCTestCase {
         app.launch()
         
         let homeTitle = app.navigationBars["Visão Geral"]
-            XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
+        XCTAssertTrue(homeTitle.waitForExistence(timeout: 20), "O app não carregou a tempo no Xcode Cloud")
     }
 
     // MARK: - TearDown
@@ -30,22 +30,37 @@ final class ExpensesUITests: XCTestCase {
     // MARK: - Tests
     // teste de UI que cria um gasto de 500 e deleta ele logo depois.
     func testCreatingAndDeleteExpense() throws {
-
         let addButton = app.staticTexts["addTransactionButtonHome"].firstMatch
-            XCTAssertTrue(addButton.waitForExistence(timeout: 5))
-            addButton.tap()
-        app/*@START_MENU_TOKEN@*/.textFields["R$ 0,00"]/*[[".otherElements.textFields[\"R$ 0,00\"]",".textFields[\"R$ 0,00\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app.textFields["R$ 0,00"].firstMatch.typeText("50")
-        app/*@START_MENU_TOKEN@*/.staticTexts["Selecionar categoria"]/*[[".buttons[\"Selecionar categoria\"].staticTexts",".buttons.staticTexts[\"Selecionar categoria\"]",".staticTexts[\"Selecionar categoria\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.images["wineglass.fill"]/*[[".otherElements.images[\"wineglass.fill\"]",".images[\"wineglass.fill\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.staticTexts["Nunca"]/*[[".buttons.staticTexts[\"Nunca\"]",".staticTexts[\"Nunca\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Semanalmente"]/*[[".otherElements.buttons[\"Semanalmente\"]",".buttons[\"Semanalmente\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Adicionar"]/*[[".otherElements[\"Adicionar\"].buttons",".otherElements.buttons[\"Adicionar\"]",".buttons[\"Adicionar\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["OK"]/*[[".otherElements.buttons[\"OK\"]",".buttons",".buttons[\"OK\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
-        app.buttons["expensesSummaryCard"].firstMatch.tap()
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5))
+        addButton.tap()
+
+        let amountField = app.textFields["R$ 0,00"].firstMatch
+        XCTAssertTrue(amountField.waitForExistence(timeout: 5))
+        amountField.tap()
+        amountField.typeText("50")
+
+        app.staticTexts["Selecionar categoria"].firstMatch.tap()
+        
+        let bebidasSubcat = app.images["lista_subcategoria_Bebidas"].firstMatch
+        XCTAssertTrue(bebidasSubcat.waitForExistence(timeout: 5))
+        bebidasSubcat.tap()
+
+        app.staticTexts["Nunca"].firstMatch.tap()
+        app.buttons["Semanalmente"].firstMatch.tap()
+        app.buttons["Adicionar"].firstMatch.tap()
+        app.buttons["OK"].firstMatch.tap()
+
+        let summaryCard = app.buttons["expensesSummaryCard"].firstMatch
+        XCTAssertTrue(summaryCard.waitForExistence(timeout: 5))
+        summaryCard.tap()
+
         let element = app.cells.element(boundBy: 1)
+        XCTAssertTrue(element.waitForExistence(timeout: 5), "A célula da despesa deve aparecer no extrato")
         element.swipeLeft()
-        app/*@START_MENU_TOKEN@*/.staticTexts["Excluir"]/*[[".buttons[\"trash\"].staticTexts",".buttons.staticTexts[\"Excluir\"]",".staticTexts[\"Excluir\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+
+        let deleteButton = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Excluir' OR identifier CONTAINS[c] 'Excluir' OR identifier CONTAINS[c] 'trash'")).firstMatch
+        XCTAssertTrue(deleteButton.waitForExistence(timeout: 3), "O botão de exclusão deve aparecer após o swipe")
+        deleteButton.tap()
 
         // Diálogo de escopo da série (RecurringScopeDialogModifier, etapa 2)
         let todaASerie = app.buttons["Toda a série"].firstMatch
