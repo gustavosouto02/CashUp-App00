@@ -17,10 +17,10 @@ struct PlanningCard: View {
                     .foregroundStyle(.secondary)
 
                 HStack {
-                    Text(totalRestante, format: .currency(code: "BRL"))
+                    Text(BRLCurrencyFormatter.string(from: totalRestante))
                         .font(.title2.bold())
                         .foregroundStyle(totalRestante < 0 ? .red : .primary)
-                    Text("/ \(totalPlanejado, format: .currency(code: "BRL"))")
+                    Text("/ \(BRLCurrencyFormatter.string(from: totalPlanejado))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

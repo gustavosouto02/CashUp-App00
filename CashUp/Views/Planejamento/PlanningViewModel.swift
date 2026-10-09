@@ -16,13 +16,7 @@ class PlanningViewModel: ObservableObject {
     var modelContext: ModelContext
 
     @Published var selectedTab: Int = 0
-    @Published var currentMonth: Date {
-        didSet {
-            if oldValue.startOfMonth() != currentMonth.startOfMonth() {
-                objectWillChange.send()
-            }
-        }
-    }
+    @Published var currentMonth: Date
 
     @Published var copyPlanningAlertTitle: String = ""
     @Published var copyPlanningAlertMessage: String = ""
@@ -49,7 +43,7 @@ class PlanningViewModel: ObservableObject {
             let categorias = try modelContext.fetch(fetchDescriptor)
             return categorias.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel para o mês: \(error.localizedDescription, privacy: .public)")
             return []
         }
     }
@@ -59,7 +53,7 @@ class PlanningViewModel: ObservableObject {
             objectWillChange.send()
             return true
         } catch {
-            CashUpLogger.persistence.error("Erro ao salvar contexto após \(operacao): \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao salvar contexto após \(operacao, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return false
         }
     }
@@ -79,7 +73,7 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriaPlanejadaExistente = try modelContext.fetch(fetchDescriptorCatPlan).first
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel existente: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
             return false
         }
 
@@ -122,7 +116,7 @@ class PlanningViewModel: ObservableObject {
                 return adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subcategoriaModel, toCategoriaModel: categoriaModel)
             }
         } catch {
-            CashUpLogger.persistence.error("Erro ao verificar CategoriaPlanejadaModel existente: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao verificar CategoriaPlanejadaModel existente: \(error.localizedDescription, privacy: .public)")
             return false
         }
         
@@ -160,7 +154,7 @@ class PlanningViewModel: ObservableObject {
                     modelContext.delete(subParaDeletar)
                 }
             } catch {
-                CashUpLogger.persistence.error("Erro ao buscar SubcategoriaPlanejadaModel (ID: \(id)) para deleção: \(error.localizedDescription)")
+                CashUpLogger.persistence.error("Erro ao buscar SubcategoriaPlanejadaModel (ID: \(id, privacy: .public)) para deleção: \(error.localizedDescription, privacy: .public)")
             }
         }
         
@@ -290,7 +284,7 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriasPlanejadasAtuais = try modelContext.fetch(currentMonthFetchDescriptor)
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao buscar planejamento atual.")
         }
 
@@ -304,7 +298,7 @@ class PlanningViewModel: ObservableObject {
         do {
             categoriasPlanejadasProximoMesExistentes = try modelContext.fetch(nextMonthFetchDescriptor)
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar planejamento do próximo mês: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar planejamento do próximo mês: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao verificar planejamento existente no próximo mês.")
         }
 
@@ -314,7 +308,7 @@ class PlanningViewModel: ObservableObject {
 
         for categoriaAtualPlanejada in categoriasPlanejadasAtuais {
             guard let categoriaOriginal = categoriaAtualPlanejada.categoriaOriginal else {
-                CashUpLogger.persistence.error("Categoria planejada \(categoriaAtualPlanejada.id) sem categoria original.")
+                CashUpLogger.persistence.error("Categoria planejada \(categoriaAtualPlanejada.id, privacy: .public) sem categoria original.")
                 continue
             }
 
@@ -334,7 +328,7 @@ class PlanningViewModel: ObservableObject {
             if let subcategoriasAtuais = categoriaAtualPlanejada.subcategoriasPlanejadas {
                 for subAtualPlanejada in subcategoriasAtuais {
                     guard let subcategoriaOriginal = subAtualPlanejada.subcategoriaOriginal else {
-                        CashUpLogger.persistence.error("Subcategoria planejada \(subAtualPlanejada.id) sem subcategoria original.")
+                        CashUpLogger.persistence.error("Subcategoria planejada \(subAtualPlanejada.id, privacy: .public) sem subcategoria original.")
                         continue
                     }
                     let novaSubcategoriaProximoMes = SubcategoriaPlanejadaModel(
@@ -374,7 +368,7 @@ class PlanningViewModel: ObservableObject {
             return (title, message.isEmpty ? "Nenhuma ação de cópia necessitou ser realizada." : message)
 
         } catch {
-            CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao salvar o planejamento copiado: \(error.localizedDescription)")
         }
     }

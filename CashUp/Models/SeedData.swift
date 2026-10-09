@@ -281,6 +281,6 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
         novasCategorias.forEach { modelContext.insert($0) }
         try modelContext.save()
     } catch {
-        CashUpLogger.persistence.error("Erro ao popular dados iniciais: \(error.localizedDescription)")
+        CashUpLogger.persistence.error("Erro ao popular dados iniciais: \(error.localizedDescription, privacy: .public)")
     }
 }

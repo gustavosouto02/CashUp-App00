@@ -45,7 +45,7 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(fetchDescriptor).sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel filtradas: \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel filtradas: \(error.localizedDescription, privacy: .public)")
             return []
         }
     }
@@ -57,7 +57,7 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(descriptor).first
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel com id \(id): \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
@@ -69,7 +69,7 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(descriptor).first
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar SubcategoriaModel com id \(id): \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar SubcategoriaModel com id \(id, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return nil
         }
     }
@@ -98,7 +98,7 @@ class CategoriesViewModel: ObservableObject {
                 .prefix(6)
                 .map { $0 }
         } catch {
-            CashUpLogger.persistence.error("Erro ao buscar subcategorias mais usadas (filtradas): \(error.localizedDescription)")
+            CashUpLogger.persistence.error("Erro ao buscar subcategorias mais usadas (filtradas): \(error.localizedDescription, privacy: .public)")
             return []
         }
     }

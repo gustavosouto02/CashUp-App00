@@ -15,15 +15,19 @@ struct HomeView: View {
 
     @State private var isAddTransactionPresented = false
     @State private var isTipsPresented = false
+    @State private var dadosIniciaisGarantidos = false
 
     init(modelContext: ModelContext) {
-        let planningVM = PlanningViewModel(modelContext: modelContext)
-        let expensesVM = ExpensesViewModel(modelContext: modelContext)
-        _homeViewModel = StateObject(wrappedValue: HomeViewModel(
-            modelContext: modelContext,
-            planningViewModel: planningVM,
-            expensesViewModel: expensesVM
-        ))
+        // Dentro do autoclosure: só roda na primeira criação do @StateObject.
+        _homeViewModel = StateObject(wrappedValue: {
+            let planningVM = PlanningViewModel(modelContext: modelContext)
+            let expensesVM = ExpensesViewModel(modelContext: modelContext)
+            return HomeViewModel(
+                modelContext: modelContext,
+                planningViewModel: planningVM,
+                expensesViewModel: expensesVM
+            )
+        }())
     }
 
     var body: some View {
@@ -101,7 +105,10 @@ struct HomeView: View {
                     .environmentObject(homeViewModel.expensesViewModel)
             }
             .task {
-                await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+                if !dadosIniciaisGarantidos {
+                    await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+                    dadosIniciaisGarantidos = true
+                }
                 homeViewModel.loadHomeData(for: homeViewModel.currentMonth)
             }
         }

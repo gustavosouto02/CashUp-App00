@@ -63,7 +63,7 @@ struct ExpensesSummaryCard: View {
         Text("Total Gasto:")
             .font(.caption)
             .foregroundStyle(.secondary)
-        Text(totalGasto, format: .currency(code: "BRL"))
+        Text(BRLCurrencyFormatter.string(from: totalGasto))
             .font(.title.bold())
             .minimumScaleFactor(0.5)
             .lineLimit(1)
@@ -76,27 +76,39 @@ struct ExpensesSummaryCard: View {
                 .foregroundStyle(.secondary)
                 .padding(.bottom, 2)
             ForEach(categoriasResumo.prefix(3)) { item in
-                linha(cor: item.categoria.color, nome: item.categoria.nome, percentual: item.percentual)
+                linha(
+                    cor: item.categoria.color,
+                    nome: item.categoria.nome,
+                    percentual: item.percentual,
+                    fonteNome: .subheadline,
+                    fontePercentual: .caption
+                )
             }
             if categoriasResumo.count > 3 {
                 let outras = categoriasResumo.dropFirst(3).map(\.percentual).reduce(0, +)
-                linha(cor: Color.gray.opacity(0.6), nome: "Outras", percentual: outras)
+                linha(
+                    cor: Color.gray.opacity(0.6),
+                    nome: "Outras",
+                    percentual: outras,
+                    fonteNome: .caption,
+                    fontePercentual: .caption.weight(.medium)
+                )
             }
         }
     }
 
-    private func linha(cor: Color, nome: String, percentual: Double) -> some View {
+    private func linha(cor: Color, nome: String, percentual: Double, fonteNome: Font, fontePercentual: Font) -> some View {
         HStack(spacing: 6) {
             Rectangle()
                 .fill(cor)
                 .frame(width: 10, height: 10)
                 .cornerRadius(2)
             Text(nome)
-                .font(.subheadline)
+                .font(fonteNome)
                 .lineLimit(1)
             Spacer()
             Text(String(format: "%.0f%%", percentual * 100))
-                .font(.caption)
+                .font(fontePercentual)
                 .foregroundStyle(.secondary)
         }
     }

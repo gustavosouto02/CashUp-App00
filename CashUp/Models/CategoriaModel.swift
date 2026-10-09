@@ -21,6 +21,10 @@ final class CategoriaModel {
     @Relationship(deleteRule: .cascade, inverse: \SubcategoriaModel.categoria)
     var subcategorias: [SubcategoriaModel] = []
 
+    /// Inversa de `ExpenseModel.categoria`: apagar a categoria anula a referência nas transações.
+    @Relationship(deleteRule: .nullify, inverse: \ExpenseModel.categoria)
+    var transacoes: [ExpenseModel] = []
+
     init(id: UUID = UUID(),
          nome: String,
          icon: String,

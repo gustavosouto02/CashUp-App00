@@ -26,7 +26,7 @@ class HomeViewModel: ObservableObject {
                 if expensesViewModel.currentMonth.startOfMonth() != newStart {
                     expensesViewModel.currentMonth = newStart
                 }
-                updateCardData()
+                agendarAtualizacao()
             }
         }
     }
@@ -86,15 +86,22 @@ class HomeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
 
-        planningViewModel.objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.updateCardData() }
+        // Qualquer mudança nos dois VMs vira UMA atualização no próximo ciclo do main actor.
+        Publishers.Merge(planningViewModel.objectWillChange, expensesViewModel.objectWillChange)
+            .sink { [weak self] _ in self?.agendarAtualizacao() }
             .store(in: &cancellables)
+    }
 
-        expensesViewModel.objectWillChange
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in self?.updateCardData() }
-            .store(in: &cancellables)
+    private var atualizacaoAgendada = false
+
+    private func agendarAtualizacao() {
+        guard !atualizacaoAgendada else { return }
+        atualizacaoAgendada = true
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.atualizacaoAgendada = false
+            self.updateCardData()
+        }
     }
 
     func updateCardData() {
