@@ -13,7 +13,7 @@ struct DailyExpensesDetailView: View {
     @Environment(\.dismiss) var dismiss
 
     private var expensesForThisDay: [DisplayableExpense] {
-        return expensesViewModel.fetchTransactions(forSpecificDate: selectedDate, isIncome: false)
+        return expensesViewModel.transactions(on: selectedDate, isIncome: false)
             .sorted(by: { $0.amount > $1.amount })
     }
 

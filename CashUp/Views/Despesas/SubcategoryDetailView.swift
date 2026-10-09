@@ -17,19 +17,17 @@ struct SubcategoryDetailView: View {
     @State private var selectedTransaction: ExpenseModel? = nil
 
     var sections: [DisplayableExpenseSection] {
-        let filteredTransactions = viewModel.transacoesExibidas.filter { expense in
-            expense.subcategoria?.id == subcategoriaModel.id && expense.isIncome == isIncome
-        }
+        let fonte = isIncome
+            ? viewModel.incomes(in: viewModel.currentMonth)
+            : viewModel.expenses(in: viewModel.currentMonth)
+        let filteredTransactions = fonte.filter { $0.subcategoria?.id == subcategoriaModel.id }
 
         let grouped = Dictionary(grouping: filteredTransactions) { expense in
             Calendar.current.startOfDay(for: expense.date)
         }
 
-        let sortedDates = grouped.keys.sorted(by: { $0 > $1 })
-
-        return sortedDates.map { date in
-            let expenses = grouped[date]?.sorted(by: { $0.date > $1.date }) ?? []
-            return DisplayableExpenseSection(date: date, expenses: expenses)
+        return grouped.keys.sorted(by: >).map { date in
+            DisplayableExpenseSection(date: date, expenses: grouped[date]?.sorted { $0.date > $1.date } ?? [])
         }
     }
 
@@ -37,61 +35,64 @@ struct SubcategoryDetailView: View {
         NavigationStack {
             Group {
                 if sections.isEmpty {
-                    VStack {
-                        Spacer()
-                        let tipo = isIncome ? "(receita)" : "(despesa)"
-                        Text("Nenhuma transação registrada para \(subcategoriaModel.nome) neste mês \(tipo).")
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        Spacer()
-                    }
+                    emptyState
                 } else {
-                    List {
-                        ForEach(sections) { section in
-                            Section(header: Text(formatSectionDate(section.date))) {
-                                ForEach(section.expenses) { expense in
-                                    makeExpenseRow(for: expense)
-                                }
-                            }
-                        }
-                    }
-                    .listStyle(.plain)
-                    .recurringDeletionDialog(expense: $expenseToDelete) { expense, scope in
-                        viewModel.excluir(expense, scope: scope)
-                    }
-                    .errorAlert($viewModel.errorMessage)
-                    .sheet(item: $selectedTransaction) { transaction in
-                        AddTransactionView(transacaoEmEdicao: transaction)
-                            .environmentObject(viewModel)
-                    }
+                    transactionList
                 }
             }
             .navigationTitle(subcategoriaModel.nome)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Fechar") {
-                        dismiss()
-                    }
+                    Button("Fechar") { dismiss() }
                 }
             }
         }
     }
 
-    private func makeExpenseRow(for expense: DisplayableExpense) -> some View {
-        let editableExpense = viewModel.originalExpenseModel(from: expense)
+    private var emptyState: some View {
+        VStack {
+            Spacer()
+            Text("Nenhuma transação registrada para \(subcategoriaModel.nome) neste mês \(isIncome ? "(receita)" : "(despesa)").")
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+            Spacer()
+        }
+    }
 
-        return DisplayableExpenseRow(expense: expense)
+    private var transactionList: some View {
+        List {
+            ForEach(sections) { section in
+                Section(header: Text(formatSectionDate(section.date))) {
+                    ForEach(section.expenses) { expense in
+                        row(for: expense)
+                    }
+                }
+            }
+        }
+        .listStyle(.plain)
+        .recurringScopeDialog(item: $expenseToDelete) { expense, scope in
+            viewModel.excluir(expense, scope: scope)
+        }
+        .errorAlert($viewModel.errorMessage)
+        .sheet(item: $selectedTransaction) { transaction in
+            AddTransactionView(transacaoEmEdicao: transaction)
+                .environmentObject(viewModel)
+        }
+    }
+
+    private func row(for expense: DisplayableExpense) -> some View {
+        DisplayableExpenseRow(expense: expense)
             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                 Button(role: .destructive) {
-                    solicitarExclusao(de: expense)
+                    solicitarExclusao(expense)
                 } label: {
                     Label("Excluir", systemImage: "trash")
                 }
-                if let editableExpense {
+                if let model = viewModel.originalExpenseModel(from: expense) {
                     Button {
-                        selectedTransaction = editableExpense
+                        selectedTransaction = model
                     } label: {
                         Label("Editar", systemImage: "pencil")
                     }
@@ -100,7 +101,7 @@ struct SubcategoryDetailView: View {
             }
     }
 
-    private func solicitarExclusao(de expense: DisplayableExpense) {
+    private func solicitarExclusao(_ expense: DisplayableExpense) {
         if expense.isRecurringInstance && expense.originalExpenseID != nil {
             expenseToDelete = expense
         } else {

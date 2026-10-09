@@ -80,7 +80,7 @@ final class ExpenseModelTests: XCTestCase {
         viewmodel.loadDisplayableExpenses()
         
         // Act (Ação)
-        let totalIncome = viewmodel.totalIncomeForCurrentMonth()
+        let totalIncome = viewmodel.totalIncome(in: currentMonthDate)
         
         // Assert (Verificação)
         XCTAssertEqual(totalIncome, 1850.0, "O total de receitas do mês atual deve ser exatamente 1850.0, ignorando despesas e meses futuros.")
@@ -108,7 +108,7 @@ final class ExpenseModelTests: XCTestCase {
         viewmodel.loadDisplayableExpenses()
         
         // Act (Ação)
-        let totalExpense = viewmodel.totalExpenseForCurrentMonth()
+        let totalExpense = viewmodel.totalExpense(in: currentMonthDate)
         
         // Assert (Verificação)
         XCTAssertEqual(totalExpense, 250.5, "O total de despesas do mês atual deve ser exatamente 250.5, ignorando receitas e meses passados.")

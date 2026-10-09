@@ -107,8 +107,8 @@ class HomeViewModel: ObservableObject {
     }
 
     func updateCardData() {
-        let despesasDoMesDisplayable = expensesViewModel.expensesOnlyForCurrentMonth()
-        let receitasDoMesDisplayable = expensesViewModel.incomesOnlyForCurrentMonth()
+        let despesasDoMesDisplayable = expensesViewModel.expenses(in: currentMonth)
+        let receitasDoMesDisplayable = expensesViewModel.incomes(in: currentMonth)
 
         totalSpentMonth = despesasDoMesDisplayable.reduce(0) { $0 + $1.amount }
         totalIncomeMonth = receitasDoMesDisplayable.reduce(0) { $0 + $1.amount }

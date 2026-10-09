@@ -80,7 +80,7 @@ struct RepeatOptionPicker: View {
                         )
                     }
                     if shouldSuggestEndDate && repeatEndDate == nil {
-                        Text("Opcional: defina uma data para encerrar a repetição ou ela continuará por 1 ano como padrão.")
+                        Text("Opcional: defina uma data para encerrar a repetição. Sem data, ela continua indefinidamente.")
                             .font(.caption2)
                             .foregroundColor(.orange)
                             .padding(.leading, 2) 

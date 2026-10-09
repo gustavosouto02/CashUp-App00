@@ -28,8 +28,7 @@ struct ExpensesListView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             List {
-                ForEach(groupedExpenses.keys.sorted(by: >), id: \.self) {
-                    date in
+                ForEach(groupedExpenses.keys.sorted(by: >), id: \.self) { date in
                     SectionView(
                         date: date,
                         expenses: groupedExpenses[date] ?? [],
@@ -38,20 +37,14 @@ struct ExpensesListView: View {
                             selectedTransaction = transaction
                         },
                         onDelete: { displayableExpense in
-                            if displayableExpense.isRecurringInstance
-                                && displayableExpense.originalExpenseID != nil
-                            {
-                                expenseToDelete = displayableExpense
-                            } else {
-                                viewModel.excluir(displayableExpense, scope: .entireSeries)
-                            }
+                            solicitarExclusao(displayableExpense)
                         }
                     )
                 }
             }
             .listStyle(.plain)
             .accessibilityIdentifier("transactionList")
-            .recurringDeletionDialog(expense: $expenseToDelete) { expense, scope in
+            .recurringScopeDialog(item: $expenseToDelete) { expense, scope in
                 viewModel.excluir(expense, scope: scope)
             }
             .errorAlert($viewModel.errorMessage)
@@ -59,6 +52,14 @@ struct ExpensesListView: View {
                 AddTransactionView(transacaoEmEdicao: transaction)
                     .environmentObject(viewModel)
             }
+        }
+    }
+
+    private func solicitarExclusao(_ expense: DisplayableExpense) {
+        if expense.isRecurringInstance && expense.originalExpenseID != nil {
+            expenseToDelete = expense
+        } else {
+            viewModel.excluir(expense, scope: .entireSeries)
         }
     }
 
@@ -106,9 +107,7 @@ struct SectionView: View {
                             Label("Excluir", systemImage: "trash")
                         }
 
-                        if let model = viewModel.originalExpenseModel(
-                            from: displayableExpense
-                        ) {
+                        if let model = viewModel.originalExpenseModel(from: displayableExpense) {
                             Button {
                                 onEdit(model)
                             } label: {
