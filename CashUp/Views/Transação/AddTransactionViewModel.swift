@@ -7,9 +7,8 @@ final class AddTransactionViewModel: ObservableObject {
 
     @Published var selectedTransactionType: Int = 0 {
         didSet {
-            guard oldValue != selectedTransactionType, selectedCategoria != nil else { return }
-            let categoriaEhRenda = selectedCategoria?.id == SeedIDs.idRenda
-            let categoriaCompativel = (selectedTransactionType == 1) == categoriaEhRenda
+            guard oldValue != selectedTransactionType, selectedCategoria != nil || selectedSubcategoria != nil else { return }
+            let categoriaCompativel = (selectedTransactionType == 1) == isCategoriaRenda
             if !categoriaCompativel {
                 selectedCategoria = nil
                 selectedSubcategoria = nil
@@ -23,7 +22,9 @@ final class AddTransactionViewModel: ObservableObject {
     @Published var repeatEndDate: Date?
     @Published var isRepeatDialogPresented: Bool = false
     @Published var selectedCategoria: CategoriaModel?
-    @Published var selectedSubcategoria: SubcategoriaModel?
+    @Published var selectedSubcategoria: SubcategoriaModel? {
+        didSet { forcarReceitaSeRenda() }
+    }
     @Published var errorMessage: String?
 
     private let transacaoEmEdicao: ExpenseModel?
@@ -71,7 +72,16 @@ final class AddTransactionViewModel: ObservableObject {
     }
 
     func resolverIsIncome() -> Bool {
-        selectedCategoria?.id == SeedIDs.idRenda || selectedTransactionType == 1
+        isCategoriaRenda || selectedTransactionType == 1
+    }
+
+    private var isCategoriaRenda: Bool {
+        selectedCategoria?.id == SeedIDs.idRenda || selectedSubcategoria?.categoria?.id == SeedIDs.idRenda
+    }
+
+    private func forcarReceitaSeRenda() {
+        guard isCategoriaRenda, selectedTransactionType != 1 else { return }
+        selectedTransactionType = 1
     }
 
     func salvar(usando expensesViewModel: ExpensesViewModel) -> Bool {

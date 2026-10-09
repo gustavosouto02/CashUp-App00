@@ -1,10 +1,3 @@
-//
-//  ExpensesView.swift
-//  CashUp
-//
-//  Created by [Seu Nome] on [Data].
-//
-
 import SwiftUI
 import SwiftData
 
@@ -28,8 +21,8 @@ struct ExpensesView: View {
                     .padding(.horizontal)
 
                     ExpensesResumoView(
-                        income: viewModel.totalIncomeForCurrentMonth(),
-                        expense: viewModel.totalExpenseForCurrentMonth()
+                        income: viewModel.totalIncome(in: viewModel.currentMonth),
+                        expense: viewModel.totalExpense(in: viewModel.currentMonth)
                     )
                     .padding(.horizontal)
 

@@ -21,7 +21,8 @@
 | Etapa | Status | Data | Observações |
 |---|---|---|---|
 | 1 | ✅ Concluída | 2026-10-08 | 53 testes unitários verdes no iPhone 17 Pro (iOS 26.4). `RepeatOption` movido para `Models/RepeatOption.swift` com `nextDate(after:)`. Os dois testes dependentes de `Date()` em `RepetitionDataTestes` foram fixados em março/2026 por bloquearem o verde (antecipação da Etapa 3). |
-| 2 a 10 | ⏳ Pendente | | |
+| 2 | ✅ Concluída | 2026-10-08 | 64 testes verdes. `ExpensesViewModel` reduzido a um caminho de leitura (`transactions(in:)`); `calcular*` honram `paraMes`; `RecurringScopeDialogModifier` único para as duas listas; regra Renda e limpeza de categoria ao trocar tipo no `AddTransactionViewModel`. |
+| 3 a 10 | ⏳ Pendente | | |
 
 ---
 

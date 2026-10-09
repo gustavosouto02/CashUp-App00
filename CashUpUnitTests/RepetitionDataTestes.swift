@@ -115,10 +115,7 @@ final class RepetitionDataTestes: XCTestCase {
 
         let targetDate = Date.make(year: 2026, month: 3, day: 10)
 
-        let results = expenseViewModel.fetchTransactions(
-            forSpecificDate: targetDate,
-            isIncome: nil
-        )
+        let results = expenseViewModel.transactions(on: targetDate, isIncome: nil)
 
         XCTAssertEqual(
             results.count,

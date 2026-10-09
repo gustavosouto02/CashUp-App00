@@ -9,9 +9,9 @@ enum RecurringExpenseDeletionScope {
 }
 
 @MainActor
-class ExpensesViewModel: ObservableObject, ExpenseCalculation {
-
+final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     var modelContext: ModelContext
+    private let calendar: Calendar
 
     @Published var currentMonth: Date = Date().startOfMonth() {
         didSet {
@@ -22,34 +22,29 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     @Published var selectedTransactionType: Int = 0 {
-        didSet {
-            loadDisplayableExpenses()
-        }
+        didSet { loadDisplayableExpenses() }
     }
 
     @Published var transacoesExibidas: [DisplayableExpense] = []
     @Published var errorMessage: String?
 
-    var availableCategories: [CategoriaModel] {
-        let fetchDescriptor = FetchDescriptor<CategoriaModel>()
-        do {
-            return try modelContext.fetch(fetchDescriptor).sorted { $0.nome < $1.nome }
-        } catch {
-            print("Erro ao buscar CategoriaModel para availableCategories: \(error)")
-            return []
-        }
-    }
-
-    init(modelContext: ModelContext) {
+    init(modelContext: ModelContext, calendar: Calendar = .current) {
         self.modelContext = modelContext
+        self.calendar = calendar
         loadDisplayableExpenses()
     }
 
     func configure(with newModelContext: ModelContext) {
-        if self.modelContext !== newModelContext {
-            self.modelContext = newModelContext
-            print("ExpensesViewModel: ModelContext reconfigurado via configure().")
-            loadDisplayableExpenses()
+        guard modelContext !== newModelContext else { return }
+        modelContext = newModelContext
+        loadDisplayableExpenses()
+    }
+
+    var availableCategories: [CategoriaModel] {
+        do {
+            return try modelContext.fetch(FetchDescriptor<CategoriaModel>()).sorted { $0.nome < $1.nome }
+        } catch {
+            return []
         }
     }
 
@@ -64,7 +59,7 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     private func validar(_ expense: ExpenseModel) throws {
-        let limite = Calendar.current.date(byAdding: .year, value: 100, to: .now) ?? .now
+        let limite = calendar.date(byAdding: .year, value: 100, to: .now) ?? .now
         guard expense.date <= limite else { throw CashUpDomainError.dataMuitoDistante }
     }
 
@@ -96,23 +91,7 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
     }
 
-    private func buscarTransacao(id: UUID) throws -> ExpenseModel {
-        let descriptor = FetchDescriptor<ExpenseModel>(predicate: #Predicate { $0.id == id })
-        let encontrada: ExpenseModel?
-        do {
-            encontrada = try modelContext.fetch(descriptor).first
-        } catch {
-            throw CashUpDomainError.persistencia(error.localizedDescription)
-        }
-        guard let encontrada else {
-            loadDisplayableExpenses()
-            throw CashUpDomainError.transacaoNaoEncontrada
-        }
-        return encontrada
-    }
-
     private func aplicarEscopoDeExclusao(_ scope: RecurringExpenseDeletionScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
-        let calendar = Calendar.current
         let diaDaOcorrencia = calendar.startOfDay(for: dataDaOcorrencia)
 
         switch scope {
@@ -143,216 +122,114 @@ class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
     }
 
+    private func buscarTransacao(id: UUID) throws -> ExpenseModel {
+        let predicate = #Predicate<ExpenseModel> { $0.id == id }
+        let encontrada: ExpenseModel?
+        do {
+            encontrada = try modelContext.fetch(FetchDescriptor(predicate: predicate)).first
+        } catch {
+            throw CashUpDomainError.persistencia(error.localizedDescription)
+        }
+        guard let encontrada else {
+            loadDisplayableExpenses()
+            throw CashUpDomainError.transacaoNaoEncontrada
+        }
+        return encontrada
+    }
+
     func loadDisplayableExpenses() {
-        let monthToLoad = currentMonth.startOfMonth()
-        let calendar = Calendar.current
+        let wantsIncome = selectedTransactionType == 1
+        transacoesExibidas = transactions(in: currentMonth)
+            .filter { $0.isIncome == wantsIncome }
+            .sorted { $0.date > $1.date }
+    }
 
-        guard let monthInterval = calendar.dateInterval(of: .month, for: monthToLoad) else {
-            self.transacoesExibidas = []
-            return
-        }
+    func transactions(in month: Date) -> [DisplayableExpense] {
+        guard let interval = calendar.dateInterval(of: .month, for: month.startOfMonth()) else { return [] }
+        return fetchAll().flatMap { $0.generateOccurrences(forDateInterval: interval, calendar: calendar) }
+    }
 
-        let fetchDescriptor = FetchDescriptor<ExpenseModel>()
-
-        do {
-            let allExpenses = try modelContext.fetch(fetchDescriptor)
-
-            let allDisplayableTransactions: [DisplayableExpense] = allExpenses.flatMap { expense in
-                if let repetition = expense.repetition, repetition.repeatOption != .nunca {
-                    return expense.generateOccurrences(forDateInterval: monthInterval, calendar: calendar)
-                } else if monthInterval.containsExcludingEnd(expense.date) {
-                    return [DisplayableExpense(from: expense)]
-                } else {
-                    return []
-                }
-            }
-
-            let filtered = allDisplayableTransactions.filter {
-                selectedTransactionType == 0 ? !$0.isIncome : $0.isIncome
-            }
-
-            self.transacoesExibidas = filtered.sorted { $0.date > $1.date }
-
-        } catch {
-            print("Falha ao buscar todas as despesas persistidas: \(error)")
-            self.transacoesExibidas = []
+    func transactions(on day: Date, isIncome: Bool?) -> [DisplayableExpense] {
+        transactions(in: day).filter { occurrence in
+            calendar.isDate(occurrence.date, inSameDayAs: day) && (isIncome.map { $0 == occurrence.isIncome } ?? true)
         }
     }
-    
-    func allTransactionsForCurrentMonth() -> [DisplayableExpense] {
-        let monthToLoad = currentMonth.startOfMonth()
-        let calendar = Calendar.current
-        guard let monthInterval = calendar.dateInterval(of: .month, for: monthToLoad) else { return [] }
 
-        var allDisplayableTransactions: [DisplayableExpense] = []
-        let fetchDescriptor = FetchDescriptor<ExpenseModel>()
+    func expenses(in month: Date) -> [DisplayableExpense] {
+        transactions(in: month).filter { !$0.isIncome }
+    }
 
-        do {
-            let allPersistedExpenses = try modelContext.fetch(fetchDescriptor).sorted { $0.date < $1.date }
-            for expense in allPersistedExpenses {
-                if expense.repetition != nil && expense.repetition?.repeatOption != .nunca {
-                    let occurrences = expense.generateOccurrences(forDateInterval: monthInterval, calendar: calendar)
-                    allDisplayableTransactions.append(contentsOf: occurrences)
-                } else {
-                    if monthInterval.containsExcludingEnd(expense.date) {
-                        allDisplayableTransactions.append(DisplayableExpense(from: expense))
-                    }
-                }
-            }
-        } catch {
-            print("Falha ao buscar todas as despesas persistidas para allTransactionsForCurrentMonth: \(error)")
-            return []
+    func incomes(in month: Date) -> [DisplayableExpense] {
+        transactions(in: month).filter { $0.isIncome }
+    }
+
+    func totalExpense(in month: Date) -> Double {
+        expenses(in: month).reduce(0) { $0 + $1.amount }
+    }
+
+    func totalIncome(in month: Date) -> Double {
+        incomes(in: month).reduce(0) { $0 + $1.amount }
+    }
+
+    func totaisPorSubcategoria(in month: Date) -> [UUID: Double] {
+        expenses(in: month).reduce(into: [:]) { acc, item in
+            guard let id = item.subcategoria?.id else { return }
+            acc[id, default: 0] += item.amount
         }
-        return allDisplayableTransactions
     }
 
-    func fetchTransactions(forSpecificDate date: Date, isIncome: Bool?) -> [DisplayableExpense] {
-        let calendar = Calendar.current
-
-        guard let _ = calendar.dateInterval(of: .day, for: date),
-              let monthContainingDay = calendar.dateInterval(of: .month, for: date) else {
-            print("Erro ao criar intervalos de data para fetchTransactions(forSpecificDate:)")
-            return []
-        }
-
-        var displayableTransactionsForDay: [DisplayableExpense] = []
-
-        let fetchAllDescriptor = FetchDescriptor<ExpenseModel>()
-
-        do {
-            let allPersistedExpenses = try modelContext.fetch(fetchAllDescriptor).sorted { $0.date < $1.date }
-
-            for expense in allPersistedExpenses {
-                if expense.repetition != nil && expense.repetition?.repeatOption != .nunca {
-                    let occurrencesInMonth = expense.generateOccurrences(forDateInterval: monthContainingDay, calendar: calendar)
-                    for occurrence in occurrencesInMonth {
-                        if calendar.isDate(occurrence.date, inSameDayAs: date) {
-                            displayableTransactionsForDay.append(occurrence)
-                        }
-                    }
-                } else {
-                    if calendar.isDate(expense.date, inSameDayAs: date) {
-                        displayableTransactionsForDay.append(DisplayableExpense(from: expense))
-                    }
-                }
-            }
-        } catch {
-            print("Falha ao buscar todas as despesas persistidas em fetchTransactions(forSpecificDate:): \(error)")
-            return []
-        }
-
-        if let incomeStatus = isIncome {
-            return displayableTransactionsForDay.filter { $0.isIncome == incomeStatus }
-        }
-
-        return displayableTransactionsForDay
-    }
-
-    func expensesOnlyForCurrentMonth() -> [DisplayableExpense] {
-        return allTransactionsForCurrentMonth().filter { !$0.isIncome }
-    }
-    
-    func incomesOnlyForCurrentMonth() -> [DisplayableExpense] {
-        return allTransactionsForCurrentMonth().filter { $0.isIncome }
-    }
-    
-    func totalIncomeForCurrentMonth() -> Double {
-        incomesOnlyForCurrentMonth().reduce(0) { $0 + $1.amount }
-    }
-    
-    func totalExpenseForCurrentMonth() -> Double {
-        expensesOnlyForCurrentMonth().reduce(0) { $0 + $1.amount }
-    }
-    
-    func calcularTotalGastoEmCategoriasPlanejadas(
-        paraMes mes: Date,
-        categoriasPlanejadas: [CategoriaPlanejadaModel]
-    ) -> Double {
-        let despesasDoMes = self.expensesOnlyForCurrentMonth()
-        
-        let subcategoriaIDsPlanejadas: Set<UUID> = Set(
+    func calcularTotalGastoEmCategoriasPlanejadas(paraMes mes: Date, categoriasPlanejadas: [CategoriaPlanejadaModel]) -> Double {
+        let idsPlanejados = Set(
             categoriasPlanejadas
                 .flatMap { $0.subcategoriasPlanejadas ?? [] }
                 .compactMap { $0.subcategoriaOriginal?.id }
         )
-        
-        if subcategoriaIDsPlanejadas.isEmpty { return 0.0 }
-        
-        return despesasDoMes
-            .filter { displayableExpense in
-                guard let subId = displayableExpense.subcategoria?.id else { return false }
-                return subcategoriaIDsPlanejadas.contains(subId)
-            }
-            .reduce(0.0) { $0 + $1.amount }
+        guard !idsPlanejados.isEmpty else { return 0 }
+        return totaisPorSubcategoria(in: mes)
+            .filter { idsPlanejados.contains($0.key) }
+            .reduce(0) { $0 + $1.value }
     }
 
-    
     func calcularTotalGastoParaCategoria(_ categoriaPlanejada: CategoriaPlanejadaModel, paraMes mes: Date) -> Double {
-        guard let catOriginalID = categoriaPlanejada.categoriaOriginal?.id else { return 0.0 }
-        let despesasDoMes = self.expensesOnlyForCurrentMonth()
-        
-        return despesasDoMes
-            .filter { $0.categoria?.id == catOriginalID }
-            .reduce(0.0) { $0 + $1.amount }
+        guard let id = categoriaPlanejada.categoriaOriginal?.id else { return 0 }
+        return expenses(in: mes)
+            .filter { $0.categoria?.id == id }
+            .reduce(0) { $0 + $1.amount }
     }
-    
+
     func calcularTotalGastoParaSubcategoria(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel, paraMes mes: Date) -> Double {
-        guard let subOriginalID = subcategoriaPlanejada.subcategoriaOriginal?.id else { return 0.0 }
-        let despesasDoMes = self.expensesOnlyForCurrentMonth()
-        
-        return despesasDoMes
-            .filter { $0.subcategoria?.id == subOriginalID }
-            .reduce(0.0) { $0 + $1.amount }
+        guard let id = subcategoriaPlanejada.subcategoriaOriginal?.id else { return 0 }
+        return totaisPorSubcategoria(in: mes)[id] ?? 0
     }
-    
+
     func findCategoriaModel(by id: UUID) -> CategoriaModel? {
         let predicate = #Predicate<CategoriaModel> { $0.id == id }
-        let fetchDescriptor = FetchDescriptor(predicate: predicate)
-        do {
-            return try modelContext.fetch(fetchDescriptor).first
-        } catch {
-            print("Erro ao buscar CategoriaModel por ID \(id): \(error)")
-            return nil
-        }
+        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
     }
 
     func findSubcategoriaModel(by id: UUID) -> SubcategoriaModel? {
         let predicate = #Predicate<SubcategoriaModel> { $0.id == id }
-        let fetchDescriptor = FetchDescriptor(predicate: predicate)
-        do {
-            return try modelContext.fetch(fetchDescriptor).first
-        } catch {
-            print("Erro ao buscar SubcategoriaModel por ID \(id): \(error)")
-            return nil
-        }
+        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
     }
-    
+
     func navigateMonth(isNext: Bool) {
-        let calendar = Calendar.current
         if let newDate = calendar.date(byAdding: .month, value: isNext ? 1 : -1, to: currentMonth) {
             currentMonth = newDate.startOfMonth()
         }
     }
-    
+
     func originalExpenseModel(from displayable: DisplayableExpense) -> ExpenseModel? {
-        let idToSearch = displayable.originalExpenseID ?? displayable.id
-
-        let predicate = #Predicate<ExpenseModel> { $0.id == idToSearch }
-        let fetchDescriptor = FetchDescriptor<ExpenseModel>(predicate: predicate)
-
-        do {
-            let result = try modelContext.fetch(fetchDescriptor).first
-            if result == nil {
-                print("⚠️ Nenhuma transação encontrada com ID: \(idToSearch)")
-            }
-            return result
-        } catch {
-            print("Erro ao buscar transação original com ID: \(idToSearch) — \(error.localizedDescription)")
-            return nil
-        }
+        fetchExpense(id: displayable.originalExpenseID ?? displayable.id)
     }
 
+    private func fetchExpense(id: UUID) -> ExpenseModel? {
+        let predicate = #Predicate<ExpenseModel> { $0.id == id }
+        return try? modelContext.fetch(FetchDescriptor(predicate: predicate)).first
+    }
 
+    private func fetchAll() -> [ExpenseModel] {
+        (try? modelContext.fetch(FetchDescriptor<ExpenseModel>())) ?? []
+    }
 }
 
 struct DisplayableExpense: Identifiable, Hashable {
@@ -366,7 +243,6 @@ struct DisplayableExpense: Identifiable, Hashable {
     var subcategoria: SubcategoriaModel?
     var isRecurringInstance: Bool
 
-    // ✅ Novo identificador estável
     var stableID: UUID {
         originalExpenseID ?? id
     }
@@ -403,7 +279,6 @@ struct DisplayableExpense: Identifiable, Hashable {
         lhs.categoria?.id == rhs.categoria?.id &&
         lhs.subcategoria?.id == rhs.subcategoria?.id
     }
-
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(stableID)
