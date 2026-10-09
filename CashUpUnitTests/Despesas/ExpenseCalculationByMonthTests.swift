@@ -93,6 +93,20 @@ final class ExpenseCalculationByMonthTests: XCTestCase {
         XCTAssertEqual(viewModel.totalIncome(in: abril), 0)
     }
 
+    func testLeituraPorMesIndependeDoFiltroDaAba() {
+        viewModel.currentMonth = marco
+        viewModel.selectedTransactionType = 0
+
+        XCTAssertFalse(viewModel.transacoesExibidas.contains { $0.isIncome })
+        XCTAssertEqual(viewModel.incomes(in: marco).count, 1)
+        XCTAssertEqual(viewModel.incomes(in: marco).first?.subcategoria?.id, mercado.id)
+
+        viewModel.selectedTransactionType = 1
+
+        XCTAssertFalse(viewModel.transacoesExibidas.contains { !$0.isIncome })
+        XCTAssertEqual(viewModel.expenses(in: marco).count, 2)
+    }
+
     func testTransacoesDoDiaFiltraPorDiaETipo() {
         XCTAssertEqual(viewModel.transactions(on: marco, isIncome: nil).count, 3)
         XCTAssertEqual(viewModel.transactions(on: marco, isIncome: false).count, 2)

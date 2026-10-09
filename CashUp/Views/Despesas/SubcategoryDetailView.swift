@@ -17,9 +17,10 @@ struct SubcategoryDetailView: View {
     @State private var selectedTransaction: ExpenseModel? = nil
 
     var sections: [DisplayableExpenseSection] {
-        let filteredTransactions = viewModel.transacoesExibidas.filter { expense in
-            expense.subcategoria?.id == subcategoriaModel.id && expense.isIncome == isIncome
-        }
+        let fonte = isIncome
+            ? viewModel.incomes(in: viewModel.currentMonth)
+            : viewModel.expenses(in: viewModel.currentMonth)
+        let filteredTransactions = fonte.filter { $0.subcategoria?.id == subcategoriaModel.id }
 
         let grouped = Dictionary(grouping: filteredTransactions) { expense in
             Calendar.current.startOfDay(for: expense.date)

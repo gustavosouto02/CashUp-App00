@@ -1,11 +1,3 @@
-//
-//  PlanningRestanteView.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 19/05/25.
-//
-
-
 import SwiftUI
 import SwiftData
 
@@ -18,11 +10,13 @@ struct PlanningRestanteView: View {
     }
 
     var body: some View {
+        let totais = expensesViewModel.totaisPorSubcategoria(in: planningViewModel.currentMonth)
+
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
 
                 // MARK: - Meta Residual
-                metaResidualCard()
+                metaResidualCard(totais: totais)
 
                 // MARK: - Categorias de Planejamento Detalhadas
                 if categoriasPlanejadasDoMes.isEmpty {
@@ -33,7 +27,7 @@ struct PlanningRestanteView: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     ForEach(categoriasPlanejadasDoMes) { categoriaPlanejadaModel in
-                        categoriaRestanteView(categoriaPModel: categoriaPlanejadaModel)
+                        categoriaRestanteView(categoriaPModel: categoriaPlanejadaModel, totais: totais)
                     }
                 }
                 Spacer(minLength: 24)
@@ -42,15 +36,22 @@ struct PlanningRestanteView: View {
         }
     }
 
+    private func gasto(em subPlanModel: SubcategoriaPlanejadaModel, totais: [UUID: Double]) -> Double {
+        guard let id = subPlanModel.subcategoriaOriginal?.id else { return 0 }
+        return totais[id] ?? 0
+    }
+
     @ViewBuilder
-    private func metaResidualCard() -> some View {
+    private func metaResidualCard(totais: [UUID: Double]) -> some View {
         let totalPlanejado = planningViewModel.valorTotalPlanejadoParaMesAtual()
 
-        let totalGastoEmPlanejado = expensesViewModel.calcularTotalGastoEmCategoriasPlanejadas(
-            paraMes: planningViewModel.currentMonth,
-            categoriasPlanejadas: categoriasPlanejadasDoMes
+        let idsPlanejados = Set(
+            categoriasPlanejadasDoMes
+                .flatMap { $0.subcategoriasPlanejadas ?? [] }
+                .compactMap { $0.subcategoriaOriginal?.id }
         )
-        
+        let totalGastoEmPlanejado = idsPlanejados.reduce(0.0) { $0 + (totais[$1] ?? 0) }
+
         let restante = totalPlanejado - totalGastoEmPlanejado
         let progresso = totalPlanejado > 0 ? min(abs(totalGastoEmPlanejado / totalPlanejado), 1.0) : 0.0
         
@@ -100,16 +101,13 @@ struct PlanningRestanteView: View {
     }
 
     @ViewBuilder
-    func categoriaRestanteView(categoriaPModel: CategoriaPlanejadaModel) -> some View {
+    func categoriaRestanteView(categoriaPModel: CategoriaPlanejadaModel, totais: [UUID: Double]) -> some View {
         let totalPlanejadoCategoria = planningViewModel.totalParaCategoriaPlanejada(categoriaPModel)
 
         let totalGastoCategoria = categoriaPModel.subcategoriasPlanejadas?.reduce(0.0) { sum, subPlanModel in
-            sum + expensesViewModel.calcularTotalGastoParaSubcategoria(
-                subPlanModel,
-                paraMes: planningViewModel.currentMonth
-            )
+            sum + gasto(em: subPlanModel, totais: totais)
         } ?? 0.0
-        
+
         let restanteCategoria = totalPlanejadoCategoria - totalGastoCategoria
 
         VStack(alignment: .leading, spacing: 12) {
@@ -133,10 +131,7 @@ struct PlanningRestanteView: View {
 
             if let subcategoriasPlanejadas = categoriaPModel.subcategoriasPlanejadas, !subcategoriasPlanejadas.isEmpty {
                 ForEach(subcategoriasPlanejadas.sorted(by: { $0.subcategoriaOriginal?.nome ?? "" < $1.subcategoriaOriginal?.nome ?? "" })) { subPlanModel in
-                    let gastoNaSub = expensesViewModel.calcularTotalGastoParaSubcategoria(
-                        subPlanModel,
-                        paraMes: planningViewModel.currentMonth
-                    )
+                    let gastoNaSub = gasto(em: subPlanModel, totais: totais)
                     let limiteDaSub = subPlanModel.valorPlanejado
                     let progressoSub = limiteDaSub > 0 ? min(abs(gastoNaSub / limiteDaSub), 1.0) : 0.0
 

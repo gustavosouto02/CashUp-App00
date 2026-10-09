@@ -3,6 +3,8 @@ import Foundation
 enum CashUpDomainError: LocalizedError, Equatable {
     case valorInvalido
     case categoriaAusente
+    case categoriaInvalidaParaReceita
+    case categoriaInvalidaParaDespesa
     case dataMuitoDistante
     case dataFimAnteriorAoInicio
     case dataFimMuitoDistante
@@ -16,6 +18,10 @@ enum CashUpDomainError: LocalizedError, Equatable {
             return "Informe um valor maior que zero."
         case .categoriaAusente:
             return "Selecione uma categoria e uma subcategoria."
+        case .categoriaInvalidaParaReceita:
+            return "Receitas só podem usar a categoria Renda."
+        case .categoriaInvalidaParaDespesa:
+            return "A categoria Renda só pode ser usada em receitas."
         case .dataMuitoDistante:
             return "A data não pode ultrapassar 100 anos no futuro."
         case .dataFimAnteriorAoInicio:

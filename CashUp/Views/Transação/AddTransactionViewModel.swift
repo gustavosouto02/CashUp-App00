@@ -104,6 +104,11 @@ final class AddTransactionViewModel: ObservableObject {
         guard selectedCategoria != nil, selectedSubcategoria != nil else {
             throw CashUpDomainError.categoriaAusente
         }
+        if selectedTransactionType == 1 {
+            guard isCategoriaRenda else { throw CashUpDomainError.categoriaInvalidaParaReceita }
+        } else {
+            guard !isCategoriaRenda else { throw CashUpDomainError.categoriaInvalidaParaDespesa }
+        }
         let limite = calendar.date(byAdding: .year, value: Self.limiteMaximoAnosData, to: Date()) ?? Date()
         guard selectedDate <= limite else { throw CashUpDomainError.dataMuitoDistante }
         if repeatOption != .nunca {

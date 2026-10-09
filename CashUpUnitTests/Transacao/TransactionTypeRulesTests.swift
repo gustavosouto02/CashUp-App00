@@ -76,7 +76,7 @@ final class TransactionTypeRulesTests: XCTestCase {
         XCTAssertFalse(viewModel.podeSalvar)
     }
 
-    func testCriarComCategoriaDeDespesaETipoReceitaSalvaComoReceita() throws {
+    func testCriarComCategoriaDeDespesaETipoReceitaFalhaSemPersistir() throws {
         let expensesViewModel = ExpensesViewModel(modelContext: context)
         let viewModel = AddTransactionViewModel()
         viewModel.selectedTransactionType = 1
@@ -84,11 +84,38 @@ final class TransactionTypeRulesTests: XCTestCase {
         viewModel.selectedSubcategoria = fastFood
         viewModel.selectedCategoria = comida
 
+        XCTAssertFalse(viewModel.salvar(usando: expensesViewModel))
+
+        XCTAssertEqual(viewModel.errorMessage, CashUpDomainError.categoriaInvalidaParaReceita.errorDescription)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<ExpenseModel>()), 0)
+    }
+
+    func testCriarReceitaComCategoriaRendaSalva() throws {
+        let expensesViewModel = ExpensesViewModel(modelContext: context)
+        let viewModel = AddTransactionViewModel()
+        viewModel.selectedTransactionType = 1
+        viewModel.amount = 3000
+        viewModel.selectedSubcategoria = salario
+        viewModel.selectedCategoria = renda
+
         XCTAssertTrue(viewModel.salvar(usando: expensesViewModel))
 
         let salva = try XCTUnwrap(try context.fetch(FetchDescriptor<ExpenseModel>()).first)
         XCTAssertTrue(salva.isIncome)
-        XCTAssertEqual(salva.categoria?.id, comida.id)
+        XCTAssertEqual(salva.categoria?.id, renda.id)
+    }
+
+    func testEditarReceitaLegadaComCategoriaDeDespesaExigeCorrecao() throws {
+        let legada = ExpenseModel(amount: 50, isIncome: true, categoria: comida, subcategoria: fastFood)
+        context.insert(legada)
+        try context.save()
+        let expensesViewModel = ExpensesViewModel(modelContext: context)
+        let viewModel = AddTransactionViewModel(transacaoEmEdicao: legada)
+
+        XCTAssertFalse(viewModel.salvar(usando: expensesViewModel))
+
+        XCTAssertEqual(viewModel.errorMessage, CashUpDomainError.categoriaInvalidaParaReceita.errorDescription)
+        XCTAssertEqual(legada.categoria?.id, comida.id)
     }
 
     func testCriarComSubcategoriaDeRendaSalvaComoReceitaMesmoComTipoDespesa() throws {
