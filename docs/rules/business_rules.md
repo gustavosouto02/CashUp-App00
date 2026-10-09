@@ -187,7 +187,7 @@ No painel principal (`HomeViewModel`), as métricas do mês selecionado são apu
 
 ## 6. Segurança, Onboarding e Dicas
 
-### RN-17 — Proteção Biométrica de Privacidade (Planejada)
+### RN-17 — Proteção Biométrica de Privacidade
 - **Regra**: O acesso aos dados financeiros do aplicativo deve ser protegido por Face ID / Touch ID através do framework `LocalAuthentication`.
 - **Comportamento**: Ao habilitar a biometria nas configurações, o app deve solicitar autenticação biométrica sempre que passar do estado inativo/background para o primeiro plano.
 
