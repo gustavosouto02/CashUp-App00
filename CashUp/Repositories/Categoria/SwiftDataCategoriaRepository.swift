@@ -56,25 +56,4 @@ final class SwiftDataCategoriaRepository: CategoriaRepositoryProtocol {
         descriptor.fetchLimit = 1
         return try context.fetch(descriptor).first
     }
-
-
-    func insert(_ categoria: CategoriaModel) {
-        context.insert(categoria)
-    }
-
-    func delete(_ categoria: CategoriaModel) {
-        context.delete(categoria)
-    }
-
-    func delete(_ subcategoria: SubcategoriaModel) {
-        context.delete(subcategoria)
-    }
-
-    func save() throws {
-        try context.save()
-    }
-
-    func rollback() {
-        context.rollback()
-    }
 }

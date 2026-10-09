@@ -53,7 +53,7 @@ final class PlanningViewModelInMemoryTests: XCTestCase {
         XCTAssertEqual(repository.categoriasPlanejadas.count, 1)
     }
 
-    func testFalhaNoSaveFazRollback() {
+    func testFalhaNoSaveRetornaFalse() {
         let cat = CategoriaModel(id: UUID(), nome: "Educação", icon: "book", red: 0.1, green: 0.2, blue: 0.3)
         let sub = SubcategoriaModel(nome: "Cursos", icon: "graduationcap", categoria: cat, usageCount: 0)
         repository.shouldFailSave = true
@@ -61,7 +61,7 @@ final class PlanningViewModelInMemoryTests: XCTestCase {
         let sucesso = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: sub)
 
         XCTAssertFalse(sucesso)
-        XCTAssertEqual(repository.rollbackCallCount, 1)
+        XCTAssertEqual(repository.saveCallCount, 1)
     }
 
     func testCopiaComFalhaNoFetchDoProximoMesNaoDuplica() throws {

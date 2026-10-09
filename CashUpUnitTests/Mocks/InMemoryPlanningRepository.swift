@@ -7,7 +7,6 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
     var shouldFailSave: Bool = false
     var mesesComFalhaNoFetch: Set<Date> = []
     var saveCallCount: Int = 0
-    var rollbackCallCount: Int = 0
 
     init(categoriasPlanejadas: [CategoriaPlanejadaModel] = []) {
         self.categoriasPlanejadas = categoriasPlanejadas
@@ -56,9 +55,6 @@ final class InMemoryPlanningRepository: PlanningRepositoryProtocol {
         }
     }
 
-    func rollback() {
-        rollbackCallCount += 1
-    }
 
     private func falharSeNecessario(mes: Date) throws {
         if mesesComFalhaNoFetch.contains(mes) {

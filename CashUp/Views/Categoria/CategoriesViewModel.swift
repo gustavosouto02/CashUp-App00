@@ -53,7 +53,7 @@ final class CategoriesViewModel: ObservableObject {
     }
 
     func registrarUso(subcategoriaModel: SubcategoriaModel) {
-        // Sem save aqui: a contagem é persistida junto com a transação, sem gravar outras mudanças pendentes do contexto.
+        // Sem save aqui: um save gravaria todas as mudanças pendentes do contexto compartilhado. A contagem vai para o disco no próximo save ou autosave.
         subcategoriaModel.usageCount += 1
         objectWillChange.send()
     }

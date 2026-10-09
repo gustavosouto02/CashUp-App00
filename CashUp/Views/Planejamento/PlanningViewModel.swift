@@ -41,7 +41,6 @@ final class PlanningViewModel: ObservableObject {
             objectWillChange.send()
             return true
         } catch {
-            repository.rollback()
             CashUpLogger.persistence.error("Erro ao salvar contexto após \(operacao, privacy: .public): \(error.localizedDescription, privacy: .public)")
             return false
         }
@@ -323,7 +322,6 @@ final class PlanningViewModel: ObservableObject {
 
             return (title, message.isEmpty ? "Nenhuma ação de cópia necessitou ser realizada." : message)
         } catch {
-            repository.rollback()
             CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription, privacy: .public)")
             return ("Erro", "Falha ao salvar o planejamento copiado: \(error.localizedDescription)")
         }

@@ -50,7 +50,4 @@ final class SwiftDataPlanningRepository: PlanningRepositoryProtocol {
         try context.save()
     }
 
-    func rollback() {
-        context.rollback()
-    }
 }

@@ -32,9 +32,9 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
         let renda = CategoriaModel(id: SeedIDs.idRenda, nome: "Renda", icon: "banknote", red: 0, green: 1, blue: 0)
         let comida = CategoriaModel(id: UUID(), nome: "Comida", icon: "cart", red: 1, green: 0, blue: 0)
 
-        sut.insert(renda)
-        sut.insert(comida)
-        try sut.save()
+        context.insert(renda)
+        context.insert(comida)
+        try context.save()
 
         let despesas = try sut.fetchCategorias(filtro: .despesa)
         XCTAssertEqual(despesas.count, 1)
@@ -56,8 +56,8 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
 
         cat.subcategorias = [sub1, sub2, subZero]
 
-        sut.insert(cat)
-        try sut.save()
+        context.insert(cat)
+        try context.save()
 
         let maisUsadas = try sut.fetchSubcategoriasMaisUsadas(filtro: .despesa, limite: 2)
         XCTAssertEqual(maisUsadas.count, 2)
@@ -65,20 +65,4 @@ final class SwiftDataCategoriaRepositoryTests: XCTestCase {
         XCTAssertEqual(maisUsadas.last?.nome, "Cinema")
     }
 
-    func testDeletarCategoriaESubcategoria() throws {
-        let cat = CategoriaModel(id: UUID(), nome: "Saúde", icon: "heart", red: 1, green: 0, blue: 0)
-        let sub = SubcategoriaModel(nome: "Farmácia", icon: "cross", categoria: cat, usageCount: 1)
-        cat.subcategorias = [sub]
-
-        sut.insert(cat)
-        try sut.save()
-
-        sut.delete(sub)
-        try sut.save()
-        XCTAssertNil(try sut.fetchSubcategoria(id: sub.id))
-
-        sut.delete(cat)
-        try sut.save()
-        XCTAssertNil(try sut.fetchCategoria(id: cat.id))
-    }
 }

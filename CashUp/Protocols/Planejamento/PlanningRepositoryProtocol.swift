@@ -9,5 +9,4 @@ protocol PlanningRepositoryProtocol: AnyObject {
     func delete(_ categoriaPlanejada: CategoriaPlanejadaModel)
     func delete(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel)
     func save() throws
-    func rollback()
 }

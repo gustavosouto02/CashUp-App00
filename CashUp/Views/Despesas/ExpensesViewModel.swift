@@ -66,7 +66,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     func removeExpense(_ expense: DisplayableExpense, scope: RecurringExpenseDeletionScope) throws {
         if expense.isRecurringInstance, let originalID = expense.originalExpenseID {
             let original = try buscarTransacao(id: originalID)
-            try aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
+            aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
         } else {
             repository.delete(try buscarTransacao(id: expense.id))
         }
@@ -81,7 +81,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
     }
 
-    private func aplicarEscopoDeExclusao(_ scope: RecurringExpenseDeletionScope, em original: ExpenseModel, dataDaOcorrencia: Date) throws {
+    private func aplicarEscopoDeExclusao(_ scope: RecurringExpenseDeletionScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
         let diaDaOcorrencia = calendar.startOfDay(for: dataDaOcorrencia)
 
         switch scope {
