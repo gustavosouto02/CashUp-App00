@@ -82,7 +82,7 @@ struct PlanningPlanejarView: View {
                         }
                     }
                 } else {
-                    print("Erro Crítico: Subcategoria '\(subModel.nome)' selecionada não tem uma categoria pai associada.")
+                    CashUpLogger.ui.error("Subcategoria '\(subModel.nome)' selecionada não tem categoria pai associada.")
                     DispatchQueue.main.async {
                         self.selectedSubcategoryFromSheet = nil
                         self.selectedCategoryFromSheet = nil
@@ -91,7 +91,7 @@ struct PlanningPlanejarView: View {
                 }
 
                 guard let finalCatModel = catModelParaProcessar else {
-                    print("Erro: Categoria final para processamento é nil após seleção de subcategoria.")
+                    CashUpLogger.ui.error("Categoria final é nil após seleção de subcategoria.")
                     DispatchQueue.main.async {
                         self.selectedSubcategoryFromSheet = nil
                         self.selectedCategoryFromSheet = nil
@@ -341,11 +341,11 @@ struct PlanningPlanejarView: View {
                 .padding(.horizontal, 40)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                withAnimation(.easeInOut) {
-                    showDuplicateAlert = false
-                }
+        .task {
+            try? await Task.sleep(for: .seconds(2.5))
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeInOut) {
+                showDuplicateAlert = false
             }
         }
     }

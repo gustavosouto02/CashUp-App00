@@ -36,7 +36,7 @@ struct ExpensesResumoView: View {
     
     private func resumoItem(value: Double, label: String, color: Color) -> some View {
         VStack(alignment: .center, spacing: 4) {
-            Text(formatCurrency(value))
+            Text(BRLCurrencyFormatter.string(from: value))
                 .font(.title3)
                 .bold()
                 .foregroundStyle(color)

@@ -25,7 +25,7 @@ struct RecurringScopeDialogModifier: ViewModifier {
     }
 
     private func mensagem(para expense: DisplayableExpense) -> String {
-        let valor = formatCurrency(expense.amount)
+        let valor = BRLCurrencyFormatter.string(from: expense.amount)
         let data = expense.date.formatted(date: .numeric, time: .omitted)
         let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
         return "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?"

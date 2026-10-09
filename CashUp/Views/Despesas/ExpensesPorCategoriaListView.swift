@@ -121,7 +121,7 @@ struct ExpensesPorCategoriaListView: View {
                         .cornerRadius(6)
                         .opacity(highlightedCategoryID == nil || highlightedCategoryID == dataItem.id ? 1.0 : 0.3)
                         .accessibilityLabel(dataItem.nome)
-                        .accessibilityValue(formatCurrency(dataItem.total))
+                        .accessibilityValue(BRLCurrencyFormatter.string(from: dataItem.total))
                     }
                     .frame(height: 160)
                     .padding(.vertical, 5)
@@ -158,7 +158,7 @@ struct ExpensesPorCategoriaListView: View {
                                 .font(.callout.bold())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                            Text(formatCurrency(highlightedData.total))
+                            Text(BRLCurrencyFormatter.string(from: highlightedData.total))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -168,7 +168,7 @@ struct ExpensesPorCategoriaListView: View {
                             Text(localSelectedTransactionType == 0 ? "Total Gasto" : "Total Recebido")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text(formatCurrency(dataParaGrafico.reduce(0, { $0 + $1.total })))
+                            Text(BRLCurrencyFormatter.string(from: dataParaGrafico.reduce(0, { $0 + $1.total })))
                                 .font(.title3.bold())
                                 .foregroundColor(.primary)
                         }
@@ -239,7 +239,7 @@ struct ExpensesPorCategoriaListView: View {
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
                 Spacer()
-                Text(formatCurrency(totalParaCategoria(categoriaModel)))
+                Text(BRLCurrencyFormatter.string(from: totalParaCategoria(categoriaModel)))
                     .font(.callout)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
@@ -253,7 +253,7 @@ struct ExpensesPorCategoriaListView: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("CategoryRow_\(categoriaModel.nome)")
-            .accessibilityLabel("\(categoriaModel.nome), \(formatCurrency(totalParaCategoria(categoriaModel)))")
+            .accessibilityLabel("\(categoriaModel.nome), \(BRLCurrencyFormatter.string(from: totalParaCategoria(categoriaModel)))")
             .onTapGesture {
                 withAnimation(.snappy) {
                     let categoriaID = categoriaModel.id
@@ -288,7 +288,7 @@ struct ExpensesPorCategoriaListView: View {
                                     .foregroundColor(.primary)
                                     .accessibilityIdentifier("SubcategoryRow_\(subModel.nome)")
                                 Spacer()
-                                Text(formatCurrency(totalParaSubcategoria(subModel)))
+                                Text(BRLCurrencyFormatter.string(from: totalParaSubcategoria(subModel)))
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
                                 Image(systemName: "chevron.right")

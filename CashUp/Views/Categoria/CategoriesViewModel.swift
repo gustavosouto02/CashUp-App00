@@ -45,7 +45,7 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(fetchDescriptor).sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
         } catch {
-            print("Erro ao buscar CategoriaModel filtradas: \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel filtradas: \(error.localizedDescription)")
             return []
         }
     }
@@ -57,7 +57,7 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(descriptor).first
         } catch {
-            print("Erro ao buscar CategoriaModel com id \(id): \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar CategoriaModel com id \(id): \(error.localizedDescription)")
             return nil
         }
     }
@@ -69,14 +69,13 @@ class CategoriesViewModel: ObservableObject {
         do {
             return try modelContext.fetch(descriptor).first
         } catch {
-            print("Erro ao buscar SubcategoriaModel com id \(id): \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar SubcategoriaModel com id \(id): \(error.localizedDescription)")
             return nil
         }
     }
 
     func registrarUso(subcategoriaModel: SubcategoriaModel) {
         subcategoriaModel.usageCount += 1
-        print("Registrando uso para \(subcategoriaModel.nome): novo usageCount = \(subcategoriaModel.usageCount)")
         objectWillChange.send()
     }
 
@@ -99,7 +98,7 @@ class CategoriesViewModel: ObservableObject {
                 .prefix(6)
                 .map { $0 }
         } catch {
-            print("Erro ao buscar subcategorias mais usadas (filtradas): \(error)")
+            CashUpLogger.persistence.error("Erro ao buscar subcategorias mais usadas (filtradas): \(error.localizedDescription)")
             return []
         }
     }

@@ -82,12 +82,12 @@ struct SectionView: View {
         Section(
             header:
                 HStack {
-                    Text(formatSectionDate(date))
+                    Text(SectionDateFormatter.titulo(para: date))
                         .font(.headline)
                         .foregroundStyle(.secondary)
                         .accessibilityIdentifier("headerCalendar")
                     Spacer()
-                    Text(formatCurrency(totalForDay(date)))
+                    Text(BRLCurrencyFormatter.string(from: totalForDay(date)))
                         .font(.headline.bold())
                         .foregroundStyle(colorForTotal(totalForDay(date)))
                 }
@@ -175,7 +175,7 @@ struct DisplayableExpenseRow: View {
 
             Spacer()
 
-            Text(formatCurrency(expense.amount))
+            Text(BRLCurrencyFormatter.string(from: expense.amount))
                 .foregroundStyle(
                     expense.isIncome
                         ? .green : (expense.amount > 0 ? .primary : .secondary)
@@ -184,28 +184,4 @@ struct DisplayableExpenseRow: View {
         }
         .padding(.vertical, 6)
     }
-}
-
-func formatSectionDate(_ date: Date) -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.locale = Locale(identifier: "pt_BR")
-
-    let calendar = Calendar.current
-    if calendar.isDateInToday(date) {
-        return
-            "Hoje, \(dateFormatter.weekdaySymbols[calendar.component(.weekday, from: date) - 1].capitalized)"
-    } else if calendar.isDateInYesterday(date) {
-        return
-            "Ontem, \(dateFormatter.weekdaySymbols[calendar.component(.weekday, from: date) - 1].capitalized)"
-    } else {
-        dateFormatter.dateFormat = "EEEE, dd/MM"
-        return dateFormatter.string(from: date).capitalized
-    }
-}
-
-func formatCurrency(_ value: Double) -> String {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.locale = Locale(identifier: "pt_BR")
-    return formatter.string(from: NSNumber(value: value)) ?? "R$0,00"
 }

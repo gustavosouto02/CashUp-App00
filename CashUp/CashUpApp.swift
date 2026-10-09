@@ -7,12 +7,12 @@ struct CashUpApp: App {
     @State private var isShowingWelcomeScreen: Bool = true
 
     init() {
-        let isUITesting = ProcessInfo.processInfo.arguments.contains(
-            "--uitesting"
-        )
-
+        let isUITesting = ProcessInfo.processInfo.arguments.contains("--uitesting")
         _isShowingWelcomeScreen = State(initialValue: !isUITesting)
+        sharedModelContainer = Self.makeContainer(inMemory: isUITesting)
+    }
 
+    static func makeContainer(inMemory: Bool) -> ModelContainer {
         let schema = Schema([
             CategoriaModel.self,
             SubcategoriaModel.self,
@@ -20,23 +20,20 @@ struct CashUpApp: App {
             CategoriaPlanejadaModel.self,
             SubcategoriaPlanejadaModel.self,
         ])
-
-        let modelConfiguration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: isUITesting
-        )
-
         do {
-            sharedModelContainer = try ModelContainer(
+            return try ModelContainer(
                 for: schema,
-                configurations: [modelConfiguration]
+                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
             )
         } catch {
-            print("Erro ao criar container: \(error)")
+            CashUpLogger.persistence.critical("Container persistente falhou: \(error.localizedDescription)")
             do {
-                sharedModelContainer = try ModelContainer()
-            } catch {
-                fatalError("Erro ao criar fallback do ModelContainer: \(error)")
+                return try ModelContainer(
+                    for: schema,
+                    configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+                )
+            } catch let fallbackError {
+                fatalError("Sem container em memória: \(fallbackError)")
             }
         }
     }
@@ -46,15 +43,10 @@ struct CashUpApp: App {
             ZStack {
                 if isShowingWelcomeScreen {
                     WelcomeView(isShowingWelcomeScreen: $isShowingWelcomeScreen)
-                        .transition(
-                            .opacity.animation(.easeInOut(duration: 0.5))
-                        )
+                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
                 } else {
-                    let context = sharedModelContainer.mainContext
-                    HomeView(modelContext: context)
-                        .transition(
-                            .opacity.animation(.easeInOut(duration: 0.5))
-                        )
+                    HomeView(modelContext: sharedModelContainer.mainContext)
+                        .transition(.opacity.animation(.easeInOut(duration: 0.5)))
                 }
             }
             .preferredColorScheme(.dark)

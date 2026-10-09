@@ -1,5 +1,5 @@
 //
-//  DescriptionField.swift
+//  CurrencyAmountField.swift
 //  CashUp
 //
 //  Created by Gustavo Souto Pereira on 13/05/25.
@@ -20,14 +20,14 @@ struct CurrencyAmountField: View {
                 .keyboardType(.numberPad)
                 .focused($isFocused)
                 .onAppear {
-                    text = formattedAmount(amount)
+                    text = BRLCurrencyFormatter.string(from: amount)
                 }
                 .onChange(of: text) { _, newValue in
                     let digits = newValue.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
                     let limitedDigits = String(digits.prefix(maxDigits))
                     let value = (Double(limitedDigits) ?? 0) / 100
                     amount = value
-                    text = formattedAmount(value)
+                    text = BRLCurrencyFormatter.string(from: value)
                 }
                 .font(.system(size: 48, weight: .bold))
                 .multilineTextAlignment(.center)
@@ -36,12 +36,5 @@ struct CurrencyAmountField: View {
                 .frame(width: 280, height: 70)
                 .accessibilityIdentifier("amountField")
         }
-    }
-
-    func formattedAmount(_ value: Double) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: NSNumber(value: value)) ?? "R$ 0,00"
     }
 }
