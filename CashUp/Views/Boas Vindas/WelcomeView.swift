@@ -1,17 +1,7 @@
-//
-//  WelcomeView.swift
-//  CashUp
-//
-//  Created by Gustavo Souto Pereira on 08/05/25.
-//
-
-
 import SwiftUI
 
 struct WelcomeView: View {
     @Binding var isShowingWelcomeScreen: Bool
-    
-    let welcomeScreenDuration: TimeInterval = 2.5
 
     var body: some View {
         ZStack {
@@ -38,17 +28,17 @@ struct WelcomeView: View {
                     .foregroundColor(.gray.opacity(0.8))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
-                
+
                 Spacer()
                 Spacer()
             }
             .padding()
         }
-        .onAppear {
-            Timer.scheduledTimer(withTimeInterval: welcomeScreenDuration, repeats: false) { _ in
-                withAnimation {
-                    isShowingWelcomeScreen = false
-                }
+        .task {
+            try? await Task.sleep(for: .seconds(2.5))
+            guard !Task.isCancelled else { return }
+            withAnimation {
+                isShowingWelcomeScreen = false
             }
         }
     }

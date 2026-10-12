@@ -3,6 +3,7 @@ import Foundation
 final class UserDefaultsAppSettings: AppSettingsProtocol {
     private enum Chave {
         static let bloqueioBiometrico = "settings.isBiometricLockEnabled"
+        static let onboardingConcluido = "settings.hasCompletedOnboarding"
     }
 
     private let defaults: UserDefaults
@@ -20,5 +21,10 @@ final class UserDefaultsAppSettings: AppSettingsProtocol {
     var isBiometricLockEnabled: Bool {
         get { defaults.bool(forKey: Chave.bloqueioBiometrico) }
         set { defaults.set(newValue, forKey: Chave.bloqueioBiometrico) }
+    }
+
+    var hasCompletedOnboarding: Bool {
+        get { defaults.bool(forKey: Chave.onboardingConcluido) }
+        set { defaults.set(newValue, forKey: Chave.onboardingConcluido) }
     }
 }

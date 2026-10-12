@@ -63,11 +63,9 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 
 ### DT-03 — Arquivos Estruturais Vazios (Placeholders)
 - **Diagnóstico**: Arquivos criados na árvore de pastas que contêm apenas cabeçalho de comentário ou corpo vazio:
-  - `CashUp/Views/Boas Vindas/Onboarding/OnboardingViewModel.swift` (vazio)
-  - `CashUp/Views/Boas Vindas/Onboarding/OnboardingView.swift` (vazio)
   - `CashUp/Views/Dicas/TipsViewModel.swift` (vazio)
   - `CashUp/Views/Dicas/Tip.swift` (vazio)
-- **Ação Recomendada**: Implementar as funcionalidades planejadas ou consolidar a árvore evitando arquivos zumbis.
+- **Ação Recomendada**: Implementar as funcionalidades planejadas ou consolidar a árvore evitando arquivos zumbis (onboarding implementado na Etapa 7).
 
 ### DT-04 — Contador de Uso Sem Decremento
 - **Diagnóstico**: O contador `usageCount` é incrementado na criação de transações, mas não é recalculado nem decrementado caso o usuário exclua as transações vinculadas.
@@ -81,7 +79,7 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 |---|---|---|---|
 | **L-01** | **Alta** | CRUD de Categorias Customizadas Desativado | Código de adicionar/deletar categorias comentado em `CategoriesViewEdit.swift`. |
 | **L-02** | **Alta** | Ausência de Autenticação Biométrica | O app não oferece bloqueio por Face ID / Touch ID, deixando os dados financeiros expostos a quem tiver acesso ao aparelho destravado. |
-| **L-03** | **Média** | Onboarding Interativo Inexistente | O usuário é jogado direto na Home sem uma explicação clara de como funciona o orçamento mensal e os atalhos. |
+| **L-03** | **Média** | Onboarding Interativo Inexistente | ✅ Implementado na Etapa 7 com simulação visual motion fiel ao design Lovable, MVVM, testes unitários e de UI. |
 | **L-04** | **Média** | Falta de Alertas de Orçamento Excedido | Não há notificações locais avisando quando o usuário ultrapassa 80% ou 100% do teto de uma categoria planejada. |
 | **L-05** | **Média** | Sem Exportação de Dados (CSV/PDF) | Usuário não tem como fazer backup externo nem exportar relatórios para declaração de imposto de renda ou controle em outras ferramentas. |
 | **L-06** | **Média** | Módulo de Metas / Reservas Ausente | Não há funcionalidade dedicada para criar metas de economia (ex.: "Viagem de Fim de Ano", "Reserva de Emergência"). |
@@ -104,7 +102,7 @@ gantt
     Camada de Repositórios & Protocols (L-09): done, p3, 2026-10-09, 2026-10-09
     section Fase 2 - Segurança & Onboarding
     Autenticação Biométrica Face ID (L-02) : done, p4, 2026-10-09, 2026-10-09
-    Fluxo de Onboarding Interativo (L-03)  : p5, 2026-10-25, 4d
+    Fluxo de Onboarding Interativo (L-03)  : done, p5, 2026-10-12, 2026-10-12
     section Fase 3 - Proatividade & Relatórios
     Alertas Locais de Orçamento (L-04)     : p6, 2026-10-29, 4d
     Exportação de Relatórios CSV/PDF (L-05): p7, 2026-11-02, 5d
