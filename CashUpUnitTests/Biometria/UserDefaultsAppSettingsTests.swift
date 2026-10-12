@@ -24,4 +24,15 @@ final class UserDefaultsAppSettingsTests: XCTestCase {
 
         XCTAssertFalse(UserDefaultsAppSettings.volatil(suiteName: suiteName).isBiometricLockEnabled)
     }
+
+    func testOnboardingComecaNaoConcluidoEPersiste() throws {
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        let sut = UserDefaultsAppSettings(defaults: defaults)
+
+        XCTAssertFalse(sut.hasCompletedOnboarding)
+
+        sut.hasCompletedOnboarding = true
+
+        XCTAssertTrue(UserDefaultsAppSettings(defaults: defaults).hasCompletedOnboarding)
+    }
 }

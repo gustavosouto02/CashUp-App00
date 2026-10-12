@@ -15,8 +15,10 @@ final class MockBiometricAuthService: BiometricAuthServiceProtocol {
 
 final class InMemoryAppSettings: AppSettingsProtocol {
     var isBiometricLockEnabled: Bool
+    var hasCompletedOnboarding: Bool
 
-    init(isBiometricLockEnabled: Bool = false) {
+    init(isBiometricLockEnabled: Bool = false, hasCompletedOnboarding: Bool = false) {
         self.isBiometricLockEnabled = isBiometricLockEnabled
+        self.hasCompletedOnboarding = hasCompletedOnboarding
     }
 }
