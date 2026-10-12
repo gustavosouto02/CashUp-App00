@@ -8,9 +8,15 @@ struct HomeView: View {
 
     @State private var isAddTransactionPresented = false
     @State private var isTipsPresented = false
+    @State private var isSettingsPresented = false
     @State private var dadosIniciaisGarantidos = false
 
-    init(modelContext: ModelContext) {
+    private let settings: AppSettingsProtocol
+    private let biometricService: BiometricAuthServiceProtocol
+
+    init(modelContext: ModelContext, settings: AppSettingsProtocol, biometricService: BiometricAuthServiceProtocol) {
+        self.settings = settings
+        self.biometricService = biometricService
         // Dentro do autoclosure: só roda na primeira criação do @StateObject.
         _homeViewModel = StateObject(wrappedValue: {
             let planningVM = PlanningViewModel(repository: SwiftDataPlanningRepository(context: modelContext))
@@ -69,6 +75,17 @@ struct HomeView: View {
             }
             .navigationTitle("Visão Geral")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        isSettingsPresented = true
+                    } label: {
+                        Image(systemName: "gearshape.fill")
+                            .font(.headline)
+                    }
+                    .accessibilityLabel("Configurações")
+                    .accessibilityIdentifier("settingsButtonHome")
+                }
+
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button {
                         isTipsPresented = true
@@ -88,6 +105,9 @@ struct HomeView: View {
                         .accessibilityIdentifier("addTransactionButtonHome")
                     }
                 }
+            }
+            .sheet(isPresented: $isSettingsPresented) {
+                SettingsView(service: biometricService, settings: settings)
             }
             .fullScreenCover(isPresented: $isTipsPresented) {
                 TipsView()
