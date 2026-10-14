@@ -31,6 +31,19 @@ struct SeedIDs {
     static let idTransporte      = UUID(uuidString: "F5F5F5F5-F5F5-F5F5-F5F5-F5F5F5F5F5F5")!
     static let idEstiloDeVida    = UUID(uuidString: "A6A6A6A6-A6A6-A6A6-A6A6-A6A6A6A6A6A6")!
 
+    static let categoriasBaseIDs: Set<UUID> = [
+        idRenda,
+        idEntretenimento,
+        idDiversos,
+        idComidasEBebidas,
+        idHabitacao,
+        idTransporte,
+        idEstiloDeVida
+    ]
+
+    static func isCategoriaBase(id: UUID) -> Bool {
+        categoriasBaseIDs.contains(id)
+    }
     // Subcategorias
     static let idSubCustosBancarios     = UUID(uuidString: "00010001-0001-0001-0001-000100010001")!
     static let idSubDesconhecido        = UUID(uuidString: "00020002-0002-0002-0002-000200020002")!

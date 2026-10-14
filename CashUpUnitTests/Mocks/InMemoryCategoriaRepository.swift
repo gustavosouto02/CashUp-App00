@@ -48,10 +48,16 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
     }
 
 
-    // MARK: - Escrita (feature futura: edição de categorias via repositório)
-
     func insert(_ categoria: CategoriaModel) {
         categorias.append(categoria)
+    }
+
+    func insert(_ subcategoria: SubcategoriaModel) {
+        if let cat = subcategoria.categoria {
+            if !cat.subcategorias.contains(where: { $0.id == subcategoria.id }) {
+                cat.subcategorias.append(subcategoria)
+            }
+        }
     }
 
     func delete(_ categoria: CategoriaModel) {

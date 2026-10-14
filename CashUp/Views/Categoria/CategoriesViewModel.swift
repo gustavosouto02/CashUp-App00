@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 final class CategoriesViewModel: ObservableObject {
-    private let repository: CategoriaRepositoryProtocol
+    let repository: CategoriaRepositoryProtocol
     let transactionType: TransactionTypeFilter
 
     var subcategoriasMaisUsadas: [SubcategoriaModel] {
@@ -53,7 +53,6 @@ final class CategoriesViewModel: ObservableObject {
     }
 
     func registrarUso(subcategoriaModel: SubcategoriaModel) {
-        // Sem save aqui: um save gravaria todas as mudanças pendentes do contexto compartilhado. A contagem vai para o disco no próximo save ou autosave.
         subcategoriaModel.usageCount += 1
         objectWillChange.send()
     }
