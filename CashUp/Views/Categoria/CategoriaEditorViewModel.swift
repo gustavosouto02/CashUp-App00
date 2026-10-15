@@ -197,7 +197,7 @@ final class CategoriaEditorViewModel: ObservableObject {
             }) ?? categoriaPai.subcategorias.first(where: { $0.id != subcategoria.id })
 
             guard let destinoFinal = destino else {
-                throw CashUpDomainError.categoriaEmUso(quantidadeTransacoes: subcategoria.transacoes.count)
+                throw CashUpDomainError.subcategoriaEmUso(quantidadeTransacoes: subcategoria.transacoes.count)
             }
 
             for transacao in subcategoria.transacoes {

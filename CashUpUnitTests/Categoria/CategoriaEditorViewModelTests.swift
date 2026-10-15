@@ -275,4 +275,17 @@ final class CategoriaEditorViewModelTests: XCTestCase {
             XCTAssertEqual(error as? CashUpDomainError, .subcategoriaProtegida)
         }
     }
+
+    func testApagarSubcategoriaComTransacoesSemDestinoFalha() {
+        let sut = makeSUT()
+        let cat = CategoriaModel(id: UUID(), nome: "Avulsa", icon: "tag", red: 0.1, green: 0.2, blue: 0.3)
+        let sub = SubcategoriaModel(id: UUID(), nome: "Unica", icon: "tag", categoria: cat)
+        cat.subcategorias = [sub]
+        let transacao = ExpenseModel(amount: 10.0, date: Date(), expenseDescription: "Teste", categoria: cat, subcategoria: sub)
+        sub.transacoes = [transacao]
+
+        XCTAssertThrowsError(try sut.apagarSubcategoria(sub)) { error in
+            XCTAssertEqual(error as? CashUpDomainError, .subcategoriaEmUso(quantidadeTransacoes: 1))
+        }
+    }
 }

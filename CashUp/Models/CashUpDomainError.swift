@@ -10,6 +10,7 @@ enum CashUpDomainError: LocalizedError, Equatable {
     case dataFimMuitoDistante
     case transacaoNaoEncontrada
     case categoriaEmUso(quantidadeTransacoes: Int)
+    case subcategoriaEmUso(quantidadeTransacoes: Int)
     case nomeInvalido
     case nomeDuplicado(String)
     case categoriaProtegida
@@ -38,6 +39,8 @@ enum CashUpDomainError: LocalizedError, Equatable {
             return "Transação não encontrada."
         case .categoriaEmUso(let quantidade):
             return "Esta categoria possui \(quantidade) transação(ões) e não pode ser apagada."
+        case .subcategoriaEmUso(let quantidade):
+            return "Esta subcategoria possui \(quantidade) transação(ões) e não há outra subcategoria disponível para remanejo."
         case .nomeInvalido:
             return "O nome deve conter entre 2 e 24 caracteres."
         case .nomeDuplicado(let nome):

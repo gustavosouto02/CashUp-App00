@@ -64,7 +64,7 @@ struct CategoriesEditView: View {
 
                         Text(cat.nome)
                             .font(.title3)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.primary)
 
                         if isRenda {
                             Text("Fixa")
@@ -184,6 +184,7 @@ struct CategoriesEditView: View {
                 Text(msg)
             }
         }
+        .errorAlert($viewModel.errorMessage)
     }
 
     private func executarExclusaoCategoria(_ categoria: CategoriaModel) {
