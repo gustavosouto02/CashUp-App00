@@ -25,7 +25,8 @@
 | 3 | ✅ Concluída | 2026-10-08 | 81 testes unitários verdes (84 menos 3 placeholders apagados). Nenhum teste monta dados com `Date()` comparados a mês fixo; `Date.make` vive em `CashUpUnitTests/Helpers/Date+Testing.swift`. Arquivos renomeados para `<Nome>Tests.swift` em subpastas `Transacao/`, `Despesas/`, `Categoria/`; UI: `PlanningUITests`, `RepetitionUITests`, `ExpensesUITests`. `CashUpUITestsLaunchTests` (só screenshot) e os `testLaunchPerformance` comentados apagados. 7 testes de UI verdes; `ExpensesUITests` ajustado ao rótulo "Toda a série" do diálogo da etapa 2. |
 | 5 | ✅ Concluída | 2026-10-09 | 110 testes unitários verdes (+20: `SwiftDataExpenseRepositoryTests`, `SwiftDataCategoriaRepositoryTests`, `SwiftDataPlanningRepositoryTests`, `ExpensesViewModelInMemoryTests`, `CategoriesViewModelInMemoryTests`, `PlanningViewModelInMemoryTests`). Protocolos `ExpenseRepositoryProtocol`, `CategoriaRepositoryProtocol` e `PlanningRepositoryProtocol` criados; repositórios SwiftData concretos e mocks em memória criados. ViewModels desacoplados de `ModelContext` (`var modelContext` removido). `Composition root` na `HomeView`. `CategorySelectionSheet` e `PlanningPlanejarView` recebem repositório por parâmetro. `findCategoriaModel`/`findSubcategoriaModel` e `availableCategories` duplicados removidos. 7 testes de UI verdes. |
 | 7 | ✅ Concluída | 2026-10-12 | 135 testes unitários verdes (+8: `OnboardingViewModelTests`, `UserDefaultsAppSettingsTests`) e 10 de UI (+2: `OnboardingUITests`). Tour interativo de 3 páginas via `TabView` com `OnboardingPageIndicator` e `OnboardingActionsBar`. Toggle de ativação de biometria integrado na página 3. `hasCompletedOnboarding` persistido em `AppSettingsProtocol`. `WelcomeView` migrado para `.task` cancelável com `Task.sleep`. Nenhum arquivo de 0 bytes em `Boas Vindas/`. |
-| 8 a 10 | ⏳ Pendente | | |
+| 8 | ✅ Concluída | 2026-10-12 | 151 testes unitários verdes (+16: `CategoriaEditorViewModelTests`) e 11 de UI (+1: `CategoriesEditUITests`). CRUD completo de categorias e subcategorias com `CategoriaEditorViewModel`, `CategoriesEditView`, `CategoriaFormView` e `SubcategoriaFormView`. Paleta `CategoriaPalette` com cores curadas de alto contraste e bloqueio de cores já usadas. Grade `SymbolPickerGrid` por temas. Validações de tamanho, unicidade, proteção da categoria Renda e proteção/remanejamento de transações em exclusão. `CategoriesViewEdit.swift` legado apagado. |
+| 9 a 10 | ⏳ Pendente | | |
 
 ---
 
@@ -1034,8 +1035,8 @@ Etapa 6  ─ BiometricAuthService, AuthViewModel, BiometricLockView, RootView, S
            └── Limpeza 6.6 → testes verdes
 Etapa 7  ─ OnboardingViewModel, OnboardingView + componentes [CONCLUÍDA ✅]
            └── Limpeza 7.4 → testes unitários e UI testes 100% verdes
-Etapa 8  ─ CategoriaEditorViewModel, CategoriesEditView, forms e grids
-           └── Limpeza 8.5 → testes verdes
+Etapa 8  ─ CategoriaEditorViewModel, CategoriesEditView, forms e grids [CONCLUÍDA ✅]
+           └── Limpeza 8.5 → testes unitários e UI testes 100% verdes
 Etapa 9  ─ RecurringScope, editRecurring, banner de escopo
            └── Limpeza 9.5 → testes verdes
 Etapa 10 ─ tips.json, TipsViewModel, TipCardView, FiftyThirtyTwentyCard

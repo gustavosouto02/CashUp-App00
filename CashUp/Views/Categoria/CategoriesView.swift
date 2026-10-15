@@ -15,41 +15,39 @@ struct CategoriesView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Divider()
-                    .background(Color.gray.opacity(0.6))
-                    .frame(height: 1)
-                    .padding(.bottom, 12)
+        VStack(spacing: 0) {
+            Divider()
+                .background(Color.gray.opacity(0.6))
+                .frame(height: 1)
+                .padding(.bottom, 12)
 
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        CategoriaFiltroView(
-                            categorias: viewModel.fetchTodasCategoriasModel(),
-                            selectedCategoriaID: $selectedCategoriaModelID,
-                            onSubcategoriaSelected: { subcategoriaModel in
-                                viewModel.registrarUso(subcategoriaModel: subcategoriaModel)
-                                onSubcategoriaModelSelected(subcategoriaModel)
-                            },
-                            subcategoriasFrequentes: viewModel.subcategoriasMaisUsadas,
-                            transactionType: viewModel.transactionType
-                        )
-                    }
-                    .padding(.vertical)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    CategoriaFiltroView(
+                        categorias: viewModel.fetchTodasCategoriasModel(),
+                        selectedCategoriaID: $selectedCategoriaModelID,
+                        onSubcategoriaSelected: { subcategoriaModel in
+                            viewModel.registrarUso(subcategoriaModel: subcategoriaModel)
+                            onSubcategoriaModelSelected(subcategoriaModel)
+                        },
+                        subcategoriasFrequentes: viewModel.subcategoriasMaisUsadas,
+                        transactionType: viewModel.transactionType
+                    )
+                }
+                .padding(.vertical)
+            }
+        }
+        .background(Color.black.ignoresSafeArea())
+        .navigationTitle("Categorias")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isEditing = true }) {
+                    Image(systemName: "square.and.pencil")
                 }
             }
-            .navigationTitle("Categorias")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { isEditing = true }) {
-                        Image(systemName: "square.and.pencil")
-                    }
-                }
-            }
-            .navigationDestination(isPresented: $isEditing) {
-                CategoriesViewEdit()
-                    .environmentObject(viewModel)
-            }
+        }
+        .navigationDestination(isPresented: $isEditing) {
+            CategoriesEditView(repository: viewModel.repository)
         }
     }
 }

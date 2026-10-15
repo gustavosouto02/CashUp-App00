@@ -10,6 +10,13 @@ enum CashUpDomainError: LocalizedError, Equatable {
     case dataFimMuitoDistante
     case transacaoNaoEncontrada
     case categoriaEmUso(quantidadeTransacoes: Int)
+    case subcategoriaEmUso(quantidadeTransacoes: Int)
+    case nomeInvalido
+    case nomeDuplicado(String)
+    case categoriaProtegida
+    case subcategoriaProtegida
+    case corEmUso
+    case corCategoriaBaseProtegida
     case persistencia(String)
 
     var errorDescription: String? {
@@ -32,6 +39,20 @@ enum CashUpDomainError: LocalizedError, Equatable {
             return "Transação não encontrada."
         case .categoriaEmUso(let quantidade):
             return "Esta categoria possui \(quantidade) transação(ões) e não pode ser apagada."
+        case .subcategoriaEmUso(let quantidade):
+            return "Esta subcategoria possui \(quantidade) transação(ões) e não há outra subcategoria disponível para remanejo."
+        case .nomeInvalido:
+            return "O nome deve conter entre 2 e 24 caracteres."
+        case .nomeDuplicado(let nome):
+            return "Já existe uma categoria ou subcategoria com o nome \"\(nome)\"."
+        case .categoriaProtegida:
+            return "A categoria Renda é protegida pelo sistema e não pode ser alterada ou apagada."
+        case .subcategoriaProtegida:
+            return "Esta subcategoria é essencial e não pode ser apagada."
+        case .corEmUso:
+            return "Esta cor já está sendo usada por outra categoria. Escolha uma cor diferente."
+        case .corCategoriaBaseProtegida:
+            return "A cor das categorias padrão do sistema não pode ser alterada."
         case .persistencia(let detalhe):
             return "Não foi possível salvar: \(detalhe)"
         }

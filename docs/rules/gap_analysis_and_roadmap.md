@@ -77,7 +77,7 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 
 | ID | Severidade | Título | Descrição |
 |---|---|---|---|
-| **L-01** | **Alta** | CRUD de Categorias Customizadas Desativado | Código de adicionar/deletar categorias comentado em `CategoriesViewEdit.swift`. |
+| **L-01** | **Alta** | CRUD de Categorias Customizadas Desativado | ✅ Implementado na Etapa 8 com criação/edição de categorias e subcategorias, paleta de alto contraste, curadoria de símbolos e testes unitários/UI. |
 | **L-02** | **Alta** | Ausência de Autenticação Biométrica | O app não oferece bloqueio por Face ID / Touch ID, deixando os dados financeiros expostos a quem tiver acesso ao aparelho destravado. |
 | **L-03** | **Média** | Onboarding Interativo Inexistente | ✅ Implementado na Etapa 7 com simulação visual motion fiel ao design Lovable, MVVM, testes unitários e de UI. |
 | **L-04** | **Média** | Falta de Alertas de Orçamento Excedido | Não há notificações locais avisando quando o usuário ultrapassa 80% ou 100% do teto de uma categoria planejada. |
@@ -98,7 +98,7 @@ gantt
     dateFormat  YYYY-MM-DD
     section Fase 1 - Fundação & CRUD
     Limpeza de Débitos Técnicos (DT-01/02) :done, p1, 2026-10-09, 3d
-    Habilitar CRUD de Categorias (L-01)    :active, p2, 2026-10-12, 4d
+    Habilitar CRUD de Categorias (L-01)    :done, p2, 2026-10-12, 2026-10-12
     Camada de Repositórios & Protocols (L-09): done, p3, 2026-10-09, 2026-10-09
     section Fase 2 - Segurança & Onboarding
     Autenticação Biométrica Face ID (L-02) : done, p4, 2026-10-09, 2026-10-09

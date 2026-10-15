@@ -58,10 +58,12 @@ final class SwiftDataCategoriaRepository: CategoriaRepositoryProtocol {
     }
 
 
-    // MARK: - Escrita (feature futura: edição de categorias via repositório)
-
     func insert(_ categoria: CategoriaModel) {
         context.insert(categoria)
+    }
+
+    func insert(_ subcategoria: SubcategoriaModel) {
+        context.insert(subcategoria)
     }
 
     func delete(_ categoria: CategoriaModel) {

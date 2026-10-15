@@ -39,6 +39,8 @@ struct CategorySelectionSheet: View {
                     }
                 }
             }
+            .background(Color.black.ignoresSafeArea())
         }
+        .presentationBackground(Color.black)
     }
 }
