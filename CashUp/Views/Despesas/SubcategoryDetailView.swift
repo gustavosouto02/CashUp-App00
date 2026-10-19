@@ -14,7 +14,8 @@ struct SubcategoryDetailView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var expenseToDelete: DisplayableExpense? = nil
-    @State private var selectedTransaction: ExpenseModel? = nil
+    @State private var expenseToEdit: DisplayableExpense? = nil
+    @State private var editingPayload: (model: ExpenseModel, occurrence: DisplayableExpense?, scope: RecurringScope?)? = nil
 
     var sections: [DisplayableExpenseSection] {
         let fonte = isIncome
@@ -72,13 +73,45 @@ struct SubcategoryDetailView: View {
             }
         }
         .listStyle(.plain)
-        .recurringScopeDialog(item: $expenseToDelete) { expense, scope in
+        .recurringScopeDialog(
+            item: $expenseToDelete,
+            titulo: "Apagar Transação Recorrente",
+            mensagemCustomizada: { expense in
+                let valor = BRLCurrencyFormatter.string(from: expense.amount)
+                let data = expense.date.formatted(date: .numeric, time: .omitted)
+                let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
+                return "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?"
+            }
+        ) { expense, scope in
             viewModel.excluir(expense, scope: scope)
         }
+        .recurringScopeDialog(
+            item: $expenseToEdit,
+            titulo: "Editar Transação Recorrente",
+            mensagemCustomizada: { expense in
+                let valor = BRLCurrencyFormatter.string(from: expense.amount)
+                let data = expense.date.formatted(date: .numeric, time: .omitted)
+                let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
+                return "\"\(nome)\" de \(valor) em \(data) é recorrente. Quais ocorrências você deseja alterar?"
+            }
+        ) { expense, scope in
+            if let model = viewModel.originalExpenseModel(from: expense) {
+                editingPayload = (model: model, occurrence: expense, scope: scope)
+            }
+        }
         .errorAlert($viewModel.errorMessage)
-        .sheet(item: $selectedTransaction) { transaction in
-            AddTransactionView(transacaoEmEdicao: transaction)
+        .sheet(isPresented: Binding(
+            get: { editingPayload != nil },
+            set: { if !$0 { editingPayload = nil } }
+        )) {
+            if let payload = editingPayload {
+                AddTransactionView(
+                    transacaoEmEdicao: payload.model,
+                    ocorrenciaEmEdicao: payload.occurrence,
+                    recurringScope: payload.scope
+                )
                 .environmentObject(viewModel)
+            }
         }
     }
 
@@ -90,15 +123,22 @@ struct SubcategoryDetailView: View {
                 } label: {
                     Label("Excluir", systemImage: "trash")
                 }
-                if let model = viewModel.originalExpenseModel(from: expense) {
-                    Button {
-                        selectedTransaction = model
-                    } label: {
-                        Label("Editar", systemImage: "pencil")
-                    }
-                    .tint(.blue)
+
+                Button {
+                    solicitarEdicao(expense)
+                } label: {
+                    Label("Editar", systemImage: "pencil")
                 }
+                .tint(.blue)
             }
+    }
+
+    private func solicitarEdicao(_ expense: DisplayableExpense) {
+        if expense.isRecurringInstance && expense.originalExpenseID != nil {
+            expenseToEdit = expense
+        } else if let model = viewModel.originalExpenseModel(from: expense) {
+            editingPayload = (model: model, occurrence: nil, scope: nil)
+        }
     }
 
     private func solicitarExclusao(_ expense: DisplayableExpense) {
