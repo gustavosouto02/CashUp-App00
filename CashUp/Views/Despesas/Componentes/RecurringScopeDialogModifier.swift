@@ -3,7 +3,20 @@ import SwiftUI
 struct RecurringScopeDialogModifier: ViewModifier {
     @Binding var item: DisplayableExpense?
     let titulo: String
-    let onScope: (DisplayableExpense, RecurringExpenseDeletionScope) -> Void
+    let mensagemCustomizada: ((DisplayableExpense) -> String)?
+    let onScope: (DisplayableExpense, RecurringScope) -> Void
+
+    init(
+        item: Binding<DisplayableExpense?>,
+        titulo: String,
+        mensagemCustomizada: ((DisplayableExpense) -> String)? = nil,
+        onScope: @escaping (DisplayableExpense, RecurringScope) -> Void
+    ) {
+        self._item = item
+        self.titulo = titulo
+        self.mensagemCustomizada = mensagemCustomizada
+        self.onScope = onScope
+    }
 
     func body(content: Content) -> some View {
         content.confirmationDialog(
@@ -20,24 +33,30 @@ struct RecurringScopeDialogModifier: ViewModifier {
             Button("Toda a série", role: .destructive) { onScope(expense, .entireSeries) }
             Button("Cancelar", role: .cancel) {}
         } message: { expense in
-            Text(mensagem(para: expense))
+            Text(mensagemCustomizada?(expense) ?? mensagemPadrao(para: expense))
         }
     }
 
-    private func mensagem(para expense: DisplayableExpense) -> String {
+    private func mensagemPadrao(para expense: DisplayableExpense) -> String {
         let valor = BRLCurrencyFormatter.string(from: expense.amount)
         let data = expense.date.formatted(date: .numeric, time: .omitted)
         let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
-        return "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?"
+        return "\"\(nome)\" de \(valor) em \(data) é recorrente. Escolha como deseja prosseguir:"
     }
 }
 
 extension View {
     func recurringScopeDialog(
         item: Binding<DisplayableExpense?>,
-        titulo: String = "Apagar Transação Recorrente",
-        onScope: @escaping (DisplayableExpense, RecurringExpenseDeletionScope) -> Void
+        titulo: String = "Transação Recorrente",
+        mensagemCustomizada: ((DisplayableExpense) -> String)? = nil,
+        onScope: @escaping (DisplayableExpense, RecurringScope) -> Void
     ) -> some View {
-        modifier(RecurringScopeDialogModifier(item: item, titulo: titulo, onScope: onScope))
+        modifier(RecurringScopeDialogModifier(
+            item: item,
+            titulo: titulo,
+            mensagemCustomizada: mensagemCustomizada,
+            onScope: onScope
+        ))
     }
 }

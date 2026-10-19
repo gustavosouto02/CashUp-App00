@@ -10,14 +10,29 @@ struct AddTransactionView: View {
     @State private var isCategoryModalPresented = false
     @State private var showSuccessAlert = false
 
-    init(transacaoEmEdicao: ExpenseModel? = nil) {
-        _addTransactionVM = StateObject(wrappedValue: AddTransactionViewModel(transacaoEmEdicao: transacaoEmEdicao))
+    init(
+        transacaoEmEdicao: ExpenseModel? = nil,
+        ocorrenciaEmEdicao: DisplayableExpense? = nil,
+        recurringScope: RecurringScope? = nil
+    ) {
+        _addTransactionVM = StateObject(
+            wrappedValue: AddTransactionViewModel(
+                transacaoEmEdicao: transacaoEmEdicao,
+                ocorrenciaEmEdicao: ocorrenciaEmEdicao,
+                recurringScope: recurringScope
+            )
+        )
     }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .center, spacing: 16) {
+                    if let scope = addTransactionVM.recurringScope {
+                        RecurringEditScopeBanner(scope: scope)
+                            .padding(.horizontal)
+                    }
+
                     TransactionPicker(selectedTransactionType: $addTransactionVM.selectedTransactionType)
                         .padding(.horizontal)
 

@@ -28,23 +28,49 @@ final class AddTransactionViewModel: ObservableObject {
     @Published var errorMessage: String?
 
     private let transacaoEmEdicao: ExpenseModel?
+    let ocorrenciaEmEdicao: DisplayableExpense?
+    let recurringScope: RecurringScope?
     private let calendar: Calendar
 
-    init(transacaoEmEdicao: ExpenseModel? = nil, calendar: Calendar = .current) {
+    init(
+        transacaoEmEdicao: ExpenseModel? = nil,
+        ocorrenciaEmEdicao: DisplayableExpense? = nil,
+        recurringScope: RecurringScope? = nil,
+        calendar: Calendar = .current
+    ) {
         self.transacaoEmEdicao = transacaoEmEdicao
+        self.ocorrenciaEmEdicao = ocorrenciaEmEdicao
+        self.recurringScope = recurringScope
         self.calendar = calendar
-        guard let transacao = transacaoEmEdicao else { return }
-        amount = transacao.amount
-        selectedDate = transacao.date
-        expenseDescription = transacao.expenseDescription
-        selectedTransactionType = transacao.isIncome ? 1 : 0
-        repeatOption = transacao.repetition?.repeatOption ?? .nunca
-        repeatEndDate = transacao.repetition?.endDate
-        selectedCategoria = transacao.categoria
-        selectedSubcategoria = transacao.subcategoria
+
+        if let ocorrencia = ocorrenciaEmEdicao {
+            amount = ocorrencia.amount
+            selectedDate = ocorrencia.date
+            expenseDescription = ocorrencia.expenseDescription
+            selectedTransactionType = ocorrencia.isIncome ? 1 : 0
+            selectedCategoria = ocorrencia.categoria
+            selectedSubcategoria = ocorrencia.subcategoria
+
+            if recurringScope == .thisOccurrenceOnly {
+                repeatOption = .nunca
+                repeatEndDate = nil
+            } else if let transacao = transacaoEmEdicao {
+                repeatOption = transacao.repetition?.repeatOption ?? .nunca
+                repeatEndDate = transacao.repetition?.endDate
+            }
+        } else if let transacao = transacaoEmEdicao {
+            amount = transacao.amount
+            selectedDate = transacao.date
+            expenseDescription = transacao.expenseDescription
+            selectedTransactionType = transacao.isIncome ? 1 : 0
+            repeatOption = transacao.repetition?.repeatOption ?? .nunca
+            repeatEndDate = transacao.repetition?.endDate
+            selectedCategoria = transacao.categoria
+            selectedSubcategoria = transacao.subcategoria
+        }
     }
 
-    var isEditando: Bool { transacaoEmEdicao != nil }
+    var isEditando: Bool { transacaoEmEdicao != nil || ocorrenciaEmEdicao != nil }
 
     var podeSalvar: Bool {
         amount > 0 && selectedCategoria != nil && selectedSubcategoria != nil
@@ -87,7 +113,19 @@ final class AddTransactionViewModel: ObservableObject {
     func salvar(usando expensesViewModel: ExpensesViewModel) -> Bool {
         do {
             try validarCampos()
-            if let transacao = transacaoEmEdicao {
+            if let ocorrencia = ocorrenciaEmEdicao, let escopo = recurringScope {
+                let repeticao = (escopo == .thisOccurrenceOnly) ? nil : montarRepeticao(preservando: transacaoEmEdicao?.repetition)
+                let edit = ExpenseEdit(
+                    amount: amount,
+                    date: selectedDate,
+                    description: expenseDescription,
+                    isIncome: resolverIsIncome(),
+                    categoria: selectedCategoria,
+                    subcategoria: selectedSubcategoria,
+                    repetition: repeticao
+                )
+                try expensesViewModel.editRecurring(ocorrencia, scope: escopo, edit: edit)
+            } else if let transacao = transacaoEmEdicao {
                 try aplicarEdicao(em: transacao, usando: expensesViewModel)
             } else {
                 try expensesViewModel.addExpense(montarNovaTransacao())

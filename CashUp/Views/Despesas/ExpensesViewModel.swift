@@ -2,11 +2,7 @@ import Foundation
 import SwiftData
 import SwiftUI
 
-enum RecurringExpenseDeletionScope {
-    case thisOccurrenceOnly
-    case thisAndAllFutureOccurrences
-    case entireSeries
-}
+typealias RecurringExpenseDeletionScope = RecurringScope
 
 @MainActor
 final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
@@ -63,7 +59,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         loadDisplayableExpenses()
     }
 
-    func removeExpense(_ expense: DisplayableExpense, scope: RecurringExpenseDeletionScope) throws {
+    func removeExpense(_ expense: DisplayableExpense, scope: RecurringScope) throws {
         if expense.isRecurringInstance, let originalID = expense.originalExpenseID {
             let original = try buscarTransacao(id: originalID)
             aplicarEscopoDeExclusao(scope, em: original, dataDaOcorrencia: expense.date)
@@ -73,7 +69,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         try persistir()
     }
 
-    func excluir(_ expense: DisplayableExpense, scope: RecurringExpenseDeletionScope) {
+    func excluir(_ expense: DisplayableExpense, scope: RecurringScope) {
         do {
             try removeExpense(expense, scope: scope)
         } catch {
@@ -81,7 +77,104 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
     }
 
-    private func aplicarEscopoDeExclusao(_ scope: RecurringExpenseDeletionScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
+    func editRecurring(_ occurrence: DisplayableExpense, scope: RecurringScope, edit: ExpenseEdit) throws {
+        guard let originalID = occurrence.originalExpenseID else {
+            let original = try buscarTransacao(id: occurrence.id)
+            original.amount = edit.amount
+            original.date = edit.date
+            original.expenseDescription = edit.description
+            original.isIncome = edit.isIncome
+            original.categoria = edit.categoria
+            original.subcategoria = edit.subcategoria
+            original.repetition = edit.repetition
+            try validar(original)
+            try persistir()
+            return
+        }
+
+        let original = try buscarTransacao(id: originalID)
+        let diaDaOcorrencia = calendar.startOfDay(for: occurrence.date)
+
+        switch scope {
+        case .thisOccurrenceOnly:
+            guard var repeticao = original.repetition else {
+                original.amount = edit.amount
+                original.date = edit.date
+                original.expenseDescription = edit.description
+                original.isIncome = edit.isIncome
+                original.categoria = edit.categoria
+                original.subcategoria = edit.subcategoria
+                try validar(original)
+                try persistir()
+                return
+            }
+
+            var excluidas = repeticao.excludedDates ?? []
+            if !excluidas.contains(where: { calendar.isDate($0, inSameDayAs: diaDaOcorrencia) }) {
+                excluidas.append(diaDaOcorrencia)
+            }
+            repeticao.excludedDates = excluidas
+            original.repetition = repeticao
+
+            let novaTransacao = ExpenseModel(
+                amount: edit.amount,
+                date: edit.date,
+                expenseDescription: edit.description,
+                isIncome: edit.isIncome,
+                repetition: nil,
+                categoria: edit.categoria,
+                subcategoria: edit.subcategoria
+            )
+            try validar(novaTransacao)
+            repository.insert(novaTransacao)
+
+        case .thisAndAllFutureOccurrences:
+            let dataInicioOriginal = calendar.startOfDay(for: original.date)
+
+            if diaDaOcorrencia <= dataInicioOriginal {
+                original.amount = edit.amount
+                original.date = edit.date
+                original.expenseDescription = edit.description
+                original.isIncome = edit.isIncome
+                original.categoria = edit.categoria
+                original.subcategoria = edit.subcategoria
+                original.repetition = edit.repetition
+                try validar(original)
+            } else {
+                if var repeticaoOriginal = original.repetition,
+                   let novoFim = calendar.date(byAdding: .day, value: -1, to: diaDaOcorrencia) {
+                    repeticaoOriginal.endDate = novoFim
+                    original.repetition = repeticaoOriginal
+                }
+
+                let novaSerie = ExpenseModel(
+                    amount: edit.amount,
+                    date: edit.date,
+                    expenseDescription: edit.description,
+                    isIncome: edit.isIncome,
+                    repetition: edit.repetition,
+                    categoria: edit.categoria,
+                    subcategoria: edit.subcategoria
+                )
+                try validar(novaSerie)
+                repository.insert(novaSerie)
+            }
+
+        case .entireSeries:
+            original.amount = edit.amount
+            original.date = edit.date
+            original.expenseDescription = edit.description
+            original.isIncome = edit.isIncome
+            original.categoria = edit.categoria
+            original.subcategoria = edit.subcategoria
+            original.repetition = edit.repetition
+            try validar(original)
+        }
+
+        try persistir()
+    }
+
+    private func aplicarEscopoDeExclusao(_ scope: RecurringScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
         let diaDaOcorrencia = calendar.startOfDay(for: dataDaOcorrencia)
 
         switch scope {
