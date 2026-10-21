@@ -16,9 +16,24 @@ final class MockBiometricAuthService: BiometricAuthServiceProtocol {
 final class InMemoryAppSettings: AppSettingsProtocol {
     var isBiometricLockEnabled: Bool
     var hasCompletedOnboarding: Bool
+    var isDailyReminderEnabled: Bool
+    var dailyReminderHour: Int
+    var dailyReminderMinute: Int
+    var hasPromptedNotificationPermission: Bool
 
-    init(isBiometricLockEnabled: Bool = false, hasCompletedOnboarding: Bool = false) {
+    init(
+        isBiometricLockEnabled: Bool = false,
+        hasCompletedOnboarding: Bool = false,
+        isDailyReminderEnabled: Bool = false,
+        dailyReminderHour: Int = 20,
+        dailyReminderMinute: Int = 0,
+        hasPromptedNotificationPermission: Bool = false
+    ) {
         self.isBiometricLockEnabled = isBiometricLockEnabled
         self.hasCompletedOnboarding = hasCompletedOnboarding
+        self.isDailyReminderEnabled = isDailyReminderEnabled
+        self.dailyReminderHour = dailyReminderHour
+        self.dailyReminderMinute = dailyReminderMinute
+        self.hasPromptedNotificationPermission = hasPromptedNotificationPermission
     }
 }

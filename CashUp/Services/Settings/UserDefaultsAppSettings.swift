@@ -4,6 +4,10 @@ final class UserDefaultsAppSettings: AppSettingsProtocol {
     private enum Chave {
         static let bloqueioBiometrico = "settings.isBiometricLockEnabled"
         static let onboardingConcluido = "settings.hasCompletedOnboarding"
+        static let lembreteDiario = "settings.isDailyReminderEnabled"
+        static let horaLembrete = "settings.dailyReminderHour"
+        static let minutoLembrete = "settings.dailyReminderMinute"
+        static let solicitouPermissaoNotificacao = "settings.hasPromptedNotificationPermission"
     }
 
     private let defaults: UserDefaults
@@ -26,5 +30,28 @@ final class UserDefaultsAppSettings: AppSettingsProtocol {
     var hasCompletedOnboarding: Bool {
         get { defaults.bool(forKey: Chave.onboardingConcluido) }
         set { defaults.set(newValue, forKey: Chave.onboardingConcluido) }
+    }
+
+    var isDailyReminderEnabled: Bool {
+        get { defaults.bool(forKey: Chave.lembreteDiario) }
+        set { defaults.set(newValue, forKey: Chave.lembreteDiario) }
+    }
+
+    var dailyReminderHour: Int {
+        get {
+            let valor = defaults.integer(forKey: Chave.horaLembrete)
+            return defaults.object(forKey: Chave.horaLembrete) == nil ? 20 : valor
+        }
+        set { defaults.set(newValue, forKey: Chave.horaLembrete) }
+    }
+
+    var dailyReminderMinute: Int {
+        get { defaults.integer(forKey: Chave.minutoLembrete) }
+        set { defaults.set(newValue, forKey: Chave.minutoLembrete) }
+    }
+
+    var hasPromptedNotificationPermission: Bool {
+        get { defaults.bool(forKey: Chave.solicitouPermissaoNotificacao) }
+        set { defaults.set(newValue, forKey: Chave.solicitouPermissaoNotificacao) }
     }
 }
