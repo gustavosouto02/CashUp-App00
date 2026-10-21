@@ -44,6 +44,12 @@ struct HomeView: View {
                         expensesViewModel: homeViewModel.expensesViewModel
                     )
 
+                    if let insight = homeViewModel.topInsight {
+                        HomeSmartInsightBanner(insight: insight) {
+                            isTipsPresented = true
+                        }
+                    }
+
                     NavigationLink {
                         PlanningView()
                             .environmentObject(homeViewModel.planningViewModel)
@@ -110,7 +116,7 @@ struct HomeView: View {
                 SettingsView(service: biometricService, settings: settings)
             }
             .fullScreenCover(isPresented: $isTipsPresented) {
-                TipsView()
+                TipsView(modelContext: modelContext, mes: homeViewModel.currentMonth)
             }
             .fullScreenCover(isPresented: $isAddTransactionPresented) {
                 AddTransactionView()

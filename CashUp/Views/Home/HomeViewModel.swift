@@ -30,13 +30,17 @@ final class HomeViewModel: ObservableObject {
     @Published var categoriasResumo: [CategoriaResumo] = []
     @Published var categoriasPlanejadas: [CategoriaPlanejadaModel] = []
     @Published var dailyExpenseChartData: [DailyExpenseItem] = []
+    @Published var topInsight: FinancialInsight?
 
+    private let insightEngine: InsightEngineProtocol
     private var cancellables = Set<AnyCancellable>()
 
     init(planningViewModel: PlanningViewModel,
-         expensesViewModel: ExpensesViewModel) {
+         expensesViewModel: ExpensesViewModel,
+         insightEngine: InsightEngineProtocol = SmartFinancialCoachEngine()) {
         self.planningViewModel = planningViewModel
         self.expensesViewModel = expensesViewModel
+        self.insightEngine = insightEngine
 
         let initialMonth = Date().startOfMonth()
         _currentMonth = Published(initialValue: initialMonth)
@@ -138,6 +142,14 @@ final class HomeViewModel: ObservableObject {
             .sorted { $0.total > $1.total }
 
         dailyExpenseChartData = Self.dailyItems(for: currentMonth, despesas: despesasDoMes)
+
+        topInsight = insightEngine.analyze(
+            month: currentMonth,
+            expenses: transacoesDoMes,
+            plannedCategories: categoriasPlanejadas,
+            today: Date(),
+            calendar: .current
+        ).first
     }
 
     private static func dailyItems(for month: Date, despesas: [DisplayableExpense], calendar: Calendar = .current) -> [DailyExpenseItem] {
