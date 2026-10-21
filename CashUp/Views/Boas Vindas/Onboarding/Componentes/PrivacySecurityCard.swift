@@ -39,6 +39,8 @@ struct PrivacySecurityCard: View {
                 )
 
                 itemProtecao
+
+                itemLembretes
             }
         }
         .padding(20)
@@ -120,10 +122,47 @@ struct PrivacySecurityCard: View {
         }
     }
 
+    private var itemLembretes: some View {
+        HStack(spacing: 14) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.white.opacity(0.08))
+                    .frame(width: 38, height: 38)
+
+                Image(systemName: "bell.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.blue)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Lembretes")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+
+                Text("Aviso diário para registrar gastos")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Toggle("", isOn: lembreteBinding)
+                .labelsHidden()
+                .accessibilityIdentifier("onboardingReminderToggle")
+        }
+    }
+
     private var bloqueioBinding: Binding<Bool> {
         Binding(
             get: { settingsViewModel.isBiometricLockEnabled },
             set: { novoValor in Task { await settingsViewModel.alterarBloqueio(novoValor) } }
+        )
+    }
+
+    private var lembreteBinding: Binding<Bool> {
+        Binding(
+            get: { settingsViewModel.isDailyReminderEnabled },
+            set: { novoValor in Task { await settingsViewModel.alterarLembreteDiario(novoValor) } }
         )
     }
 }

@@ -67,23 +67,5 @@ struct RootView: View {
                 authViewModel.bloquear()
             }
         }
-        .task {
-            if !ProcessInfo.processInfo.arguments.contains("--uitesting") {
-                await solicitarPermissaoInicialNotificacoes()
-            }
-        }
-    }
-
-    private func solicitarPermissaoInicialNotificacoes() async {
-        guard !settings.hasPromptedNotificationPermission else { return }
-        settings.hasPromptedNotificationPermission = true
-        let notificationService = LocalNotificationService.shared
-        let autorizado = await notificationService.requestAuthorization()
-        if autorizado {
-            settings.isDailyReminderEnabled = true
-            let hora = settings.dailyReminderHour
-            let minuto = settings.dailyReminderMinute
-            notificationService.agendarLembreteDiario(hora: hora, minuto: minuto)
-        }
     }
 }
