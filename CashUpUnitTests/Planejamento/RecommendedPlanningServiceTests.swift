@@ -69,8 +69,28 @@ final class RecommendedPlanningServiceTests: XCTestCase {
         let totalDesejos = itens.filter { $0.grupo == .desejos }.reduce(0.0) { $0 + $1.valorSugerido }
         let totalPoupanca = itens.filter { $0.grupo == .futuroPoupanca }.reduce(0.0) { $0 + $1.valorSugerido }
 
-        XCTAssertEqual(totalNecessidades, 2000.0, accuracy: 10.0)
-        XCTAssertEqual(totalDesejos, 1200.0, accuracy: 10.0)
-        XCTAssertEqual(totalPoupanca, 800.0, accuracy: 10.0)
+        XCTAssertEqual(totalNecessidades, 2000.0, accuracy: 0.01)
+        XCTAssertEqual(totalDesejos, 1200.0, accuracy: 0.01)
+        XCTAssertEqual(totalPoupanca, 800.0, accuracy: 0.01)
+        XCTAssertEqual(itens.reduce(0.0) { $0 + $1.valorSugerido }, renda, accuracy: 0.01)
+    }
+
+    func testDiversosComoPoupancaSelecionaSubcategoriaReserva() throws {
+        let catDiversos = CategoriaModel(nome: "Diversos", icon: "archivebox", red: 0.3, green: 0.3, blue: 0.3)
+        let subCustosBancarios = SubcategoriaModel(nome: "Custos Bancários", icon: "dollarsign")
+        let subReserva = SubcategoriaModel(nome: "Reserva", icon: "shield.fill")
+        let subOutros = SubcategoriaModel(nome: "Diversos", icon: "tag")
+        catDiversos.subcategorias = [subCustosBancarios, subReserva, subOutros]
+
+        let catComida = CategoriaModel(nome: "Comida", icon: "fork.knife", red: 1.0, green: 0.5, blue: 0.0)
+        let subMercado = SubcategoriaModel(nome: "Mercado", icon: "cart")
+        catComida.subcategorias = [subMercado]
+
+        let itens = sut.gerarPlanejamentoRecomendado(rendaMensal: 3000, categoriasDisponiveis: [catComida, catDiversos])
+        let itemPoupanca = try XCTUnwrap(itens.first(where: { $0.grupo == .futuroPoupanca }))
+
+        XCTAssertEqual(itemPoupanca.categoria.id, catDiversos.id)
+        XCTAssertEqual(itemPoupanca.subcategoria?.nome, "Reserva")
+        XCTAssertEqual(itemPoupanca.valorSugerido, 600.0, accuracy: 0.01)
     }
 }

@@ -40,6 +40,12 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             categoriasPoupanca.append(diversos)
         }
 
+        if categoriasPoupanca.isEmpty, let fallback = categoriasDespesa.last {
+            categoriasDesejos.removeAll { $0.id == fallback.id }
+            categoriasNecessidades.removeAll { $0.id == fallback.id }
+            categoriasPoupanca.append(fallback)
+        }
+
         let totalNecessidades = rendaMensal * 0.50
         let totalDesejos = rendaMensal * 0.30
         let totalPoupanca = rendaMensal * 0.20
@@ -113,24 +119,36 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             }
 
             if !restantes.isEmpty {
-                let sobra = max(totalGrupo - alocado, 0.0)
-                let fatia = arredondar(sobra / Double(restantes.count))
-                for cat in restantes {
+                var sobra = max(totalGrupo - alocado, 0.0)
+                for (index, cat) in restantes.enumerated() {
                     let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: [])
-                    resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: fatia, grupo: .necessidades))
+                    let valor: Double
+                    if index == restantes.count - 1 {
+                        valor = max((sobra * 100).rounded() / 100.0, 0.0)
+                    } else {
+                        let fatia = arredondar(sobra / Double(restantes.count - index))
+                        valor = min(fatia, sobra)
+                        sobra -= valor
+                    }
+                    resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
                 }
             } else if alocado < totalGrupo && !resultado.isEmpty {
                 let sobra = totalGrupo - alocado
-                let extra = arredondar(sobra / Double(resultado.count))
-                for i in 0..<resultado.count {
-                    resultado[i].valorSugerido += extra
-                }
+                resultado[resultado.count - 1].valorSugerido += (sobra * 100).rounded() / 100.0
             }
         } else {
-            let fatia = arredondar(totalGrupo / Double(categorias.count))
-            for cat in categorias {
+            var restante = (totalGrupo * 100).rounded() / 100.0
+            for (index, cat) in categorias.enumerated() {
                 let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: [])
-                resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: fatia, grupo: .necessidades))
+                let valor: Double
+                if index == categorias.count - 1 {
+                    valor = max((restante * 100).rounded() / 100.0, 0.0)
+                } else {
+                    let fatia = arredondar(totalGrupo / Double(categorias.count))
+                    valor = min(fatia, restante)
+                    restante -= valor
+                }
+                resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
             }
         }
 
@@ -141,11 +159,19 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         guard !categorias.isEmpty else { return [] }
 
         var resultado: [RecommendedPlanningItem] = []
-        let fatia = arredondar(totalGrupo / Double(categorias.count))
+        var restante = (totalGrupo * 100).rounded() / 100.0
 
-        for cat in categorias {
+        for (index, cat) in categorias.enumerated() {
             let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["lazer", "entretenimento", "compras", "restaurante"])
-            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: fatia, grupo: .desejos))
+            let valor: Double
+            if index == categorias.count - 1 {
+                valor = max((restante * 100).rounded() / 100.0, 0.0)
+            } else {
+                let calculado = arredondar(totalGrupo / Double(categorias.count))
+                valor = min(calculado, restante)
+                restante -= valor
+            }
+            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .desejos))
         }
 
         return resultado
@@ -155,11 +181,19 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         guard !categorias.isEmpty else { return [] }
 
         var resultado: [RecommendedPlanningItem] = []
-        let fatia = arredondar(totalGrupo / Double(categorias.count))
+        var restante = (totalGrupo * 100).rounded() / 100.0
 
-        for cat in categorias {
-            let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["reserva", "poupanca", "investimento", "geral"])
-            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: fatia, grupo: .futuroPoupanca))
+        for (index, cat) in categorias.enumerated() {
+            let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["reserva", "poupanca", "investimento", "diversos", "outros", "geral"])
+            let valor: Double
+            if index == categorias.count - 1 {
+                valor = max((restante * 100).rounded() / 100.0, 0.0)
+            } else {
+                let calculado = arredondar(totalGrupo / Double(categorias.count))
+                valor = min(calculado, restante)
+                restante -= valor
+            }
+            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .futuroPoupanca))
         }
 
         return resultado
