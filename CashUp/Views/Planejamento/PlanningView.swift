@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct PlanningView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.sizeCategory) var sizeCategory
 
     @EnvironmentObject var planningViewModel: PlanningViewModel
@@ -16,6 +17,7 @@ struct PlanningView: View {
 
     @State private var isEditing: Bool = false
     @State private var subcategoriasPlanejadasSelecionadasParaDelecao: Set<UUID> = []
+    @State private var isRecommendedPlanningSheetPresented: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -44,7 +46,8 @@ struct PlanningView: View {
                         PlanningPlanejarView(
                             viewModel: planningViewModel,
                             isEditing: $isEditing,
-                            subcategoriasSelecionadas: $subcategoriasPlanejadasSelecionadasParaDelecao
+                            subcategoriasSelecionadas: $subcategoriasPlanejadasSelecionadasParaDelecao,
+                            isRecommendedPlanningSheetPresented: $isRecommendedPlanningSheetPresented
                         )
                         .id("PlanejarView-\(planningViewModel.currentMonth.timeIntervalSince1970)")
                     } else {
@@ -56,9 +59,20 @@ struct PlanningView: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
+            .hideKeyboardOnTap()
             .navigationTitle("Planejamento")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    if planningViewModel.selectedTab == 0 && !isEditing {
+                        Button {
+                            isRecommendedPlanningSheetPresented = true
+                        } label: {
+                            Label("Planejamento Recomendado", systemImage: "wand.and.stars")
+                        }
+                        .accessibilityIdentifier("recommended_planning_toolbar_button")
+                    }
+
                     Button {
                         planningViewModel.confirmCopyCurrentMonthPlanningToNextMonth()
                     } label: {
@@ -108,6 +122,15 @@ struct PlanningView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(planningViewModel.copyResultAlertMessage)
+            }
+            .sheet(isPresented: $isRecommendedPlanningSheetPresented) {
+                RecommendedPlanningSheet(
+                    viewModel: RecommendedPlanningViewModel(modelContext: modelContext),
+                    mes: planningViewModel.currentMonth,
+                    onPlanejamentoAplicado: {
+                        planningViewModel.objectWillChange.send()
+                    }
+                )
             }
         }
     }

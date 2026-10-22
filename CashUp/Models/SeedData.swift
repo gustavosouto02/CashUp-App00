@@ -50,6 +50,7 @@ struct SeedIDs {
     static let idSubDiversosGerais      = UUID(uuidString: "00030003-0003-0003-0003-000300030003")!
     static let idSubRoupas              = UUID(uuidString: "00040004-0004-0004-0004-000400040004")!
     static let idSubSaude               = UUID(uuidString: "00050005-0005-0005-0005-000500050005")!
+    static let idSubReserva             = UUID(uuidString: "00060006-0006-0006-0006-000600060006")!
     
     static let idSubAcademia            = UUID(uuidString: "B6C7D8E9-F0A1-2B3C-4D5E-6F7A8B9C0D1E")!
     static let idSubAssinatura          = UUID(uuidString: "00070007-0007-0007-0007-000700070007")!
@@ -146,6 +147,7 @@ fileprivate let todasCategoriasSeedInfo: [CategoriaSeedInfo] = [
             SubcategoriaSeedInfo(id: SeedIDs.idSubCustosBancarios, nome: "Custos Bancários", icon: "dollarsign.bank.building.fill"),
             SubcategoriaSeedInfo(id: SeedIDs.idSubDesconhecido, nome: "Desconhecido", icon: "questionmark.app.fill"),
             SubcategoriaSeedInfo(id: SeedIDs.idSubDiversosGerais, nome: "Diversos", icon: "archivebox.fill"),
+            SubcategoriaSeedInfo(id: SeedIDs.idSubReserva, nome: "Reserva", icon: "shield.fill"),
             SubcategoriaSeedInfo(id: SeedIDs.idSubRoupas, nome: "Roupas", icon: "tshirt"),
             SubcategoriaSeedInfo(id: SeedIDs.idSubSaude, nome: "Saúde", icon: "heart.fill")
         ]
@@ -269,29 +271,45 @@ fileprivate let todasCategoriasSeedInfo: [CategoriaSeedInfo] = [
 @MainActor
 func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
     do {
-        let categoriaIDsExistentes = Set(try modelContext.fetch(FetchDescriptor<CategoriaModel>()).map(\.id))
+        let todasCategoriasExistentes = try modelContext.fetch(FetchDescriptor<CategoriaModel>())
+        let categoriaIDsExistentes = Set(todasCategoriasExistentes.map(\.id))
+        let mapaCategoriasExistentes = Dictionary(uniqueKeysWithValues: todasCategoriasExistentes.map { ($0.id, $0) })
         let subcategoriaIDsExistentes = Set(try modelContext.fetch(FetchDescriptor<SubcategoriaModel>()).map(\.id))
 
-        var novasCategorias: [CategoriaModel] = []
+        var houveAlteracao = false
 
-        for categoriaSeed in todasCategoriasSeedInfo where !categoriaIDsExistentes.contains(categoriaSeed.id) {
-            let (r, g, b) = categoriaSeed.cor.toRGBComponents()
-            let novaCategoria = CategoriaModel(
-                id: categoriaSeed.id,
-                nome: categoriaSeed.nome,
-                icon: categoriaSeed.icon,
-                red: r,
-                green: g,
-                blue: b
-            )
-            novaCategoria.subcategorias = categoriaSeed.subcategorias
-                .filter { !subcategoriaIDsExistentes.contains($0.id) }
-                .map { SubcategoriaModel(id: $0.id, nome: $0.nome, icon: $0.icon, categoria: novaCategoria) }
-            novasCategorias.append(novaCategoria)
+        for categoriaSeed in todasCategoriasSeedInfo {
+            if let categoriaExistente = mapaCategoriasExistentes[categoriaSeed.id] {
+                for subSeed in categoriaSeed.subcategorias where !subcategoriaIDsExistentes.contains(subSeed.id) {
+                    let novaSub = SubcategoriaModel(
+                        id: subSeed.id,
+                        nome: subSeed.nome,
+                        icon: subSeed.icon,
+                        categoria: categoriaExistente
+                    )
+                    categoriaExistente.subcategorias.append(novaSub)
+                    modelContext.insert(novaSub)
+                    houveAlteracao = true
+                }
+            } else if !categoriaIDsExistentes.contains(categoriaSeed.id) {
+                let (r, g, b) = categoriaSeed.cor.toRGBComponents()
+                let novaCategoria = CategoriaModel(
+                    id: categoriaSeed.id,
+                    nome: categoriaSeed.nome,
+                    icon: categoriaSeed.icon,
+                    red: r,
+                    green: g,
+                    blue: b
+                )
+                novaCategoria.subcategorias = categoriaSeed.subcategorias
+                    .filter { !subcategoriaIDsExistentes.contains($0.id) }
+                    .map { SubcategoriaModel(id: $0.id, nome: $0.nome, icon: $0.icon, categoria: novaCategoria) }
+                modelContext.insert(novaCategoria)
+                houveAlteracao = true
+            }
         }
 
-        guard !novasCategorias.isEmpty else { return }
-        novasCategorias.forEach { modelContext.insert($0) }
+        guard houveAlteracao else { return }
         try modelContext.save()
     } catch {
         CashUpLogger.persistence.error("Erro ao popular dados iniciais: \(error.localizedDescription, privacy: .public)")

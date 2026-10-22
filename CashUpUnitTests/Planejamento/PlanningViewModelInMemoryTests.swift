@@ -84,4 +84,64 @@ final class PlanningViewModelInMemoryTests: XCTestCase {
 
         XCTAssertEqual(resultado.title, "Erro")
     }
+
+    func testAlterarSubcategoriaComSucesso() throws {
+        let cat = CategoriaModel(id: UUID(), nome: "Alimentação", icon: "cart", red: 0.1, green: 0.2, blue: 0.3)
+        let subA = SubcategoriaModel(nome: "Mantimentos", icon: "cart.fill", categoria: cat)
+        let subB = SubcategoriaModel(nome: "Comida", icon: "fork.knife", categoria: cat)
+        cat.subcategorias = [subA, subB]
+
+        _ = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: subA)
+
+        let categoriaPlanejada = try XCTUnwrap(sut.getCategoriasPlanejadasForCurrentMonth().first)
+        let subPlan = try XCTUnwrap(categoriaPlanejada.subcategoriasPlanejadas?.first)
+
+        let sucesso = sut.alterarSubcategoria(subItem: subPlan, para: subB)
+
+        XCTAssertTrue(sucesso)
+        XCTAssertEqual(subPlan.subcategoriaOriginal?.id, subB.id)
+        XCTAssertEqual(subPlan.nomeSubcategoriaOriginal, "Comida")
+    }
+
+    func testAlterarSubcategoriaNaoPermiteDuplicadaNaMesmaCategoria() throws {
+        let cat = CategoriaModel(id: UUID(), nome: "Alimentação", icon: "cart", red: 0.1, green: 0.2, blue: 0.3)
+        let subA = SubcategoriaModel(nome: "Mantimentos", icon: "cart.fill", categoria: cat)
+        let subB = SubcategoriaModel(nome: "Comida", icon: "fork.knife", categoria: cat)
+        cat.subcategorias = [subA, subB]
+
+        _ = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: subA)
+        _ = sut.adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subB, toCategoriaModel: cat)
+
+        let categoriaPlanejada = try XCTUnwrap(sut.getCategoriasPlanejadasForCurrentMonth().first)
+        let subPlanA = try XCTUnwrap(categoriaPlanejada.subcategoriasPlanejadas?.first(where: { $0.subcategoriaOriginal?.id == subA.id }))
+
+        let sucesso = sut.alterarSubcategoria(subItem: subPlanA, para: subB)
+
+        XCTAssertFalse(sucesso)
+        XCTAssertEqual(subPlanA.subcategoriaOriginal?.id, subA.id)
+    }
+
+    func testRemoverSubcategoriaPlanejadaAtualizaListaEValorTotal() throws {
+        let cat = CategoriaModel(id: UUID(), nome: "Alimentação", icon: "cart", red: 0.1, green: 0.2, blue: 0.3)
+        let subA = SubcategoriaModel(nome: "Mantimentos", icon: "cart.fill", categoria: cat)
+        let subB = SubcategoriaModel(nome: "Comida", icon: "fork.knife", categoria: cat)
+        cat.subcategorias = [subA, subB]
+
+        _ = sut.adicionarNovaCategoriaAoPlanejamento(categoriaModel: cat, comSubcategoriaInicial: subA)
+        _ = sut.adicionarSubcategoriaAoPlanejamento(subcategoriaModel: subB, toCategoriaModel: cat)
+
+        let catPlan = try XCTUnwrap(sut.getCategoriasPlanejadasForCurrentMonth().first)
+        let subPlanA = try XCTUnwrap(catPlan.subcategoriasPlanejadas?.first(where: { $0.subcategoriaOriginal?.id == subA.id }))
+        let subPlanB = try XCTUnwrap(catPlan.subcategoriasPlanejadas?.first(where: { $0.subcategoriaOriginal?.id == subB.id }))
+
+        subPlanA.valorPlanejado = 200.0
+        subPlanB.valorPlanejado = 300.0
+
+        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 500.0)
+
+        sut.removerSubcategoriaPlanejada(id: subPlanA.id)
+
+        XCTAssertEqual(catPlan.subcategoriasPlanejadas?.count, 1)
+        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 300.0)
+    }
 }

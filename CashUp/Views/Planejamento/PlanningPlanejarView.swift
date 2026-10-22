@@ -22,23 +22,36 @@ struct PlanningPlanejarView: View {
     @State private var selectedCategoryFromSheet: CategoriaModel? = nil
     @State private var showResetConfirmation = false
     @State private var showDuplicateAlert = false
+    @State private var trocaSubcategoriaContext: TrocaSubcategoriaContext? = nil
+
+    struct TrocaSubcategoriaContext: Identifiable {
+        let id: UUID
+        let subPlan: SubcategoriaPlanejadaModel
+        let categoria: CategoriaModel
+        let idsIndisponiveis: Set<UUID>
+        let valorAtual: Double
+    }
+
+    @Binding var isRecommendedPlanningSheetPresented: Bool
 
     @Query var categoriasPlanejadasDoMesQuery: [CategoriaPlanejadaModel]
 
-   init(viewModel: PlanningViewModel,
-        isEditing: Binding<Bool>,
-        subcategoriasSelecionadas: Binding<Set<UUID>>) {
-       self.viewModel = viewModel
-       self._isEditing = isEditing
-       self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
+    init(viewModel: PlanningViewModel,
+         isEditing: Binding<Bool>,
+         subcategoriasSelecionadas: Binding<Set<UUID>>,
+         isRecommendedPlanningSheetPresented: Binding<Bool> = .constant(false)) {
+        self.viewModel = viewModel
+        self._isEditing = isEditing
+        self._subcategoriasPlanejadasSelecionadasParaDelecao = subcategoriasSelecionadas
+        self._isRecommendedPlanningSheetPresented = isRecommendedPlanningSheetPresented
 
-       let monthToFilter = viewModel.currentMonth.startOfMonth()
-       let predicate = #Predicate<CategoriaPlanejadaModel> {
-           $0.mesAno == monthToFilter
-       }
+        let monthToFilter = viewModel.currentMonth.startOfMonth()
+        let predicate = #Predicate<CategoriaPlanejadaModel> {
+            $0.mesAno == monthToFilter
+        }
 
-       _categoriasPlanejadasDoMesQuery = Query(filter: predicate, sort: [], animation: .default)
-   }
+        _categoriasPlanejadasDoMesQuery = Query(filter: predicate, sort: [], animation: .default)
+    }
 
     var body: some View {
         ZStack {
@@ -51,6 +64,12 @@ struct PlanningPlanejarView: View {
                     rodapePlanejamento
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    dismissKeyboard()
+                }
+            )
             .fullScreenCover(isPresented: $isCategorySheetPresented) {
                 CategorySelectionSheet(
                     categoriaRepository: SwiftDataCategoriaRepository(context: modelContext),
@@ -58,6 +77,17 @@ struct PlanningPlanejarView: View {
                     selectedSubcategoryModel: $selectedSubcategoryFromSheet,
                     isPresented: $isCategorySheetPresented,
                     selectedCategoryModel: $selectedCategoryFromSheet
+                )
+            }
+            .sheet(item: $trocaSubcategoriaContext) { ctx in
+                SubcategoriaPickerSheet(
+                    categoria: ctx.categoria,
+                    subcategoriaAtualID: ctx.subPlan.subcategoriaOriginal?.id,
+                    idsIndisponiveis: ctx.idsIndisponiveis,
+                    valorAtual: ctx.valorAtual,
+                    onSelecionar: { novaSub in
+                        viewModel.alterarSubcategoria(subItem: ctx.subPlan, para: novaSub)
+                    }
                 )
             }
             .onChange(of: selectedSubcategoryFromSheet) { oldValue, newValue in
@@ -221,12 +251,10 @@ struct PlanningPlanejarView: View {
     private func listaCategoriasPlanejadasView() -> some View {
         let sortedCategorias = categoriasPlanejadasDoMesQuery.sorted { ($0.categoriaOriginal?.nome ?? "") < ($1.categoriaOriginal?.nome ?? "") }
         if sortedCategorias.isEmpty && !isEditing {
-            Text("Nenhuma categoria planejada para este mês.\nToque em \"Adicionar Categoria\" para começar.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .center)
+            RecommendedPlanningEmptyCard(onCriarPlanejamento: {
+                isRecommendedPlanningSheetPresented = true
+            })
+            .padding(.top, 4)
 
             Text("Para copiar o planejamento para o mês seguinte,\n utilize o botao de documento no topo da tela.")
                .font(.subheadline)
@@ -258,20 +286,47 @@ struct PlanningPlanejarView: View {
             
             if let subcategorias = catPlanModel.subcategoriasPlanejadas, !subcategorias.isEmpty {
                 ForEach(subcategorias.sorted(by: { $0.subcategoriaOriginal?.nome ?? "" < $1.subcategoriaOriginal?.nome ?? ""})) { subPlanModel in
-                    SubcategoriaPlanejadaRowView(
-                        subPlanejadaModel: subPlanModel,
-                        corIconeCategoriaPai: catPlanModel.corCategoriaOriginal,
-                        isEditing: isEditing,
-                        isSelected: subcategoriasPlanejadasSelecionadasParaDelecao.contains(subPlanModel.id),
-                        toggleSelection: {
-                            if subcategoriasPlanejadasSelecionadasParaDelecao.contains(subPlanModel.id) {
-                                subcategoriasPlanejadasSelecionadasParaDelecao.remove(subPlanModel.id)
-                            } else {
-                                subcategoriasPlanejadasSelecionadasParaDelecao.insert(subPlanModel.id)
+                    SwipeActionRow(isEnabled: !isEditing) {
+                        SubcategoriaPlanejadaRowView(
+                            subPlanejadaModel: subPlanModel,
+                            corIconeCategoriaPai: catPlanModel.corCategoriaOriginal,
+                            isEditing: isEditing,
+                            isSelected: subcategoriasPlanejadasSelecionadasParaDelecao.contains(subPlanModel.id),
+                            toggleSelection: {
+                                if subcategoriasPlanejadasSelecionadasParaDelecao.contains(subPlanModel.id) {
+                                    subcategoriasPlanejadasSelecionadasParaDelecao.remove(subPlanModel.id)
+                                } else {
+                                    subcategoriasPlanejadasSelecionadasParaDelecao.insert(subPlanModel.id)
+                                }
+                            },
+                            onEditarSubcategoria: {
+                                let catOriginal = catPlanModel.categoriaOriginal ?? subPlanModel.categoriaPlanejada?.categoriaOriginal
+                                guard let catOriginal else { return }
+                                if subPlanModel.categoriaPlanejada == nil {
+                                    subPlanModel.categoriaPlanejada = catPlanModel
+                                }
+                                let irmas = catPlanModel.subcategoriasPlanejadas ?? []
+                                let indisponiveis = Set(irmas.filter { $0.id != subPlanModel.id }.compactMap { $0.subcategoriaOriginal?.id })
+                                trocaSubcategoriaContext = TrocaSubcategoriaContext(
+                                    id: subPlanModel.id,
+                                    subPlan: subPlanModel,
+                                    categoria: catOriginal,
+                                    idsIndisponiveis: indisponiveis,
+                                    valorAtual: subPlanModel.valorPlanejado
+                                )
+                            },
+                            onValorDigitado: {
+                                viewModel.objectWillChange.send()
+                            },
+                            onValorAlterado: {
+                                viewModel.salvarAlteracoes()
                             }
-                        },
-                        valorPlanejadoStringBinding: viewModel.bindingParaValorPlanejado(subItem: subPlanModel)
-                    )
+                        )
+                    } onDelete: {
+                        withAnimation {
+                            viewModel.removerSubcategoriaPlanejada(id: subPlanModel.id)
+                        }
+                    }
                 }
             } else if !isEditing {
                 Text("Nenhuma subcategoria planejada aqui.")
@@ -303,9 +358,16 @@ struct PlanningPlanejarView: View {
         .padding(.horizontal)
     }
 
+    private var mesAnoFormatado: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: viewModel.currentMonth).capitalized
+    }
+
     private var rodapePlanejamento: some View {
         HStack {
-            Text("Planejamento para:\n\(viewModel.currentMonth.formatted(.dateTime.month(.wide).year(.defaultDigits)))")
+            Text("Planejamento para:\n\(mesAnoFormatado)")
                 .font(.caption2)
                 .lineLimit(2)
             Spacer()
