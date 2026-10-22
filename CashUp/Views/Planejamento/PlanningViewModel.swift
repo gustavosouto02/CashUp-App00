@@ -46,6 +46,27 @@ final class PlanningViewModel: ObservableObject {
         }
     }
 
+    @discardableResult
+    func salvarAlteracoes() -> Bool {
+        salvarContexto(operacao: "salvarAlteracoes")
+    }
+
+    @discardableResult
+    func alterarSubcategoria(subItem: SubcategoriaPlanejadaModel, para novaSub: SubcategoriaModel) -> Bool {
+        guard let categoriaPlanejada = subItem.categoriaPlanejada else { return false }
+
+        let jaExiste = categoriaPlanejada.subcategoriasPlanejadas?.contains(where: {
+            $0.id != subItem.id && $0.subcategoriaOriginal?.id == novaSub.id
+        }) == true
+
+        if jaExiste {
+            return false
+        }
+
+        subItem.subcategoriaOriginal = novaSub
+        return salvarContexto(operacao: "alterarSubcategoria")
+    }
+
     func adicionarSubcategoriaAoPlanejamento(subcategoriaModel: SubcategoriaModel, toCategoriaModel: CategoriaModel) -> Bool {
         let mesReferencia = currentMonth.startOfMonth()
         let categoriaPlanejadaExistente: CategoriaPlanejadaModel?
@@ -115,6 +136,7 @@ final class PlanningViewModel: ObservableObject {
                 guard let subParaDeletar = try repository.fetchSubcategoriaPlanejada(id: id) else { continue }
                 if let parent = subParaDeletar.categoriaPlanejada {
                     affectedParentCategorias.insert(parent)
+                    parent.subcategoriasPlanejadas?.removeAll { $0.id == id }
                 }
                 repository.delete(subParaDeletar)
             } catch {
@@ -133,6 +155,11 @@ final class PlanningViewModel: ObservableObject {
         }
 
         _ = salvarContexto(operacao: "removerSubcategoriasPlanejadasSelecionadas")
+        objectWillChange.send()
+    }
+
+    func removerSubcategoriaPlanejada(id: UUID) {
+        removerSubcategoriasPlanejadasSelecionadas(idsSubcategoriasPlanejadas: [id])
     }
 
     func zerarPlanejamentoDoMes() {

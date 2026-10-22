@@ -13,7 +13,7 @@ struct PlanningRestanteView: View {
         let totais = expensesViewModel.totaisPorSubcategoria(in: planningViewModel.currentMonth)
 
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 28) {
 
                 // MARK: - Meta Residual
                 metaResidualCard(totais: totais)
@@ -30,9 +30,10 @@ struct PlanningRestanteView: View {
                         categoriaRestanteView(categoriaPModel: categoriaPlanejadaModel, totais: totais)
                     }
                 }
-                Spacer(minLength: 24)
+                Spacer(minLength: 32)
             }
             .padding(.horizontal)
+            .padding(.vertical, 16)
         }
     }
 
@@ -94,9 +95,9 @@ struct PlanningRestanteView: View {
                 Spacer()
             }
         }
-        .padding()
+        .padding(16)
         .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .frame(maxWidth: .infinity)
     }
 
@@ -110,7 +111,7 @@ struct PlanningRestanteView: View {
 
         let restanteCategoria = totalPlanejadoCategoria - totalGastoCategoria
 
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 CategoriasViewIcon(
                     systemName: categoriaPModel.iconCategoriaOriginal,
@@ -123,42 +124,41 @@ struct PlanningRestanteView: View {
                     .lineLimit(1)
                 Spacer()
                 Text("\(BRLCurrencyFormatter.string(from: restanteCategoria)) restante")
-                    .font(.subheadline.weight(.medium))
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(restanteCategoria < 0 ? .red : .secondary)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
             }
 
             if let subcategoriasPlanejadas = categoriaPModel.subcategoriasPlanejadas, !subcategoriasPlanejadas.isEmpty {
-                ForEach(subcategoriasPlanejadas.sorted(by: { $0.subcategoriaOriginal?.nome ?? "" < $1.subcategoriaOriginal?.nome ?? "" })) { subPlanModel in
-                    let gastoNaSub = gasto(em: subPlanModel, totais: totais)
-                    let limiteDaSub = subPlanModel.valorPlanejado
-                    let progressoSub = limiteDaSub > 0 ? min(abs(gastoNaSub / limiteDaSub), 1.0) : 0.0
+                VStack(spacing: 12) {
+                    ForEach(subcategoriasPlanejadas.sorted(by: { $0.subcategoriaOriginal?.nome ?? "" < $1.subcategoriaOriginal?.nome ?? "" })) { subPlanModel in
+                        let gastoNaSub = gasto(em: subPlanModel, totais: totais)
+                        let limiteDaSub = subPlanModel.valorPlanejado
+                        let progressoSub = limiteDaSub > 0 ? min(abs(gastoNaSub / limiteDaSub), 1.0) : 0.0
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            CategoriasViewIcon(
-                                systemName: subPlanModel.iconSubcategoriaOriginal,
-                                cor: categoriaPModel.corCategoriaOriginal,
-                                size: 20
-                            )
-                            Text(subPlanModel.nomeSubcategoriaOriginal)
-                                .font(.headline)
-                            
-                            Spacer()
-                            Text("\(BRLCurrencyFormatter.string(from: gastoNaSub)) / \(BRLCurrencyFormatter.string(from: limiteDaSub))")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                CategoriasViewIcon(
+                                    systemName: subPlanModel.iconSubcategoriaOriginal,
+                                    cor: categoriaPModel.corCategoriaOriginal,
+                                    size: 18
+                                )
+                                Text(subPlanModel.nomeSubcategoriaOriginal)
+                                    .font(.subheadline.weight(.medium))
+                                
+                                Spacer()
+                                Text("\(BRLCurrencyFormatter.string(from: gastoNaSub)) / \(BRLCurrencyFormatter.string(from: limiteDaSub))")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            ProgressView(value: progressoSub)
+                                .tint(gastoNaSub > limiteDaSub ? .red : categoriaPModel.corCategoriaOriginal)
                         }
-                        .padding(.leading, 8)
-                        .padding(.bottom, 4)
-
-                        ProgressView(value: progressoSub)
-                            .tint(gastoNaSub > limiteDaSub ? .red : categoriaPModel.corCategoriaOriginal)
-                            .padding(.leading, 8)
                     }
-                    .padding(.bottom, 4)
                 }
+                .padding(.top, 4)
             } else {
                 Text("Nenhuma subcategoria planejada.")
                     .font(.caption)
@@ -166,9 +166,9 @@ struct PlanningRestanteView: View {
                     .padding(.leading)
             }
         }
-        .padding()
+        .padding(16)
         .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .frame(maxWidth: .infinity, alignment: .top)
     }
 }
