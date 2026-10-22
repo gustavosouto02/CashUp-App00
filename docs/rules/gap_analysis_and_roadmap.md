@@ -78,9 +78,9 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 | ID | Severidade | Título | Descrição |
 |---|---|---|---|
 | **L-01** | **Alta** | CRUD de Categorias Customizadas Desativado | ✅ Implementado na Etapa 8 com criação/edição de categorias e subcategorias, paleta de alto contraste, curadoria de símbolos e testes unitários/UI. |
-| **L-02** | **Alta** | Ausência de Autenticação Biométrica | O app não oferece bloqueio por Face ID / Touch ID, deixando os dados financeiros expostos a quem tiver acesso ao aparelho destravado. |
+| **L-02** | **Alta** | Ausência de Autenticação Biométrica | ✅ Implementado na Etapa 6 com LocalAuthentication (Face ID/Touch ID), bloqueio ao voltar do background e tela de configurações. |
 | **L-03** | **Média** | Onboarding Interativo Inexistente | ✅ Implementado na Etapa 7 com simulação visual motion fiel ao design Lovable, MVVM, testes unitários e de UI. |
-| **L-04** | **Média** | Falta de Alertas de Orçamento Excedido | Não há notificações locais avisando quando o usuário ultrapassa 80% ou 100% do teto de uma categoria planejada. |
+| **L-04** | **Média** | Falta de Alertas de Orçamento Excedido | ✅ Implementado com `LocalNotificationService`, solicitação de permissão nativa ao abrir o app, lembrete diário configurável em Configurações e suporte a alertas de insights. |
 | **L-05** | **Média** | Sem Exportação de Dados (CSV/PDF) | Usuário não tem como fazer backup externo nem exportar relatórios para declaração de imposto de renda ou controle em outras ferramentas. |
 | **L-06** | **Média** | Módulo de Metas / Reservas Ausente | Não há funcionalidade dedicada para criar metas de economia (ex.: "Viagem de Fim de Ano", "Reserva de Emergência"). |
 | **L-07** | **Baixa** | Moeda e Locale Fixos em BRL | Falta de suporte a outras moedas (USD, EUR) para estudantes que fazem intercâmbio no exterior. |

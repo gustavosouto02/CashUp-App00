@@ -8,36 +8,23 @@ struct WelcomeView: View {
             Color(red: 16/255, green: 22/255, blue: 28/255)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Spacer()
-
+            VStack(spacing: 16) {
                 Image("IconCashUp")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 180, height: 180)
+                    .frame(width: 130, height: 130)
                     .clipShape(Circle())
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
-                    .padding(.bottom, 25)
+                    .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 5)
 
-                Text("Bem-vindo ao CashUp!")
-                    .font(Font.system(size: 32, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-
-                Text("Suas finanças, sob seu controle.")
-                    .font(Font.system(size: 18, weight: .medium, design: .rounded))
-                    .foregroundColor(.gray.opacity(0.8))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 40)
-
-                Spacer()
-                Spacer()
+                Text("CashUp")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
             }
-            .padding()
         }
         .task {
-            try? await Task.sleep(for: .seconds(2.5))
+            try? await Task.sleep(for: .milliseconds(1200))
             guard !Task.isCancelled else { return }
-            withAnimation {
+            withAnimation(.easeInOut(duration: 0.4)) {
                 isShowingWelcomeScreen = false
             }
         }

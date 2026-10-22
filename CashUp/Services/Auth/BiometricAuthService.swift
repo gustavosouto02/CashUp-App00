@@ -19,6 +19,7 @@ final class BiometricAuthService: BiometricAuthServiceProtocol {
     func authenticate(reason: String) async throws -> Bool {
         let context = LAContext()
         context.localizedCancelTitle = "Cancelar"
+        context.localizedFallbackTitle = "Usar senha do celular"
         return try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
     }
 }

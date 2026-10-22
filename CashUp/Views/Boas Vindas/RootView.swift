@@ -26,9 +26,10 @@ struct RootView: View {
         let args = ProcessInfo.processInfo.arguments
         let isUITesting = args.contains("--uitesting")
         let devePularOnboarding = isUITesting && !args.contains("--enable-onboarding")
+        let jaCompletouOnboarding = devePularOnboarding ? true : settings.hasCompletedOnboarding
 
-        _isShowingWelcomeScreen = State(initialValue: mostrarBoasVindas)
-        _hasCompletedOnboarding = State(initialValue: devePularOnboarding ? true : settings.hasCompletedOnboarding)
+        _isShowingWelcomeScreen = State(initialValue: mostrarBoasVindas && !jaCompletouOnboarding)
+        _hasCompletedOnboarding = State(initialValue: jaCompletouOnboarding)
         _authViewModel = StateObject(wrappedValue: AuthViewModel(service: biometricService, settings: settings))
         _onboardingViewModel = StateObject(wrappedValue: OnboardingViewModel(settings: settings))
         _settingsViewModel = StateObject(wrappedValue: SettingsViewModel(service: biometricService, settings: settings))

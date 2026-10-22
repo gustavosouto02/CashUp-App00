@@ -7,4 +7,5 @@ enum CashUpLogger {
 
     static let persistence = Logger(subsystem: subsystem, category: "persistence")
     static let ui = Logger(subsystem: subsystem, category: "ui")
+    static let notifications = Logger(subsystem: subsystem, category: "notifications")
 }
