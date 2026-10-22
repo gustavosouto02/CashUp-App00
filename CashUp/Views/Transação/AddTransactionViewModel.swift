@@ -81,10 +81,10 @@ final class AddTransactionViewModel: ObservableObject {
     }
 
     func formatDate(_ date: Date) -> String {
-        if calendar.isDateInToday(date) { return "Hoje" }
-        if calendar.isDateInYesterday(date) { return "Ontem" }
+        if calendar.isDateInToday(date) { return String(localized: "Hoje") }
+        if calendar.isDateInYesterday(date) { return String(localized: "Ontem") }
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.locale = .autoupdatingCurrent
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: date)

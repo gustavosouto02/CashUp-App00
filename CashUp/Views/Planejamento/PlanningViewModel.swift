@@ -231,21 +231,21 @@ final class PlanningViewModel: ObservableObject {
             return
         }
         let nextMonthStart = nextMonthDateUnsafe.startOfMonth()
-        let ptBRLocale = Locale(identifier: "pt_BR")
+        let currentLocale = Locale.autoupdatingCurrent
 
-        let currentMonthFormatted = currentMonthStart.formatted(.dateTime.month(.wide).year().locale(ptBRLocale))
-        let nextMonthFormatted = nextMonthStart.formatted(.dateTime.month(.wide).year().locale(ptBRLocale))
+        let currentMonthFormatted = currentMonthStart.formatted(.dateTime.month(.wide).year().locale(currentLocale))
+        let nextMonthFormatted = nextMonthStart.formatted(.dateTime.month(.wide).year().locale(currentLocale))
 
         let categoriasPlanejadasAtuais = getCategoriasPlanejadasForCurrentMonth()
         if categoriasPlanejadasAtuais.isEmpty {
-            self.copyResultAlertTitle = "Nenhum Planejamento"
-            self.copyResultAlertMessage = "Não há planejamento em \(currentMonthFormatted) para copiar."
+            self.copyResultAlertTitle = String(localized: "Nenhum Planejamento")
+            self.copyResultAlertMessage = String(localized: "Não há planejamento em \(currentMonthFormatted) para copiar.")
             self.showCopyResultAlert = true
             return
         }
 
-        self.copyPlanningAlertTitle = "Copiar Planejamento"
-        self.copyPlanningAlertMessage = "Deseja copiar o planejamento de \(currentMonthFormatted) para \(nextMonthFormatted)?"
+        self.copyPlanningAlertTitle = String(localized: "Copiar Planejamento")
+        self.copyPlanningAlertMessage = String(localized: "Deseja copiar o planejamento de \(currentMonthFormatted) para \(nextMonthFormatted)?")
         self.showCopyConfirmationAlert = true
     }
 
@@ -262,14 +262,14 @@ final class PlanningViewModel: ObservableObject {
             return ("Erro", "Não foi possível determinar o próximo mês.")
         }
         let nextMonthStart = nextMonthDateUnsafe.startOfMonth()
-        let ptBRLocale = Locale(identifier: "pt_BR")
+        let currentLocale = Locale.autoupdatingCurrent
 
         let categoriasPlanejadasAtuais: [CategoriaPlanejadaModel]
         do {
             categoriasPlanejadasAtuais = try repository.fetchCategoriasPlanejadas(mes: currentMonthStart)
         } catch {
             CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
-            return ("Erro", "Falha ao buscar planejamento atual.")
+            return (String(localized: "Erro"), String(localized: "Falha ao buscar planejamento atual."))
         }
 
         if categoriasPlanejadasAtuais.isEmpty {
@@ -325,7 +325,7 @@ final class PlanningViewModel: ObservableObject {
             countCopied += 1
         }
 
-        let proximoMesFormatado = nextMonthStart.formatted(.dateTime.month(.wide).year().locale(ptBRLocale))
+        let proximoMesFormatado = nextMonthStart.formatted(.dateTime.month(.wide).year().locale(currentLocale))
 
         if countCopied == 0 && countSkipped == 0 && !categoriasPlanejadasAtuais.isEmpty {
             return ("Nenhuma Ação", "Nenhuma categoria válida foi encontrada para copiar (verifique se possuem categorias originais associadas).")

@@ -20,7 +20,7 @@ struct DailyExpensesDetailView: View {
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
-        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.locale = .autoupdatingCurrent
         return formatter.string(from: selectedDate)
     }
 

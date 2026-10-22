@@ -12,7 +12,7 @@ class MonthSelectorViewModel: ObservableObject {
 
     var displayedMonth: String {
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "pt_BR")
+        dateFormatter.locale = .autoupdatingCurrent
         dateFormatter.dateFormat = "MMMM yyyy"
         let formattedString = dateFormatter.string(from: selectedMonth)
         return formattedString.prefix(1).uppercased() + formattedString.dropFirst()

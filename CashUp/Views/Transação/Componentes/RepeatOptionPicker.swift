@@ -71,7 +71,6 @@ struct RepeatOptionPicker: View {
                         )
                         .datePickerStyle(.compact)
                         .labelsHidden()
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                         .padding(shouldSuggestEndDate && repeatEndDate == nil ? 1 : 0)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)

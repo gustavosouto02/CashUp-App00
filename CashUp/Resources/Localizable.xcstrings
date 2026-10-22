@@ -3918,6 +3918,930 @@
           }
         }
       }
+    },
+    "Hoje": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoje"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        }
+      }
+    },
+    "Ontem": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ontem"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer"
+          }
+        }
+      }
+    },
+    "Não deixe os gastos acumularem! Registre o que você comprou hoje.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não deixe os gastos acumularem! Registre o que você comprou hoje."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't let expenses pile up! Log what you bought today."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡No dejes que los gastos se acumulen! Registra lo que compraste hoy."
+          }
+        }
+      }
+    },
+    "Copiar Planejamento": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar Planejamento"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy Budget"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar Presupuesto"
+          }
+        }
+      }
+    },
+    "Deseja copiar o planejamento de %1 para %2?": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deseja copiar o planejamento de %1 para %2?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do you want to copy the budget from %1 to %2?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Deseas copiar el presupuesto de %1 a %2?"
+          }
+        }
+      }
+    },
+    "Nenhum Planejamento": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum Planejamento"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Budget Found"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin Presupuesto"
+          }
+        }
+      }
+    },
+    "Não há planejamento em %@ para copiar.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não há planejamento em %@ para copiar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There is no budget in %@ to copy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay presupuesto en %@ para copiar."
+          }
+        }
+      }
+    },
+    "Não foi possível determinar o próximo mês.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não foi possível determinar o próximo mês."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not determine the next month."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo determinar el próximo mes."
+          }
+        }
+      }
+    },
+    "Falha ao buscar planejamento atual.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falha ao buscar planejamento atual."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Failed to load current budget."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al cargar el presupuesto actual."
+          }
+        }
+      }
+    },
+    "Reserva": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reserva"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emergency Fund"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fondo de Reserva"
+          }
+        }
+      }
+    },
+    "Alerta Crítico": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerta Crítico"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Critical Alert"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerta Crítica"
+          }
+        }
+      }
+    },
+    "Mandou Bem": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou Bem"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Great Job"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Muy Bien!"
+          }
+        }
+      }
+    },
+    "Meta Diária": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta Diária"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily Target"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta Diaria"
+          }
+        }
+      }
+    },
+    "Dá uma segurada no gasto!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dá uma segurada no gasto!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow down on spending!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Modera tus gastos!"
+          }
+        }
+      }
+    },
+    "Nesse ritmo, seu orçamento estoura por volta do dia %1, e o mês tem %2 dias. Hora de pisar no freio!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nesse ritmo, seu orçamento estoura por volta do dia %1, e o mês tem %2 dias. Hora de pisar no freio!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At this pace, your budget will run out around day %1, and the month has %2 days. Time to slow down!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A este ritmo, tu presupuesto se agotará alrededor del día %1, y el mes tiene %2 días. ¡Hora de frenar!"
+          }
+        }
+      }
+    },
+    "%lld%% do teto consumido": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% do teto consumido"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% of budget spent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% del presupuesto consumido"
+          }
+        }
+      }
+    },
+    "Teto Orçamentário Ultrapassado": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teto Orçamentário Ultrapassado"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Budget Limit Exceeded"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Límite de Presupuesto Superado"
+          }
+        }
+      }
+    },
+    "Você já ultrapassou seu orçamento planejado em %@. Qualquer novo gasto vai aumentar o vermelho este mês!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você já ultrapassou seu orçamento planejado em %@. Qualquer novo gasto vai aumentar o vermelho este mês!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You've already exceeded your planned budget by %@. Any further spending will increase the deficit this month!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya has superado tu presupuesto planificado en %@. ¡Cualquier gasto adicional aumentará el déficit este mes!"
+          }
+        }
+      }
+    },
+    "Estourado": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estourado"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exceeded"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superado"
+          }
+        }
+      }
+    },
+    "Revisar Teto": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisar Teto"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review Budget"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revisar Presupuesto"
+          }
+        }
+      }
+    },
+    "Orçamento Diário Apertado": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orçamento Diário Apertado"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tight Daily Budget"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presupuesto Diario Ajustado"
+          }
+        }
+      }
+    },
+    "Para não fechar no vermelho, você tem no máximo %1 por dia pelos próximos %2 dias.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para não fechar no vermelho, você tem no máximo %1 por dia pelos próximos %2 dias."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To stay out of the red, you have at most %1 per day for the next %2 days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para no cerrar en números rojos, tienes un máximo de %1 al día durante los próximos %2 días."
+          }
+        }
+      }
+    },
+    "%@/dia": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/dia"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/día"
+          }
+        }
+      }
+    },
+    "Ver Limites": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver Limites"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View Limits"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver Límites"
+          }
+        }
+      }
+    },
+    "Meta de Gasto Diário": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta de Gasto Diário"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daily Spending Target"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta de Gasto Diario"
+          }
+        }
+      }
+    },
+    "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês.": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To stay in the black this month, your target is to spend at most %@ per day until the end of the month."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para cerrar el mes en positivo, tu meta es gastar como máximo %@ al día hasta fin de mes."
+          }
+        }
+      }
+    },
+    "Acompanhar": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acompanhar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir"
+          }
+        }
+      }
+    },
+    "Gasto Fora da Curva": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gasto Fora da Curva"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unusual Expense"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gasto Inusual"
+          }
+        }
+      }
+    },
+    "Detectamos um pico: %1 custou %2. Foi uma compra planejada ou deu uma escapada do plano?": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detectamos um pico: %1 custou %2. Foi uma compra planejada ou deu uma escapada do plano?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We noticed a spike: %1 was %2. Was this planned or an unexpected splurge?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detectamos un pico: %1 costó %2. ¿Fue una compra planificada o una salida del plan?"
+          }
+        }
+      }
+    },
+    "uma compra recente": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "uma compra recente"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a recent purchase"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "una compra reciente"
+          }
+        }
+      }
+    },
+    "Ver Transação": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver Transação"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View Transaction"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver Transacción"
+          }
+        }
+      }
+    },
+    "Alerta de Final de Semana": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerta de Final de Semana"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weekend Spending Alert"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerta de Fin de Semana"
+          }
+        }
+      }
+    },
+    "%lld%% do seu dinheiro foi gasto no sábado e domingo. Dá uma segurada no combo delivery, passeios e saidinhas para não desbalancear a semana!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% do seu dinheiro foi gasto no sábado e domingo. Dá uma segurada no combo delivery, passeios e saidinhas para não desbalancear a semana!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% of your money was spent on Saturday and Sunday. Ease up on takeout, outings, and treats to keep your week balanced!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% de tu dinero se gastó el sábado y domingo. ¡Modera los pedidos a domicilio y salidas para no desbalancear la semana!"
+          }
+        }
+      }
+    },
+    "%lld%% no FDS": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% no FDS"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% on weekends"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%% el fin de semana"
+          }
+        }
+      }
+    },
+    "Analisar FDS": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analisar FDS"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyze Weekend"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analizar Fin de Semana"
+          }
+        }
+      }
+    },
+    "Mês Limpo até Aqui": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mês Limpo até Aqui"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clean Month So Far"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mes Impecable Hasta Ahora"
+          }
+        }
+      }
+    },
+    "Nenhum gasto registrado ainda este mês. Excelente oportunidade para começar poupando forte!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum gasto registrado ainda este mês. Excelente oportunidade para começar poupando forte!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No expenses logged yet this month. A great opportunity to kickstart strong savings!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se han registrado gastos este mes. ¡Excelente oportunidad para comenzar a ahorrar con fuerza!"
+          }
+        }
+      }
+    },
+    "Zero gastos": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zero gastos"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zero expenses"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cero gastos"
+          }
+        }
+      }
+    },
+    "Mandou bem demais!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou bem demais!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crushing it!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Excelente trabajo!"
+          }
+        }
+      }
+    },
+    "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're saving consistently and your spending is well below the target for this point in the month. Keep up the great work!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estás ahorrando con firmeza y tus gastos están muy por debajo del límite previsto para esta altura del mes. ¡Sigue así!"
+          }
+        }
+      }
+    },
+    "No ritmo ideal": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ritmo ideal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On track"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A buen ritmo"
+          }
+        }
+      }
+    },
+    "Comemorar": {
+      "localizations": {
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comemorar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celebrate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celebrar"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

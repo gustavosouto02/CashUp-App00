@@ -120,6 +120,6 @@ struct PlanningSimulationCard: View {
     }
 
     private var mesAtualNome: String {
-        Date().formatted(.dateTime.month(.wide).locale(Locale(identifier: "pt_BR"))).capitalized
+        Date().formatted(.dateTime.month(.wide).locale(.autoupdatingCurrent)).capitalized
     }
 }
