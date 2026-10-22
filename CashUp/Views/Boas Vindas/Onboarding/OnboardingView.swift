@@ -46,5 +46,6 @@ struct OnboardingView: View {
                 )
             }
         }
+        .errorAlert($settingsViewModel.errorMessage)
     }
 }

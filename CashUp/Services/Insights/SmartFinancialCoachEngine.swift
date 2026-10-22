@@ -86,7 +86,7 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         diaReferencia: Int,
         totalDiasMes: Int
     ) -> FinancialInsight? {
-        guard totalPlanejado > 0, diaReferencia >= 3 else { return nil }
+        guard totalPlanejado > 0, diaReferencia >= 3, totalGasto < totalPlanejado else { return nil }
 
         let pctGasto = totalGasto / totalPlanejado
         let pctTempo = Double(diaReferencia) / Double(totalDiasMes)

@@ -46,7 +46,11 @@ final class LocalNotificationService: NSObject, NotificationServiceProtocol, UNU
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let request = UNNotificationRequest(identifier: Identificadores.lembreteDiario, content: content, trigger: trigger)
 
-        center.add(request)
+        center.add(request) { error in
+            if let error {
+                CashUpLogger.notifications.error("Falha ao agendar lembrete diário: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     }
 
     func cancelarLembreteDiario() {
@@ -62,7 +66,11 @@ final class LocalNotificationService: NSObject, NotificationServiceProtocol, UNU
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1.0, repeats: false)
         let request = UNNotificationRequest(identifier: Identificadores.alertaInsight, content: content, trigger: trigger)
 
-        center.add(request)
+        center.add(request) { error in
+            if let error {
+                CashUpLogger.notifications.error("Falha ao disparar alerta de insight: \(error.localizedDescription, privacy: .public)")
+            }
+        }
     }
 
     nonisolated func userNotificationCenter(

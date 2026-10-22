@@ -87,4 +87,20 @@ final class TipsViewModelTests: XCTestCase {
         XCTAssertNotNil(dica1)
         XCTAssertEqual(dica1?.id, dica2?.id)
     }
+
+    func testCarregar_reconheceCategoriasSemAcentoComoNecessidades() {
+        let mes = Date.make(year: 2026, month: 6, day: 1)
+        let catSaudeSemAcento = CategoriaModel(nome: "Saude", icon: "cross", red: 1.0, green: 0.0, blue: 0.0)
+
+        expenseRepo.expenses = [
+            ExpenseModel(amount: 2000.0, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
+            ExpenseModel(amount: 300.0, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Farmácia", isIncome: false, categoria: catSaudeSemAcento)
+        ]
+
+        viewModel.carregar(para: mes, hoje: Date.make(year: 2026, month: 6, day: 15))
+
+        let breakdown = viewModel.ruleBreakdown
+        XCTAssertEqual(breakdown?.necessidades, 300.0)
+        XCTAssertEqual(breakdown?.desejos, 0.0)
+    }
 }

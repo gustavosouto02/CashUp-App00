@@ -98,12 +98,15 @@ final class TipsViewModel: ObservableObject {
         var desejos = 0.0
 
         for item in despesas {
-            let nomeCategoria = item.categoria?.nome.lowercased() ?? ""
-            if nomeCategoria.contains("moradia") ||
-                nomeCategoria.contains("alimenta") ||
-                nomeCategoria.contains("saúde") ||
-                nomeCategoria.contains("transporte") ||
-                nomeCategoria.contains("educa") {
+            let nomeNormalizado = (item.categoria?.nome ?? "")
+                .folding(options: .diacriticInsensitive, locale: .current)
+                .lowercased()
+
+            if nomeNormalizado.contains("moradia") ||
+                nomeNormalizado.contains("alimenta") ||
+                nomeNormalizado.contains("saude") ||
+                nomeNormalizado.contains("transporte") ||
+                nomeNormalizado.contains("educa") {
                 necessidades += item.amount
             } else {
                 desejos += item.amount
