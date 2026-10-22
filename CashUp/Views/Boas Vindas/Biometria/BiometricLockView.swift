@@ -9,12 +9,18 @@ struct BiometricLockView: View {
             Color(red: 16/255, green: 22/255, blue: 28/255)
                 .ignoresSafeArea()
 
-            Image("IconCashUp")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 140, height: 140)
-                .clipShape(Circle())
-                .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 5)
+            VStack(spacing: 16) {
+                Image("IconCashUp")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 130, height: 130)
+                    .clipShape(Circle())
+                    .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 5)
+
+                Text("CashUp")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+            }
 
             VStack {
                 Spacer()
