@@ -35,8 +35,8 @@ final class LocalNotificationService: NSObject, NotificationServiceProtocol, UNU
         cancelarLembreteDiario()
 
         let content = UNMutableNotificationContent()
-        content.title = "Hora do CashUp 💸"
-        content.body = "Não deixe os gastos acumularem! Registre rapidinho o que você comprou hoje."
+        content.title = "CashUp"
+        content.body = "Não deixe os gastos acumularem! Registre o que você comprou hoje."
         content.sound = .default
 
         var dateComponents = DateComponents()
