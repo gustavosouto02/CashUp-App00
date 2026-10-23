@@ -1,22 +1,24 @@
 import Foundation
 
-/// Título único das seções de lista por dia: "Hoje", "Ontem" ou "Quarta, 08/10".
+/// Título único das seções de lista por dia: "Hoje", "Ontem" ou data formatada pelo locale do usuário.
 enum SectionDateFormatter {
-    private static let formatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "EEEE, dd/MM"
-        return formatter
-    }()
-
-    static func titulo(para date: Date, hoje: Date = Date(), calendar: Calendar = .current) -> String {
+    static func titulo(
+        para date: Date,
+        hoje: Date = Date(),
+        calendar: Calendar = .current,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
         if calendar.isDate(date, inSameDayAs: hoje) {
-            return "Hoje"
+            return AppLocalization.string("Hoje", locale: locale)
         }
         if let ontem = calendar.date(byAdding: .day, value: -1, to: hoje),
            calendar.isDate(date, inSameDayAs: ontem) {
-            return "Ontem"
+            return AppLocalization.string("Ontem", locale: locale)
         }
+
+        let formatter = DateFormatter()
+        formatter.locale = locale
+        formatter.dateFormat = "EEEE, dd/MM"
         return formatter.string(from: date)
             .replacingOccurrences(of: "-feira", with: "")
             .capitalized

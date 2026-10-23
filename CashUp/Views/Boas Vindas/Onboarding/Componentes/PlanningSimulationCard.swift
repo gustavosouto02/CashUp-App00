@@ -12,36 +12,38 @@ struct PlanningSimulationCard: View {
         let corBarra: Color
     }
 
-    private let itens: [ItemPlanejado] = [
-        ItemPlanejado(
-            nome: "Mercado",
-            detalhe: "R$ 680 de R$ 1.000",
-            progresso: 0.68,
-            corDestaque: nil,
-            corBarra: .blue
-        ),
-        ItemPlanejado(
-            nome: "Restaurantes",
-            detalhe: "Restam R$ 70",
-            progresso: 0.93,
-            corDestaque: Color(red: 255/255, green: 179/255, blue: 64/255),
-            corBarra: Color(red: 255/255, green: 179/255, blue: 64/255)
-        ),
-        ItemPlanejado(
-            nome: "Delivery",
-            detalhe: "R$ 220 de R$ 350",
-            progresso: 0.63,
-            corDestaque: nil,
-            corBarra: .blue
-        ),
-        ItemPlanejado(
-            nome: "Transporte",
-            detalhe: "R$ 190 de R$ 400",
-            progresso: 0.47,
-            corDestaque: nil,
-            corBarra: .blue
-        )
-    ]
+    private var itens: [ItemPlanejado] {
+        [
+            ItemPlanejado(
+                nome: String(localized: "Mercado"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 680)) de \(BRLCurrencyFormatter.string(from: 1000))"),
+                progresso: 0.68,
+                corDestaque: nil,
+                corBarra: .blue
+            ),
+            ItemPlanejado(
+                nome: String(localized: "Restaurantes"),
+                detalhe: String(localized: "Restam \(BRLCurrencyFormatter.string(from: 70))"),
+                progresso: 0.93,
+                corDestaque: Color(red: 255/255, green: 179/255, blue: 64/255),
+                corBarra: Color(red: 255/255, green: 179/255, blue: 64/255)
+            ),
+            ItemPlanejado(
+                nome: String(localized: "Delivery"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 220)) de \(BRLCurrencyFormatter.string(from: 350))"),
+                progresso: 0.63,
+                corDestaque: nil,
+                corBarra: .blue
+            ),
+            ItemPlanejado(
+                nome: String(localized: "Transporte"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 190)) de \(BRLCurrencyFormatter.string(from: 400))"),
+                progresso: 0.47,
+                corDestaque: nil,
+                corBarra: .blue
+            )
+        ]
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -58,7 +60,7 @@ struct PlanningSimulationCard: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("R$ 1.240")
+                Text(BRLCurrencyFormatter.string(from: 1240))
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
 
@@ -120,6 +122,6 @@ struct PlanningSimulationCard: View {
     }
 
     private var mesAtualNome: String {
-        Date().formatted(.dateTime.month(.wide).locale(Locale(identifier: "pt_BR"))).capitalized
+        Date().formatted(.dateTime.month(.wide).locale(.autoupdatingCurrent)).capitalized
     }
 }

@@ -36,7 +36,7 @@ final class LocalNotificationService: NSObject, NotificationServiceProtocol, UNU
 
         let content = UNMutableNotificationContent()
         content.title = "CashUp"
-        content.body = "Não deixe os gastos acumularem! Registre o que você comprou hoje."
+        content.body = String(localized: "Não deixe os gastos acumularem! Registre o que você comprou hoje.")
         content.sound = .default
 
         var dateComponents = DateComponents()

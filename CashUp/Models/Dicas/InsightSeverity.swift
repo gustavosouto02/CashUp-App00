@@ -35,13 +35,13 @@ enum InsightSeverity: String, Codable, Equatable, CaseIterable {
     var badgeTitle: String {
         switch self {
         case .perigo:
-            return "Alerta Crítico"
+            return String(localized: "Alerta Crítico")
         case .atencao:
-            return "Atenção"
+            return String(localized: "Atenção")
         case .positivo:
-            return "Mandou Bem"
+            return String(localized: "Mandou Bem")
         case .informativo:
-            return "Meta Diária"
+            return String(localized: "Meta Diária")
         }
     }
 }

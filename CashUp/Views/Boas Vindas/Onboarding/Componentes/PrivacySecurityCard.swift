@@ -67,11 +67,11 @@ struct PrivacySecurityCard: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(titulo)
+                Text(LocalizedStringKey(titulo))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.white)
 
-                Text(subtitulo)
+                Text(LocalizedStringKey(subtitulo))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

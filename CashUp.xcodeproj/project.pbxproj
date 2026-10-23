@@ -187,11 +187,13 @@
 				};
 			};
 			buildConfigurationList = BB0A19D62DCD79FD00B352F6 /* Build configuration list for PBXProject "CashUp" */;
-			developmentRegion = en;
+			developmentRegion = "pt-BR";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
+				es,
 			);
 			mainGroup = BB0A19D22DCD79FD00B352F6;
 			minimizedProjectReferenceProxies = 1;

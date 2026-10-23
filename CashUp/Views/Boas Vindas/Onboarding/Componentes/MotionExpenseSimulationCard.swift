@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MotionExpenseSimulationCard: View {
-    @State private var valorExibido: String = "R$ 0,00"
+    @State private var valorExibido: String = BRLCurrencyFormatter.string(from: 0)
     @State private var categoriaSelecionada: Bool = false
     @State private var cursorVisivel: Bool = true
 
@@ -30,19 +30,19 @@ struct MotionExpenseSimulationCard: View {
                 try? await Task.sleep(for: .milliseconds(700))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = "R$ 4"
+                    valorExibido = BRLCurrencyFormatter.string(from: 4)
                 }
 
                 try? await Task.sleep(for: .milliseconds(400))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = "R$ 40"
+                    valorExibido = BRLCurrencyFormatter.string(from: 40)
                 }
 
                 try? await Task.sleep(for: .milliseconds(400))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = "R$ 40,00"
+                    valorExibido = BRLCurrencyFormatter.string(from: 40)
                 }
 
                 try? await Task.sleep(for: .milliseconds(600))
@@ -54,7 +54,7 @@ struct MotionExpenseSimulationCard: View {
                 try? await Task.sleep(for: .milliseconds(2800))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeInOut(duration: 0.25)) {
-                    valorExibido = "R$ 0,00"
+                    valorExibido = BRLCurrencyFormatter.string(from: 0)
                     categoriaSelecionada = false
                 }
             }
@@ -152,7 +152,7 @@ struct MotionExpenseSimulationCard: View {
                 }
                 .transition(.scale.combined(with: .opacity))
 
-                Text("Comida")
+                Text(String(localized: "Comida"))
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.white)
                     .transition(.opacity)
@@ -163,7 +163,7 @@ struct MotionExpenseSimulationCard: View {
                     .frame(width: 34, height: 34)
                     .transition(.scale.combined(with: .opacity))
 
-                Text("Selecionar categoria")
+                Text(String(localized: "Selecionar categoria"))
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.white)
                     .transition(.opacity)

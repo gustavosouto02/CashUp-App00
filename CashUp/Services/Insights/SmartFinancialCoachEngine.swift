@@ -119,9 +119,10 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         if saldoRestante <= 0 {
             let estouro = abs(saldoRestante)
+            let formattedEstouro = BRLCurrencyFormatter.string(from: estouro)
             return FinancialInsight(
                 title: "Teto Orçamentário Ultrapassado",
-                message: "Você já ultrapassou seu orçamento planejado em \(BRLCurrencyFormatter.string(from: estouro)). Qualquer novo gasto vai aumentar o vermelho este mês!",
+                message: "Você já ultrapassou seu orçamento planejado em \(formattedEstouro). Qualquer novo gasto vai aumentar o vermelho este mês!",
                 severity: .perigo,
                 triggerType: .dailyBudget,
                 priorityScore: 98,
@@ -131,25 +132,26 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         }
 
         let limiteDiario = saldoRestante / Double(diasRestantes)
+        let formattedLimite = BRLCurrencyFormatter.string(from: limiteDiario)
 
         if limiteDiario < 25.0 {
             return FinancialInsight(
                 title: "Orçamento Diário Apertado",
-                message: "Para não fechar no vermelho, você tem no máximo \(BRLCurrencyFormatter.string(from: limiteDiario)) por dia pelos próximos \(diasRestantes) dias.",
+                message: "Para não fechar no vermelho, você tem no máximo \(formattedLimite) por dia pelos próximos \(diasRestantes) dias.",
                 severity: .atencao,
                 triggerType: .dailyBudget,
                 priorityScore: 86,
-                metricLabel: "\(BRLCurrencyFormatter.string(from: limiteDiario))/dia",
+                metricLabel: "\(formattedLimite)/dia",
                 actionLabel: "Ver Limites"
             )
         } else {
             return FinancialInsight(
                 title: "Meta de Gasto Diário",
-                message: "Para fechar o mês no azul, sua meta é gastar no máximo \(BRLCurrencyFormatter.string(from: limiteDiario)) por dia até o encerramento do mês.",
+                message: "Para fechar o mês no azul, sua meta é gastar no máximo \(formattedLimite) por dia até o encerramento do mês.",
                 severity: .informativo,
                 triggerType: .dailyBudget,
                 priorityScore: 72,
-                metricLabel: "\(BRLCurrencyFormatter.string(from: limiteDiario))/dia",
+                metricLabel: "\(formattedLimite)/dia",
                 actionLabel: "Acompanhar"
             )
         }
@@ -172,13 +174,14 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         guard let pico = candidatas.max(by: { $0.amount < $1.amount }) else { return nil }
 
         let desc = pico.expenseDescription.isEmpty ? "uma compra recente" : pico.expenseDescription
+        let formattedAmount = BRLCurrencyFormatter.string(from: pico.amount)
         return FinancialInsight(
             title: "Gasto Fora da Curva",
-            message: "Detectamos um pico: \(desc) custou \(BRLCurrencyFormatter.string(from: pico.amount)). Foi uma compra planejada ou deu uma escapada do plano?",
+            message: "Detectamos um pico: \(desc) custou \(formattedAmount). Foi uma compra planejada ou deu uma escapada do plano?",
             severity: .atencao,
             triggerType: .anomalyPeak,
             priorityScore: 82,
-            metricLabel: BRLCurrencyFormatter.string(from: pico.amount),
+            metricLabel: formattedAmount,
             actionLabel: "Ver Transação"
         )
     }

@@ -31,7 +31,6 @@ struct DatePickerField: View {
             .datePickerStyle(.compact)
             .labelsHidden()
             .frame(maxWidth: 120)
-            .environment(\.locale, Locale(identifier: "pt_BR"))
         }
         Divider()
     }
