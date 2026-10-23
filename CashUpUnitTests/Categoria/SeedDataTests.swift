@@ -27,15 +27,15 @@ final class SeedDataTests: XCTestCase {
     }
 
     func testSeedExecutadoDuasVezesNaoDuplicaDados() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: context)
-        await popularDadosIniciaisSeNecessario(modelContext: context)
+        await popularDadosIniciaisSeNecessario(modelContext: context, locale: Locale(identifier: "pt_BR"))
+        await popularDadosIniciaisSeNecessario(modelContext: context, locale: Locale(identifier: "pt_BR"))
 
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<CategoriaModel>()), 7)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<SubcategoriaModel>()), 72)
     }
 
     func testSeedVinculaSubcategoriasAsCategoriasCertas() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: context)
+        await popularDadosIniciaisSeNecessario(modelContext: context, locale: Locale(identifier: "pt_BR"))
 
         let rendaID = SeedIDs.idRenda
         let renda = try context.fetch(FetchDescriptor<CategoriaModel>(predicate: #Predicate { $0.id == rendaID })).first
@@ -53,7 +53,7 @@ final class SeedDataTests: XCTestCase {
         try context.save()
 
         // Executa o seed como no lançamento da nova versão
-        await popularDadosIniciaisSeNecessario(modelContext: context)
+        await popularDadosIniciaisSeNecessario(modelContext: context, locale: Locale(identifier: "pt_BR"))
 
         let diversosID = SeedIDs.idDiversos
         let diversosAtualizado = try context.fetch(FetchDescriptor<CategoriaModel>(predicate: #Predicate { $0.id == diversosID })).first
@@ -61,5 +61,14 @@ final class SeedDataTests: XCTestCase {
 
         XCTAssertTrue(temReserva)
         XCTAssertEqual(diversosAtualizado?.subcategorias.first(where: { $0.id == SeedIDs.idSubReserva })?.nome, "Reserva")
+    }
+
+    func testSeedComLocaleInglesCriaNomesEmIngles() async throws {
+        await popularDadosIniciaisSeNecessario(modelContext: context, locale: Locale(identifier: "en_US"))
+
+        let rendaID = SeedIDs.idRenda
+        let renda = try context.fetch(FetchDescriptor<CategoriaModel>(predicate: #Predicate { $0.id == rendaID })).first
+        XCTAssertEqual(renda?.nome, "Income")
+        XCTAssertTrue(renda?.subcategorias.contains { $0.nome == "Salary" } ?? false)
     }
 }

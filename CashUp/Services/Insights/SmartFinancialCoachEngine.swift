@@ -98,13 +98,13 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         let pctInt = Int(pctGasto * 100)
 
         return FinancialInsight(
-            title: String(localized: "Dá uma segurada no gasto!"),
-            message: String(localized: "Nesse ritmo, seu orçamento estoura por volta do dia \(max(diaEsgotamento, diaReferencia)), e o mês tem \(totalDiasMes) dias. Hora de pisar no freio!"),
+            title: "Dá uma segurada no gasto!",
+            message: "Nesse ritmo, seu orçamento estoura por volta do dia \(max(diaEsgotamento, diaReferencia)), e o mês tem \(totalDiasMes) dias. Hora de pisar no freio!",
             severity: .perigo,
             triggerType: .burnRate,
             priorityScore: 95,
-            metricLabel: String(localized: "\(pctInt)% do teto consumido"),
-            actionLabel: String(localized: "Ver Gastos")
+            metricLabel: "\(pctInt)% do teto consumido",
+            actionLabel: "Ver Gastos"
         )
     }
 
@@ -121,13 +121,13 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
             let estouro = abs(saldoRestante)
             let formattedEstouro = BRLCurrencyFormatter.string(from: estouro)
             return FinancialInsight(
-                title: String(localized: "Teto Orçamentário Ultrapassado"),
-                message: String(localized: "Você já ultrapassou seu orçamento planejado em \(formattedEstouro). Qualquer novo gasto vai aumentar o vermelho este mês!"),
+                title: "Teto Orçamentário Ultrapassado",
+                message: "Você já ultrapassou seu orçamento planejado em \(formattedEstouro). Qualquer novo gasto vai aumentar o vermelho este mês!",
                 severity: .perigo,
                 triggerType: .dailyBudget,
                 priorityScore: 98,
-                metricLabel: String(localized: "Estourado"),
-                actionLabel: String(localized: "Revisar Teto")
+                metricLabel: "Estourado",
+                actionLabel: "Revisar Teto"
             )
         }
 
@@ -136,23 +136,23 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         if limiteDiario < 25.0 {
             return FinancialInsight(
-                title: String(localized: "Orçamento Diário Apertado"),
-                message: String(localized: "Para não fechar no vermelho, você tem no máximo \(formattedLimite) por dia pelos próximos \(diasRestantes) dias."),
+                title: "Orçamento Diário Apertado",
+                message: "Para não fechar no vermelho, você tem no máximo \(formattedLimite) por dia pelos próximos \(diasRestantes) dias.",
                 severity: .atencao,
                 triggerType: .dailyBudget,
                 priorityScore: 86,
-                metricLabel: String(localized: "\(formattedLimite)/dia"),
-                actionLabel: String(localized: "Ver Limites")
+                metricLabel: "\(formattedLimite)/dia",
+                actionLabel: "Ver Limites"
             )
         } else {
             return FinancialInsight(
-                title: String(localized: "Meta de Gasto Diário"),
-                message: String(localized: "Para fechar o mês no azul, sua meta é gastar no máximo \(formattedLimite) por dia até o encerramento do mês."),
+                title: "Meta de Gasto Diário",
+                message: "Para fechar o mês no azul, sua meta é gastar no máximo \(formattedLimite) por dia até o encerramento do mês.",
                 severity: .informativo,
                 triggerType: .dailyBudget,
                 priorityScore: 72,
-                metricLabel: String(localized: "\(formattedLimite)/dia"),
-                actionLabel: String(localized: "Acompanhar")
+                metricLabel: "\(formattedLimite)/dia",
+                actionLabel: "Acompanhar"
             )
         }
     }
@@ -173,16 +173,16 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         guard let pico = candidatas.max(by: { $0.amount < $1.amount }) else { return nil }
 
-        let desc = pico.expenseDescription.isEmpty ? String(localized: "uma compra recente") : pico.expenseDescription
+        let desc = pico.expenseDescription.isEmpty ? "uma compra recente" : pico.expenseDescription
         let formattedAmount = BRLCurrencyFormatter.string(from: pico.amount)
         return FinancialInsight(
-            title: String(localized: "Gasto Fora da Curva"),
-            message: String(localized: "Detectamos um pico: \(desc) custou \(formattedAmount). Foi uma compra planejada ou deu uma escapada do plano?"),
+            title: "Gasto Fora da Curva",
+            message: "Detectamos um pico: \(desc) custou \(formattedAmount). Foi uma compra planejada ou deu uma escapada do plano?",
             severity: .atencao,
             triggerType: .anomalyPeak,
             priorityScore: 82,
             metricLabel: formattedAmount,
-            actionLabel: String(localized: "Ver Transação")
+            actionLabel: "Ver Transação"
         )
     }
 
@@ -210,13 +210,13 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         let pctInt = Int(pctFDS * 100)
         return FinancialInsight(
-            title: String(localized: "Alerta de Final de Semana"),
-            message: String(localized: "\(pctInt)% do seu dinheiro foi gasto no sábado e domingo. Dá uma segurada no combo delivery, passeios e saidinhas para não desbalancear a semana!"),
+            title: "Alerta de Final de Semana",
+            message: "\(pctInt)% do seu dinheiro foi gasto no sábado e domingo. Dá uma segurada no combo delivery, passeios e saidinhas para não desbalancear a semana!",
             severity: .atencao,
             triggerType: .weekendSpender,
             priorityScore: 80,
-            metricLabel: String(localized: "\(pctInt)% no FDS"),
-            actionLabel: String(localized: "Analisar FDS")
+            metricLabel: "\(pctInt)% no FDS",
+            actionLabel: "Analisar FDS"
         )
     }
 
@@ -233,25 +233,25 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         if totalGasto == 0 {
             return FinancialInsight(
-                title: String(localized: "Mês Limpo até Aqui"),
-                message: String(localized: "Nenhum gasto registrado ainda este mês. Excelente oportunidade para começar poupando forte!"),
+                title: "Mês Limpo até Aqui",
+                message: "Nenhum gasto registrado ainda este mês. Excelente oportunidade para começar poupando forte!",
                 severity: .positivo,
                 triggerType: .positiveStreak,
                 priorityScore: 60,
-                metricLabel: String(localized: "Zero gastos"),
-                actionLabel: String(localized: "Planejar")
+                metricLabel: "Zero gastos",
+                actionLabel: "Planejar"
             )
         }
 
         if pctGasto <= (pctTempo * 0.80) {
             return FinancialInsight(
-                title: String(localized: "Mandou bem demais!"),
-                message: String(localized: "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!"),
+                title: "Mandou bem demais!",
+                message: "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!",
                 severity: .positivo,
                 triggerType: .positiveStreak,
                 priorityScore: 68,
-                metricLabel: String(localized: "No ritmo ideal"),
-                actionLabel: String(localized: "Comemorar")
+                metricLabel: "No ritmo ideal",
+                actionLabel: "Comemorar"
             )
         }
 

@@ -269,7 +269,7 @@ fileprivate let todasCategoriasSeedInfo: [CategoriaSeedInfo] = [
 ]
 
 @MainActor
-func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
+func popularDadosIniciaisSeNecessario(modelContext: ModelContext, locale: Locale = .autoupdatingCurrent) async {
     do {
         let todasCategoriasExistentes = try modelContext.fetch(FetchDescriptor<CategoriaModel>())
         let categoriaIDsExistentes = Set(todasCategoriasExistentes.map(\.id))
@@ -283,7 +283,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
                 for subSeed in categoriaSeed.subcategorias where !subcategoriaIDsExistentes.contains(subSeed.id) {
                     let novaSub = SubcategoriaModel(
                         id: subSeed.id,
-                        nome: subSeed.nome,
+                        nome: AppLocalization.string(subSeed.nome, locale: locale),
                         icon: subSeed.icon,
                         categoria: categoriaExistente
                     )
@@ -295,7 +295,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
                 let (r, g, b) = categoriaSeed.cor.toRGBComponents()
                 let novaCategoria = CategoriaModel(
                     id: categoriaSeed.id,
-                    nome: categoriaSeed.nome,
+                    nome: AppLocalization.string(categoriaSeed.nome, locale: locale),
                     icon: categoriaSeed.icon,
                     red: r,
                     green: g,
@@ -303,7 +303,7 @@ func popularDadosIniciaisSeNecessario(modelContext: ModelContext) async {
                 )
                 novaCategoria.subcategorias = categoriaSeed.subcategorias
                     .filter { !subcategoriaIDsExistentes.contains($0.id) }
-                    .map { SubcategoriaModel(id: $0.id, nome: $0.nome, icon: $0.icon, categoria: novaCategoria) }
+                    .map { SubcategoriaModel(id: $0.id, nome: AppLocalization.string($0.nome, locale: locale), icon: $0.icon, categoria: novaCategoria) }
                 modelContext.insert(novaCategoria)
                 houveAlteracao = true
             }

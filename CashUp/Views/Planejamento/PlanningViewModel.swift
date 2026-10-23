@@ -269,7 +269,7 @@ final class PlanningViewModel: ObservableObject {
             categoriasPlanejadasAtuais = try repository.fetchCategoriasPlanejadas(mes: currentMonthStart)
         } catch {
             CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
-            return (String(localized: "Erro"), String(localized: "Falha ao buscar planejamento atual."))
+            return ("Erro", "Falha ao buscar planejamento atual.")
         }
 
         if categoriasPlanejadasAtuais.isEmpty {

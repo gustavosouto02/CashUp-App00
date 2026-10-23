@@ -10,7 +10,7 @@ struct CompactCurrencyTextField: View {
     private let maxDigits: Int = 9
 
     var body: some View {
-        TextField("R$ 0,00", text: $text)
+        TextField(BRLCurrencyFormatter.string(from: 0), text: $text)
             .keyboardType(.numberPad)
             .focused($isFocused)
             .multilineTextAlignment(.trailing)

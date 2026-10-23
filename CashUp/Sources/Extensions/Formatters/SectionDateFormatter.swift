@@ -9,11 +9,11 @@ enum SectionDateFormatter {
         locale: Locale = .autoupdatingCurrent
     ) -> String {
         if calendar.isDate(date, inSameDayAs: hoje) {
-            return String(localized: "Hoje")
+            return AppLocalization.string("Hoje", locale: locale)
         }
         if let ontem = calendar.date(byAdding: .day, value: -1, to: hoje),
            calendar.isDate(date, inSameDayAs: ontem) {
-            return String(localized: "Ontem")
+            return AppLocalization.string("Ontem", locale: locale)
         }
 
         let formatter = DateFormatter()

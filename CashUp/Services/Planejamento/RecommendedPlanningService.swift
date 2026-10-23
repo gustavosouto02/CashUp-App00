@@ -58,15 +58,25 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
     }
 
     private func classificarGrupo(categoria: CategoriaModel) -> Regra503020Grupo {
+        if categoria.id == SeedIDs.idHabitacao ||
+           categoria.id == SeedIDs.idComidasEBebidas ||
+           categoria.id == SeedIDs.idTransporte {
+            return .necessidades
+        }
+
         let nome = categoria.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
 
         if nome.contains("moradia") || nome.contains("habitac") || nome.contains("casa") ||
             nome.contains("alimenta") || nome.contains("comida") || nome.contains("refeic") ||
-            nome.contains("transporte") || nome.contains("saude") || nome.contains("educa") {
+            nome.contains("transporte") || nome.contains("saude") || nome.contains("educa") ||
+            nome.contains("housing") || nome.contains("food") || nome.contains("grocer") ||
+            nome.contains("transit") || nome.contains("health") || nome.contains("vivienda") ||
+            nome.contains("salud") || nome.contains("educacion") {
             return .necessidades
         }
 
-        if nome.contains("invest") || nome.contains("poupanc") || nome.contains("reserva") || nome.contains("futuro") {
+        if nome.contains("invest") || nome.contains("poupanc") || nome.contains("reserva") || nome.contains("futuro") ||
+            nome.contains("saving") || nome.contains("emergency") || nome.contains("ahorro") {
             return .futuroPoupanca
         }
 
@@ -78,19 +88,22 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
 
         var resultado: [RecommendedPlanningItem] = []
 
-        let habitacao = categorias.first {
-            let n = $0.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
-            return n.contains("habitac") || n.contains("moradia") || n.contains("casa")
+        let habitacao = categorias.first { cat in
+            if cat.id == SeedIDs.idHabitacao { return true }
+            let n = cat.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+            return n.contains("habitac") || n.contains("moradia") || n.contains("casa") || n.contains("housing") || n.contains("vivienda")
         }
 
-        let alimentacao = categorias.first {
-            let n = $0.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
-            return n.contains("alimenta") || n.contains("comida") || n.contains("refeic")
+        let alimentacao = categorias.first { cat in
+            if cat.id == SeedIDs.idComidasEBebidas { return true }
+            let n = cat.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+            return n.contains("alimenta") || n.contains("comida") || n.contains("refeic") || n.contains("food")
         }
 
-        let transporte = categorias.first {
-            let n = $0.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
-            return n.contains("transporte")
+        let transporte = categorias.first { cat in
+            if cat.id == SeedIDs.idTransporte { return true }
+            let n = cat.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
+            return n.contains("transporte") || n.contains("transit")
         }
 
         if habitacao != nil || alimentacao != nil || transporte != nil {
@@ -98,19 +111,19 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             if let habitacao {
                 let valor = arredondar(rendaMensal * 0.25)
                 alocado += valor
-                let sub = escolherSubcategoriaPrincipal(categoria: habitacao, preferencias: ["aluguel", "contas", "habitacao"])
+                let sub = escolherSubcategoriaPrincipal(categoria: habitacao, preferencias: ["aluguel", "rent", "alquiler", "contas", "bills", "facturas", "habitacao", "housing", "vivienda"])
                 resultado.append(RecommendedPlanningItem(categoria: habitacao, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
             }
             if let alimentacao {
                 let valor = arredondar(rendaMensal * 0.15)
                 alocado += valor
-                let sub = escolherSubcategoriaPrincipal(categoria: alimentacao, preferencias: ["mantimentos", "supermercado", "comida"])
+                let sub = escolherSubcategoriaPrincipal(categoria: alimentacao, preferencias: ["mantimentos", "groceries", "supermercado", "comida", "food"])
                 resultado.append(RecommendedPlanningItem(categoria: alimentacao, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
             }
             if let transporte {
                 let valor = arredondar(rendaMensal * 0.10)
                 alocado += valor
-                let sub = escolherSubcategoriaPrincipal(categoria: transporte, preferencias: ["transporte", "combustivel", "carro"])
+                let sub = escolherSubcategoriaPrincipal(categoria: transporte, preferencias: ["transporte", "transportation", "combustivel", "gas", "gasolina", "carro", "car", "auto"])
                 resultado.append(RecommendedPlanningItem(categoria: transporte, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
             }
 
@@ -184,7 +197,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         var restante = (totalGrupo * 100).rounded() / 100.0
 
         for (index, cat) in categorias.enumerated() {
-            let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["reserva", "poupanca", "investimento", "diversos", "outros", "geral"])
+            let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["reserva", "emergency", "fund", "poupanca", "savings", "ahorro", "investimento", "investment", "inversiones", "diversos", "miscellaneous", "varios", "outros", "geral"])
             let valor: Double
             if index == categorias.count - 1 {
                 valor = max((restante * 100).rounded() / 100.0, 0.0)
