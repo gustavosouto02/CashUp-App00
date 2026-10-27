@@ -213,7 +213,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
     }
 
     private func escolherSubcategoriaPrincipal(categoria: CategoriaModel, preferencias: [String]) -> SubcategoriaModel? {
-        let subs = categoria.subcategorias
+        let subs = categoria.subcategorias ?? []
         guard !subs.isEmpty else { return nil }
 
         for pref in preferencias {

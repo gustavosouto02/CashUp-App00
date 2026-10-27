@@ -61,8 +61,19 @@ final class MigracaoUnitTests: XCTestCase {
         let categoria = try XCTUnwrap(try contexto.fetch(FetchDescriptor<CategoriaModel>()).first)
         let subcategoria = try XCTUnwrap(try contexto.fetch(FetchDescriptor<SubcategoriaModel>()).first)
 
-        XCTAssertEqual(categoria.transacoes.count, 2)
-        XCTAssertEqual(subcategoria.transacoes.count, 2)
+        XCTAssertEqual(categoria.transacoes?.count, 2)
+        XCTAssertEqual(subcategoria.transacoes?.count, 2)
+    }
+
+    func testMigracaoDaUmaInstanciaIDPropriaACadaRegistro() throws {
+        try criarStoreV1()
+
+        let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
+        let transacoes = try contexto.fetch(FetchDescriptor<ExpenseModel>())
+
+        XCTAssertEqual(Set(transacoes.map(\.instanciaID)).count, transacoes.count)
+        XCTAssertTrue(transacoes.allSatisfy { $0.criadoEm == .distantPast })
+        XCTAssertEqual(try contexto.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 0)
     }
 
     func testMigracaoPreservaPlanejamento() throws {

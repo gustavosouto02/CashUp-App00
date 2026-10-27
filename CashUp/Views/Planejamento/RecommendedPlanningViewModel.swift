@@ -378,6 +378,7 @@ final class RecommendedPlanningViewModel: ObservableObject {
                         $0.subcategoriaOriginal?.id == subOriginal.id
                     }) {
                         subExistente.valorPlanejado = item.valorSugerido
+                        subExistente.atualizadoEm = Date()
                     } else {
                         let novaSub = SubcategoriaPlanejadaModel(
                             valorPlanejado: item.valorSugerido,

@@ -66,6 +66,10 @@ final class SwiftDataCategoriaRepository: CategoriaRepositoryProtocol {
         context.insert(subcategoria)
     }
 
+    func insert(_ remocao: SeedRemocaoModel) {
+        context.insert(remocao)
+    }
+
     func delete(_ categoria: CategoriaModel) {
         context.delete(categoria)
     }

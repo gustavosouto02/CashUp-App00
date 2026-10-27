@@ -4,6 +4,7 @@ import Foundation
 @MainActor
 final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
     var categorias: [CategoriaModel] = []
+    var remocoesSeed: [SeedRemocaoModel] = []
     var shouldFailSave: Bool = false
     var saveCallCount: Int = 0
     var rollbackCallCount: Int = 0
@@ -28,7 +29,7 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
 
     func fetchSubcategoriasMaisUsadas(filtro: TransactionTypeFilter, limite: Int) throws -> [SubcategoriaModel] {
         let rendaID = SeedIDs.idRenda
-        let todasSub = categorias.flatMap { $0.subcategorias }
+        let todasSub = categorias.flatMap { $0.subcategorias ?? [] }
         let filtradas: [SubcategoriaModel]
         switch filtro {
         case .despesa:
@@ -44,7 +45,7 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
     }
 
     func fetchSubcategoria(id: UUID) throws -> SubcategoriaModel? {
-        categorias.flatMap { $0.subcategorias }.first { $0.id == id }
+        categorias.flatMap { $0.subcategorias ?? [] }.first { $0.id == id }
     }
 
 
@@ -54,10 +55,14 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
 
     func insert(_ subcategoria: SubcategoriaModel) {
         if let cat = subcategoria.categoria {
-            if !cat.subcategorias.contains(where: { $0.id == subcategoria.id }) {
-                cat.subcategorias.append(subcategoria)
+            if !(cat.subcategorias ?? []).contains(where: { $0.id == subcategoria.id }) {
+                cat.subcategorias = (cat.subcategorias ?? []) + [subcategoria]
             }
         }
+    }
+
+    func insert(_ remocao: SeedRemocaoModel) {
+        remocoesSeed.append(remocao)
     }
 
     func delete(_ categoria: CategoriaModel) {
@@ -66,7 +71,7 @@ final class InMemoryCategoriaRepository: CategoriaRepositoryProtocol {
 
     func delete(_ subcategoria: SubcategoriaModel) {
         for cat in categorias {
-            cat.subcategorias.removeAll { $0.id == subcategoria.id }
+            cat.subcategorias?.removeAll { $0.id == subcategoria.id }
         }
     }
 

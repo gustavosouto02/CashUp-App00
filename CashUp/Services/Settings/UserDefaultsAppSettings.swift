@@ -8,6 +8,7 @@ final class UserDefaultsAppSettings: AppSettingsProtocol {
         static let horaLembrete = "settings.dailyReminderHour"
         static let minutoLembrete = "settings.dailyReminderMinute"
         static let solicitouPermissaoNotificacao = "settings.hasPromptedNotificationPermission"
+        static let seedVersaoAplicada = "settings.seedVersaoAplicada"
     }
 
     private let defaults: UserDefaults
@@ -53,5 +54,10 @@ final class UserDefaultsAppSettings: AppSettingsProtocol {
     var hasPromptedNotificationPermission: Bool {
         get { defaults.bool(forKey: Chave.solicitouPermissaoNotificacao) }
         set { defaults.set(newValue, forKey: Chave.solicitouPermissaoNotificacao) }
+    }
+
+    var seedVersaoAplicada: Int {
+        get { defaults.integer(forKey: Chave.seedVersaoAplicada) }
+        set { defaults.set(newValue, forKey: Chave.seedVersaoAplicada) }
     }
 }

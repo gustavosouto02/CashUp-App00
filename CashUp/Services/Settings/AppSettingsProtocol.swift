@@ -7,4 +7,5 @@ protocol AppSettingsProtocol: AnyObject {
     var dailyReminderHour: Int { get set }
     var dailyReminderMinute: Int { get set }
     var hasPromptedNotificationPermission: Bool { get set }
+    var seedVersaoAplicada: Int { get set }
 }

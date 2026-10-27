@@ -20,6 +20,7 @@ final class InMemoryAppSettings: AppSettingsProtocol {
     var dailyReminderHour: Int
     var dailyReminderMinute: Int
     var hasPromptedNotificationPermission: Bool
+    var seedVersaoAplicada: Int = 0
 
     init(
         isBiometricLockEnabled: Bool = false,

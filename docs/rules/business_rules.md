@@ -104,7 +104,7 @@ repetition.excludedDates      série para (data - 1 dia).    no ExpenseModel mes
     - `idHabitacao`: `E4E4E4E4-E4E4-E4E4-E4E4-E4E4E4E4E4E4`
     - `idTransporte`: `F5F5F5F5-F5F5-F5F5-F5F5-F5F5F5F5F5F5`
     - `idEstiloDeVida`: `A6A6A6A6-A6A6-A6A6-A6A6-A6A6A6A6A6A6`
-- **Idempotência**: A função `popularDadosIniciaisSeNecessario` verifica a existência prévia dos IDs no contexto antes de executar qualquer inserção, impedindo duplicação de dados.
+- **Idempotência**: O `SeedService` verifica a existência prévia dos IDs no contexto antes de qualquer inserção e roda uma vez por abertura, na `RootView`, seguido do `DeduplicacaoService`. O catálogo (`SeedCatalogo`) é versionado: cada item tem `introduzidoNaVersao` (ver RN-08).
 
 ### RN-07 — Algoritmo de Favoritos por Frequência de Uso
 - **Regra**: O sistema mantém um contador cumulativo de utilizações (`usageCount: Int`) em cada `SubcategoriaModel`.
@@ -114,8 +114,9 @@ repetition.excludedDates      série para (data - 1 dia).    no ExpenseModel mes
   - O cálculo é estritamente filtrado pelo tipo de operação ativa: subcategorias de "Renda" só aparecem no atalho quando a tela estiver em modo Receita; subcategorias de outras categorias só aparecem quando em modo Despesa.
 
 ### RN-08 — Proteção de Categorias Padrão
-- **Regra**: As categorias pré-configuradas do seed não podem ser excluídas pelo usuário para evitar quebra de integridade referencial nas regras de sistema.
-- **Customização**: O usuário poderá criar e editar subcategorias personalizadas associadas às categorias existentes (funcionalidade estruturada em `CategoriesViewEdit`).
+- **Regra**: A categoria **Renda** é protegida: não pode ser editada nem apagada, e sempre mantém ao menos uma subcategoria. As demais categorias e subcategorias do seed podem ser apagadas, desde que não tenham transações (categoria) ou que exista outra subcategoria para receber as transações (subcategoria).
+- **Item apagado não volta**: apagar um item do seed grava uma lápide (`SeedRemocaoModel`). O seed não recria itens com lápide, e num store com dados só insere itens de versões do catálogo ainda não aplicadas (`seedVersaoAplicada`).
+- **Customização**: O usuário pode criar, editar e apagar categorias e subcategorias personalizadas (`CategoriesEditView`, `CategoriaEditorViewModel`).
 
 ---
 

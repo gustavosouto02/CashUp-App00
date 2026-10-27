@@ -8,23 +8,26 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV2 {
+extension SchemaV3 {
     @Model
     final class CategoriaModel {
-        @Attribute(.unique)
-        var id: UUID
-        var nome: String
-        var icon: String
-        var redComponent: Double
-        var greenComponent: Double
-        var blueComponent: Double
-    
+        var id: UUID = UUID()
+        var nome: String = ""
+        var icon: String = ""
+        var redComponent: Double = 0
+        var greenComponent: Double = 0
+        var blueComponent: Double = 0
+
         @Relationship(deleteRule: .cascade, inverse: \SubcategoriaModel.categoria)
-        var subcategorias: [SubcategoriaModel] = []
+        var subcategorias: [SubcategoriaModel]? = []
 
         /// Inversa de `ExpenseModel.categoria`: apagar a categoria anula a referência nas transações.
         @Relationship(deleteRule: .nullify, inverse: \ExpenseModel.categoria)
-        var transacoes: [ExpenseModel] = []
+        var transacoes: [ExpenseModel]? = []
+
+        var instanciaID: UUID = UUID()
+        var criadoEm: Date = Date.distantPast
+        var atualizadoEm: Date = Date.distantPast
 
         init(id: UUID = UUID(),
              nome: String,
@@ -41,6 +44,9 @@ extension SchemaV2 {
             self.greenComponent = green
             self.blueComponent = blue
             self.subcategorias = subcategorias ?? []
+            let agora = Date()
+            self.criadoEm = agora
+            self.atualizadoEm = agora
         }
 
 

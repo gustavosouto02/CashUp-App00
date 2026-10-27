@@ -20,7 +20,9 @@ CashUp/
 │   │   ├── CategoriaPlanejadaModel.swift    ← Orçamento mensal alocado por categoria
 │   │   ├── SubcategoriaPlanejadaModel.swift ← Orçamento alocado por subcategoria
 │   │   ├── RepetitionData.swift        ← Estrutura de dados para repetição e datas excluídas
-│   │   └── SeedData.swift              ← Categorias e subcategorias predefinidas com SeedIDs
+│   │   ├── SeedRemocaoModel.swift      ← Lápide de item do seed apagado pelo usuário
+│   │   ├── SeedData.swift              ← SeedIDs fixos das categorias e subcategorias predefinidas
+│   │   └── Schema/                     ← VersionedSchema (V1, V2, V3), plano de migração, typealias da versão atual e CashUpPersistence
 │   │
 │   ├── Views/                          ← Telas e componentes organizados por domínio funcional
 │   │   ├── Home/                       ← Dashboard principal e resumo financeiro do mês

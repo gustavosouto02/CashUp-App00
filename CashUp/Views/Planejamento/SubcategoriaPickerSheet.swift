@@ -10,7 +10,7 @@ struct SubcategoriaPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     private var subcategorias: [SubcategoriaModel] {
-        categoria.subcategorias.sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
+        (categoria.subcategorias ?? []).sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
     }
 
     var body: some View {

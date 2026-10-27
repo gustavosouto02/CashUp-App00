@@ -29,7 +29,7 @@ struct RecommendedAddSubcategorySheet: View {
 
                 ForEach(categoriasComSubdisponiveis) { categoria in
                     Section(categoria.nome) {
-                        ForEach(categoria.subcategorias.sorted(by: { $0.nome.localizedCompare($1.nome) == .orderedAscending })) { sub in
+                        ForEach((categoria.subcategorias ?? []).sorted(by: { $0.nome.localizedCompare($1.nome) == .orderedAscending })) { sub in
                             linhaSubcategoria(sub: sub, categoria: categoria)
                         }
                     }
@@ -50,7 +50,7 @@ struct RecommendedAddSubcategorySheet: View {
 
     private var categoriasComSubdisponiveis: [CategoriaModel] {
         categorias.filter { cat in
-            !cat.subcategorias.isEmpty
+            !(cat.subcategorias ?? []).isEmpty
         }.sorted { $0.nome.localizedCompare($1.nome) == .orderedAscending }
     }
 
