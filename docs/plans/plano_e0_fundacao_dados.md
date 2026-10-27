@@ -7,6 +7,18 @@
 
 ---
 
+## Status de Execução
+
+| Sub-etapa | Status | Data | Observações |
+|---|---|---|---|
+| E0.1 | ✅ Concluída | 2026-10-27 | PR #40. 198 testes unitários verdes (+5: `MigracaoUnitTests`). `SchemaV1` (cópia do `main`) e `SchemaV2` (modelos do `develop`) com estágio leve; `typealias` em `ModelosAtuais.swift`; `CashUpPersistence` como fábrica do container do app. A fixture cria o store sem versão, como o `main`. Validação manual feita: build do `main` com dados e build da branch instalado por cima, sem perda. Testes de UI não rodam no simulador iOS 27 (falha de ambiente pré-existente). |
+| E0.2 | 🚧 Em andamento | — | Branch `refactor/e0-2-deduplicacao`. |
+| E0.3 | ⏳ Pendente | — | — |
+| E0.4 | ⏳ Pendente | — | — |
+| E0.5 | ⏳ Pendente | — | — |
+
+---
+
 ## Sumário
 
 1. [Achados que mudam o desenho](#1-achados-que-mudam-o-desenho)
@@ -15,7 +27,7 @@
 4. [Sub-etapas (um PR cada)](#4-sub-etapas-um-pr-cada)
 5. [Suíte de testes](#5-suíte-de-testes)
 6. [Riscos e casos de borda](#6-riscos-e-casos-de-borda)
-7. [Decisões em aberto](#7-decisões-em-aberto)
+7. [Decisões (27/10/2026)](#7-decisões-27102026)
 
 ---
 
