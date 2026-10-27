@@ -22,26 +22,13 @@ struct CashUpApp: App {
 
     /// Abre o container persistente; se falhar, cai para memória e sinaliza para a UI avisar o usuário.
     static func makeContainer(inMemory: Bool) -> (container: ModelContainer, usandoFallbackEmMemoria: Bool) {
-        let schema = Schema([
-            CategoriaModel.self,
-            SubcategoriaModel.self,
-            ExpenseModel.self,
-            CategoriaPlanejadaModel.self,
-            SubcategoriaPlanejadaModel.self,
-        ])
         do {
-            let container = try ModelContainer(
-                for: schema,
-                configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
-            )
+            let container = try CashUpPersistence.makeContainer(inMemory: inMemory)
             return (container, false)
         } catch {
             CashUpLogger.persistence.critical("Container persistente falhou: \(error.localizedDescription, privacy: .public)")
             do {
-                let fallback = try ModelContainer(
-                    for: schema,
-                    configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
-                )
+                let fallback = try CashUpPersistence.makeContainer(inMemory: true)
                 return (fallback, true)
             } catch let fallbackError {
                 fatalError("Sem container em memória: \(fallbackError)")
