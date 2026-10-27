@@ -22,7 +22,8 @@ docs/
 │   └── product_overview_roadmap.md     ← Análise competitiva, decisão de IA local e ordem de execução por fases
 └── plans/
     ├── template_implementation_plan.md ← Template canônico para especificação e execução de novas features
-    └── plano_correcao_lacunas.md       ← Plano ativo: 10 etapas priorizadas a partir do code review de 08/10/2026
+    ├── plano_correcao_lacunas.md       ← Plano de 10 etapas a partir do code review de 08/10/2026
+    └── plano_e0_fundacao_dados.md      ← Plano ativo: E0 do roadmap (schema versionado, centavos, contas, deduplicação, App Group)
 ```
 
 ---

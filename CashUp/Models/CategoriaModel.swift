@@ -8,43 +8,45 @@
 import SwiftData
 import SwiftUI
 
-@Model
-final class CategoriaModel {
-    @Attribute(.unique)
-    var id: UUID
-    var nome: String
-    var icon: String
-    var redComponent: Double
-    var greenComponent: Double
-    var blueComponent: Double
+extension SchemaV2 {
+    @Model
+    final class CategoriaModel {
+        @Attribute(.unique)
+        var id: UUID
+        var nome: String
+        var icon: String
+        var redComponent: Double
+        var greenComponent: Double
+        var blueComponent: Double
     
-    @Relationship(deleteRule: .cascade, inverse: \SubcategoriaModel.categoria)
-    var subcategorias: [SubcategoriaModel] = []
+        @Relationship(deleteRule: .cascade, inverse: \SubcategoriaModel.categoria)
+        var subcategorias: [SubcategoriaModel] = []
 
-    /// Inversa de `ExpenseModel.categoria`: apagar a categoria anula a referência nas transações.
-    @Relationship(deleteRule: .nullify, inverse: \ExpenseModel.categoria)
-    var transacoes: [ExpenseModel] = []
+        /// Inversa de `ExpenseModel.categoria`: apagar a categoria anula a referência nas transações.
+        @Relationship(deleteRule: .nullify, inverse: \ExpenseModel.categoria)
+        var transacoes: [ExpenseModel] = []
 
-    init(id: UUID = UUID(),
-         nome: String,
-         icon: String,
-         red: Double,
-         green: Double,
-         blue: Double,
-         subcategorias: [SubcategoriaModel]? = []) {
+        init(id: UUID = UUID(),
+             nome: String,
+             icon: String,
+             red: Double,
+             green: Double,
+             blue: Double,
+             subcategorias: [SubcategoriaModel]? = []) {
 
-        self.id = id
-        self.nome = nome
-        self.icon = icon
-        self.redComponent = red
-        self.greenComponent = green
-        self.blueComponent = blue
-        self.subcategorias = subcategorias ?? []
+            self.id = id
+            self.nome = nome
+            self.icon = icon
+            self.redComponent = red
+            self.greenComponent = green
+            self.blueComponent = blue
+            self.subcategorias = subcategorias ?? []
+        }
+
+
+        var color: Color {
+            Color(red: redComponent, green: greenComponent, blue: blueComponent)
+        }
+
     }
-
-
-    var color: Color {
-        Color(red: redComponent, green: greenComponent, blue: blueComponent)
-    }
-
 }
