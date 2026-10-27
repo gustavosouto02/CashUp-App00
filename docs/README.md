@@ -18,7 +18,8 @@ docs/
 │   ├── business_rules.md               ← Regras de negócio canônicas (RN-01 a RN-18), fluxos e cálculos
 │   ├── architecture.md                 ← Arquitetura Clean MVVM + Repository Protocols + SwiftData + Combine
 │   ├── project_structure.md            ← Estrutura física de pastas, convenções de arquivos e Clean Code
-│   └── gap_analysis_and_roadmap.md     ← Auditoria do código existente ("O que já tem"), débitos e roadmap
+│   ├── gap_analysis_and_roadmap.md     ← Auditoria do código existente ("O que já tem"), débitos e roadmap
+│   └── product_overview_roadmap.md     ← Análise competitiva, decisão de IA local e ordem de execução por fases
 └── plans/
     ├── template_implementation_plan.md ← Template canônico para especificação e execução de novas features
     └── plano_correcao_lacunas.md       ← Plano ativo: 10 etapas priorizadas a partir do code review de 08/10/2026
@@ -48,11 +49,15 @@ docs/
 - **Propósito**: Diagnóstico especialista sobre o estado real do app ("O que já tem funcional") versus oportunidades e débitos técnicos.
 - **Conteúdo**: Mapeamento de telas e componentes existentes, catálogo de lacunas (L-01 a L-10) com matriz de impacto/esforço e plano evolutivo em 4 fases.
 
-### 6. [`plans/template_implementation_plan.md`](plans/template_implementation_plan.md) — Template de Plano de Implementação
+### 6. [`rules/product_overview_roadmap.md`](rules/product_overview_roadmap.md) — Overview de Produto & Roadmap Competitivo
+- **Propósito**: Direção de produto após o PR #38: local-first, iPhone redondo antes de outros aparelhos e IA.
+- **Conteúdo**: Comparativo com Pierre, Mobills, Organizze e ManagerFinance, decisão Foundation Models × Ollama/MLX, grafo de dependências e tabela priorizada (E0–E9, F1–F2, I1–I2, P1–P4).
+
+### 7. [`plans/template_implementation_plan.md`](plans/template_implementation_plan.md) — Template de Plano de Implementação
 - **Propósito**: Template canônico para planejar qualquer nova funcionalidade ou refatoração no CashUp antes de escrever o código.
 - **Conteúdo**: Roteiro estruturado em 12 etapas, cobrindo Models, Protocolos, Repositórios, Services/ViewModels, Views SwiftUI, suíte de testes unitários isolados e testes de interface (XCUITest).
 
-### 7. [`plans/plano_correcao_lacunas.md`](plans/plano_correcao_lacunas.md) — Plano de Correção de Lacunas (ativo)
+### 8. [`plans/plano_correcao_lacunas.md`](plans/plano_correcao_lacunas.md) — Plano de Correção de Lacunas (ativo)
 - **Propósito**: Executar, em ordem de prioridade, as correções do code review de 08/10/2026: 3 bugs críticos de recorrência/persistência, 5 bugs médios, débitos técnicos e as 8 lacunas funcionais (biometria, onboarding, CRUD de categorias, edição de ocorrência única, dicas dinâmicas, camada de repositório).
 - **Conteúdo**: 10 etapas dependency-ordered, cada uma com arquivos a criar/modificar/apagar, assinaturas de código, tabela de testes e bloco obrigatório de limpeza ao final.
 

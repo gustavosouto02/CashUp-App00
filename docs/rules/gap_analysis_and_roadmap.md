@@ -92,6 +92,9 @@ Durante a análise técnica do repositório, foram identificados os seguintes d�
 
 ## 4. Roadmap Estratégico de Evolução (Fases 1 a 4)
 
+> [!NOTE]
+> **Substituído em 26/10/2026** pela ordem de execução em [`product_overview_roadmap.md`](product_overview_roadmap.md). As Fases 1 e 2 abaixo já foram concluídas; o restante foi repriorizado lá.
+
 ```mermaid
 gantt
     title Roadmap de Engenharia e Produto — CashUp
