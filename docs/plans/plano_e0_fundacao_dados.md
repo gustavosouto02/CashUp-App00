@@ -44,6 +44,8 @@ Com o iCloud, o problema piora: um segundo aparelho vazio roda o seed e devolve 
 
 Com `.unique`, inserir um modelo com `id` existente **atualiza** em vez de duplicar. Fora do seed, todos os `init` de modelo usam `UUID()` novo (`ExpensesViewModel`, `PlanningViewModel`, `RecommendedPlanningViewModel`, `CategoriaEditorViewModel`). O seed já checa os IDs antes de inserir. Remover o `.unique` não quebra nenhum fluxo atual.
 
+O inverso também foi verificado para o estágio V1 → V2, que **adiciona** `.unique` em `ExpenseModel.id`: no `main`, o único ponto que cria transações (`AddTransactionViewModel`) usa o `UUID()` padrão, então um store da 1.5 não tem `id` repetido e a restrição nova não conflita com os dados existentes.
+
 ---
 
 ## 2. Deduplicação sem `@Attribute(.unique)`
@@ -145,7 +147,7 @@ As classes passam a viver dentro de `enum SchemaVn: VersionedSchema`. O app usa 
 - `CashUpApp.makeContainer` — passa a usar `CashUpPersistence.makeContainer(inMemory:)`
 - `CashUp/Models/*.swift` — as classes passam para dentro de `extension SchemaV2`; extensões e computadas continuam funcionando pelos `typealias`
 
-**Fixture**: os testes criam o store V1 em disco com os modelos do `SchemaV1` (cópia fiel do `main`) e reabrem pela fábrica do app. Como validação extra, antes do merge: instalar o build do `main` no simulador, registrar dados, instalar o build da branch por cima e conferir que nada sumiu.
+**Fixture**: os testes criam o store V1 em disco com os modelos do `SchemaV1` (cópia fiel do `main`) e reabrem pela fábrica do app. O store é criado com `Schema(SchemaV1.models)`, **sem** `VersionedSchema`, como o `main` fazia: o SwiftData precisa reconhecer um store sem versão como V1 pelos hashes das entidades, e é esse o caso do usuário da 1.5. Como validação extra, antes do merge: instalar o build do `main` no simulador, registrar dados, instalar o build da branch por cima e conferir que nada sumiu.
 
 **Pronto quando**: o store da 1.5 abre sem cair no fallback e todas as contagens e somas batem com as do store V1 criado no teste.
 

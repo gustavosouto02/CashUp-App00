@@ -91,8 +91,9 @@ final class MigracaoUnitTests: XCTestCase {
         XCTAssertEqual(try contexto.fetchCount(FetchDescriptor<ExpenseModel>()), 3)
     }
 
+    /// Cria o store como o `main` (App Store 1.5) criava: schema sem versão, só com a lista de modelos.
     private func criarStoreV1() throws {
-        let schema = Schema(versionedSchema: SchemaV1.self)
+        let schema = Schema(SchemaV1.models)
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL))
         let contexto = ModelContext(container)
 
