@@ -82,9 +82,15 @@ struct RootView: View {
         let context = modelContainer.mainContext
         do {
             try SeedService(settings: settings).aplicar(em: context)
+        } catch {
+            context.rollback()
+            CashUpLogger.persistence.error("Seed: \(error.localizedDescription, privacy: .public)")
+        }
+        do {
             try DeduplicacaoService().deduplicar(em: context)
         } catch {
-            CashUpLogger.persistence.error("Erro ao preparar dados iniciais: \(error.localizedDescription, privacy: .public)")
+            context.rollback()
+            CashUpLogger.persistence.error("Deduplicação: \(error.localizedDescription, privacy: .public)")
         }
         dadosIniciaisProntos = true
     }

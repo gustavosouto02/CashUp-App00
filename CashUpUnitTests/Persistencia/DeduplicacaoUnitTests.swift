@@ -92,19 +92,29 @@ final class DeduplicacaoUnitTests: XCTestCase {
     }
 
     func testSobreviventeEhDeterministico() throws {
-        let copias = (0..<5).map { _ in copiaCategoria(criadoEm: .distantPast) }
-        try context.save()
-        let esperado = copias.min { $0.instanciaID.uuidString < $1.instanciaID.uuidString }?.instanciaID
+        let ids = (1...5).map { UUID(uuidString: "00000000-0000-0000-0000-00000000000\($0)")! }
+        let esperado = try XCTUnwrap(ids.min { $0.uuidString < $1.uuidString })
 
-        for _ in 0..<100 {
-            let embaralhadas = copias.shuffled()
-            let menor = embaralhadas.sorted { ($0.criadoEm, $0.instanciaID.uuidString) < ($1.criadoEm, $1.instanciaID.uuidString) }.first
-            XCTAssertEqual(menor?.instanciaID, esperado)
+        var ordens = [ids, ids.reversed()]
+        ordens += (0..<10).map { _ in ids.shuffled() }
+
+        for ordem in ordens {
+            let contextoNovo = ModelContext(try CashUpPersistence.makeContainer(inMemory: true))
+            for instanciaID in ordem {
+                let copia = CategoriaModel(id: idTransporte, nome: "Nome \(instanciaID.uuidString)", icon: "car", red: 0.75, green: 0.35, blue: 0.98)
+                copia.instanciaID = instanciaID
+                copia.criadoEm = .distantPast
+                copia.atualizadoEm = .distantPast
+                contextoNovo.insert(copia)
+            }
+            try contextoNovo.save()
+
+            try servico.deduplicar(em: contextoNovo)
+
+            let restantes = try contextoNovo.fetch(FetchDescriptor<CategoriaModel>())
+            XCTAssertEqual(restantes.map(\.instanciaID), [esperado])
+            XCTAssertEqual(restantes.first?.nome, "Nome \(esperado.uuidString)", "Empate de atualizadoEm: vence a de menor (criadoEm, instanciaID)")
         }
-
-        try servico.deduplicar(em: context)
-
-        XCTAssertEqual(try categorias().map(\.instanciaID), [esperado])
     }
 
     func testCamposVemDoMaisRecente() throws {
@@ -209,6 +219,34 @@ final class DeduplicacaoUnitTests: XCTestCase {
 
         XCTAssertEqual(try categorias().count, 1)
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 0)
+    }
+
+    func testLapideNaoApagaUltimaSubcategoriaDaRenda() throws {
+        let renda = CategoriaModel(id: SeedIDs.idRenda, nome: "Renda", icon: "dollarsign", red: 0, green: 0, blue: 0)
+        context.insert(renda)
+        context.insert(SubcategoriaModel(id: SeedIDs.idSubSalario, nome: "Salário", icon: "banknote", categoria: renda))
+        context.insert(SeedRemocaoModel(seedID: SeedIDs.idSubSalario))
+        try context.save()
+
+        try servico.deduplicar(em: context)
+
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<SubcategoriaModel>()), 1, "RN-08: a Renda mantém ao menos uma subcategoria")
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 0)
+    }
+
+    func testLapidesDeTodasAsSubcategoriasDaRendaDeixamUma() throws {
+        let renda = CategoriaModel(id: SeedIDs.idRenda, nome: "Renda", icon: "dollarsign", red: 0, green: 0, blue: 0)
+        context.insert(renda)
+        for id in [SeedIDs.idSubSalario, SeedIDs.idSubJuros, SeedIDs.idSubPensao] {
+            context.insert(SubcategoriaModel(id: id, nome: "Sub", icon: "banknote", categoria: renda))
+            context.insert(SeedRemocaoModel(seedID: id))
+        }
+        try context.save()
+
+        try servico.deduplicar(em: context)
+
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<SubcategoriaModel>()), 1)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 2, "As lápides das duas apagadas ficam para os outros aparelhos")
     }
 
     func testSemDuplicatasNaoAlteraNada() throws {

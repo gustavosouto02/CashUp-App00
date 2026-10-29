@@ -190,6 +190,9 @@ As classes passam a viver dentro de `enum SchemaVn: VersionedSchema`. O app usa 
 - **Usuário vindo da 1.5**: store com dados e sem `seedVersaoAplicada` é tratado como versão 1 do catálogo. Só entram itens das versões seguintes (hoje, a subcategoria Reserva, versão 2). Store vazio recebe o catálogo inteiro, menos os itens com lápide.
 - **Lápides**: só itens do catálogo geram lápide. Apagar uma categoria do seed grava a lápide da categoria; as subcategorias somem por cascata e o seed não as recria sem a categoria. `SeedRemocaoModel` também tem `instanciaID`, para que todos os aparelhos fiquem com a mesma lápide quando houver cópias. A lápide da Renda é sempre descartada.
 - **`atualizadoEm`**: atualizado nas edições de categoria e subcategoria (`CategoriaEditorViewModel`) e de `valorPlanejado` (`PlanningViewModel`, `RecommendedPlanningViewModel`).
+- **`atualizadoEm` de transações**: os ViewModels de transação (`ExpensesViewModel`) ainda não atualizam o campo, e a deduplicação de transações mantém a cópia mais antiga sem comparar campos. Hoje não há perda; a comparação por `atualizadoEm` fica para a E9 (restauração de backup), que é quando uma edição mais nova poderia ser descartada.
+- **Cópia do seed não é edição**: itens criados pelo `SeedService` nascem com `atualizadoEm = .distantPast`. No empate de `atualizadoEm`, a deduplicação escolhe a cópia de menor `(criadoEm, instanciaID)`, o que mantém o resultado igual em todos os aparelhos.
+- **Renda e RN-08**: a aplicação de lápides não apaga a última subcategoria da Renda, e o seed insere a subcategoria geral numa Renda criada sem subcategorias.
 - **Fora desta sub-etapa**: `testFalhaNoDidMigrateNaoCorrompeStore` (seção 6). O SwiftData não oferece um jeito limpo de injetar falha no estágio, então fica para a E0.3, o primeiro estágio custom que converte dados.
 
 ### E0.3 — Dinheiro em centavos

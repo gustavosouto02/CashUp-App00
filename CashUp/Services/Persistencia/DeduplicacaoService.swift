@@ -2,7 +2,8 @@ import Foundation
 import SwiftData
 
 /// Deduplicação determinística: todo aparelho que vê as mesmas cópias escolhe o mesmo sobrevivente,
-/// o de menor `(criadoEm, instanciaID)`. Os campos editáveis vêm da cópia com o maior `atualizadoEm`.
+/// o de menor `(criadoEm, instanciaID)`. Os campos editáveis vêm da cópia com o maior `atualizadoEm`;
+/// no empate, vence a de menor `(criadoEm, instanciaID)`, para o resultado não depender da ordem do fetch.
 final class DeduplicacaoService: DeduplicacaoServiceProtocol {
     @discardableResult
     func deduplicar(em context: ModelContext) throws -> Bool {
@@ -27,7 +28,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
 
         for grupo in grupos {
             let (sobrevivente, perdedores) = separar(grupo, criadoEm: \.criadoEm, instanciaID: \.instanciaID)
-            let maisRecente = grupo.max { $0.atualizadoEm < $1.atualizadoEm } ?? sobrevivente
+            let maisRecente = copiaMaisRecente(grupo, atualizadoEm: \.atualizadoEm, criadoEm: \.criadoEm, instanciaID: \.instanciaID) ?? sobrevivente
             sobrevivente.nome = maisRecente.nome
             sobrevivente.icon = maisRecente.icon
             sobrevivente.redComponent = maisRecente.redComponent
@@ -54,7 +55,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
 
         for grupo in grupos {
             let (sobrevivente, perdedores) = separar(grupo, criadoEm: \.criadoEm, instanciaID: \.instanciaID)
-            let maisRecente = grupo.max { $0.atualizadoEm < $1.atualizadoEm } ?? sobrevivente
+            let maisRecente = copiaMaisRecente(grupo, atualizadoEm: \.atualizadoEm, criadoEm: \.criadoEm, instanciaID: \.instanciaID) ?? sobrevivente
             sobrevivente.nome = maisRecente.nome
             sobrevivente.icon = maisRecente.icon
             sobrevivente.atualizadoEm = maisRecente.atualizadoEm
@@ -72,6 +73,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
     }
 
     /// Item do seed com lápide some se não tiver transações; se tiver, o uso real vence e a lápide é descartada.
+    /// A última subcategoria da Renda também vence a lápide (RN-08).
     private func aplicarLapides(em context: ModelContext) throws -> Bool {
         let lapides = try context.fetch(FetchDescriptor<SeedRemocaoModel>())
         guard !lapides.isEmpty else { return false }
@@ -80,7 +82,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
         let subcategorias = Dictionary(grouping: try context.fetch(FetchDescriptor<SubcategoriaModel>()), by: \.id)
         var houveAlteracao = false
 
-        for (seedID, copias) in Dictionary(grouping: lapides, by: \.seedID) {
+        for (seedID, copias) in Dictionary(grouping: lapides, by: \.seedID).sorted(by: { $0.key.uuidString < $1.key.uuidString }) {
             let (lapide, extras) = separar(copias, criadoEm: \.criadoEm, instanciaID: \.instanciaID)
             for extra in extras {
                 context.delete(extra)
@@ -95,7 +97,9 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
                 }
                 houveAlteracao = true
             } else if let subcategoria = subcategorias[seedID]?.first {
-                if (subcategoria.transacoes ?? []).isEmpty {
+                let irmasVivas = (subcategoria.categoria?.subcategorias ?? []).filter { !$0.isDeleted }
+                let ultimaDaRenda = subcategoria.categoria?.id == SeedIDs.idRenda && irmasVivas.count <= 1
+                if (subcategoria.transacoes ?? []).isEmpty && !ultimaDaRenda {
                     context.delete(subcategoria)
                 } else {
                     context.delete(lapide)
@@ -131,7 +135,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
 
         for grupo in grupos {
             let (sobrevivente, perdedores) = separar(grupo, criadoEm: \.criadoEm, instanciaID: \.instanciaID)
-            let maisRecente = grupo.max { $0.atualizadoEm < $1.atualizadoEm } ?? sobrevivente
+            let maisRecente = copiaMaisRecente(grupo, atualizadoEm: \.atualizadoEm, criadoEm: \.criadoEm, instanciaID: \.instanciaID) ?? sobrevivente
             sobrevivente.valorPlanejado = maisRecente.valorPlanejado
             sobrevivente.atualizadoEm = maisRecente.atualizadoEm
             perdedores.forEach(context.delete)
@@ -156,6 +160,18 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
 
     private func gruposDuplicados<T, Chave: Hashable>(_ itens: [T], por chave: (T) -> Chave) -> [[T]] {
         Dictionary(grouping: itens, by: chave).values.filter { $0.count > 1 }
+    }
+
+    private func copiaMaisRecente<T>(
+        _ grupo: [T],
+        atualizadoEm: KeyPath<T, Date>,
+        criadoEm: KeyPath<T, Date>,
+        instanciaID: KeyPath<T, UUID>
+    ) -> T? {
+        grupo.max { a, b in
+            if a[keyPath: atualizadoEm] != b[keyPath: atualizadoEm] { return a[keyPath: atualizadoEm] < b[keyPath: atualizadoEm] }
+            return (a[keyPath: criadoEm], a[keyPath: instanciaID].uuidString) > (b[keyPath: criadoEm], b[keyPath: instanciaID].uuidString)
+        }
     }
 
     private func separar<T>(

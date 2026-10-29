@@ -266,6 +266,28 @@ final class CategoriaEditorViewModelTests: XCTestCase {
         XCTAssertEqual(repository.saveCallCount, 1)
     }
 
+    func testApagarSubcategoriaDoSeedGravaLapide() throws {
+        let sut = makeSUT()
+        let lazer = sut.categorias.first { $0.nome == "Lazer" }!
+        let boliche = SubcategoriaModel(id: SeedIDs.idSubBoliche, nome: "Boliche", icon: "figure.bowling", categoria: lazer)
+        lazer.subcategorias = (lazer.subcategorias ?? []) + [boliche]
+
+        try sut.apagarSubcategoria(boliche)
+
+        XCTAssertFalse((lazer.subcategorias ?? []).contains { $0.id == SeedIDs.idSubBoliche })
+        XCTAssertEqual(repository.remocoesSeed.map(\.seedID), [SeedIDs.idSubBoliche])
+    }
+
+    func testApagarSubcategoriaForaDoSeedNaoGravaLapide() throws {
+        let sut = makeSUT()
+        let lazer = sut.categorias.first { $0.nome == "Lazer" }!
+        let cinema = lazer.subcategorias!.first { $0.nome == "Cinema" }!
+
+        try sut.apagarSubcategoria(cinema)
+
+        XCTAssertTrue(repository.remocoesSeed.isEmpty)
+    }
+
     func testApagarUltimaSubcategoriaDeRendaFalha() {
         let sut = makeSUT()
         let renda = sut.categorias.first { $0.id == SeedIDs.idRenda }!

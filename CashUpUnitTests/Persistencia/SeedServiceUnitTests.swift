@@ -105,4 +105,53 @@ final class SeedServiceUnitTests: XCTestCase {
 
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 0)
     }
+
+    func testItensDoSeedNascemSemContarComoEdicao() throws {
+        try aplicarSeed()
+
+        let categorias = try context.fetch(FetchDescriptor<CategoriaModel>())
+        let subcategorias = try context.fetch(FetchDescriptor<SubcategoriaModel>())
+        XCTAssertTrue(categorias.allSatisfy { $0.atualizadoEm == .distantPast })
+        XCTAssertTrue(subcategorias.allSatisfy { $0.atualizadoEm == .distantPast })
+    }
+
+    func testCopiaDoSeedNaoSobrescreveEdicao() throws {
+        let edicao = Date.make(year: 2026, month: 2, day: 1)
+        try aplicarSeed()
+        let idDiversos = SeedIDs.idDiversos
+        let idSubGeral = SeedIDs.idSubDiversosGerais
+        let editada = CategoriaModel(id: SeedIDs.idDiversos, nome: "Outros", icon: "tray", red: 0.1, green: 0.2, blue: 0.3)
+        editada.criadoEm = .distantPast
+        editada.atualizadoEm = edicao
+        let subEditada = SubcategoriaModel(id: SeedIDs.idSubDiversosGerais, nome: "Geral", icon: "tray", categoria: editada)
+        subEditada.criadoEm = .distantPast
+        subEditada.atualizadoEm = edicao
+        context.insert(editada)
+        context.insert(subEditada)
+        try context.save()
+
+        try DeduplicacaoService().deduplicar(em: context)
+
+        let restantes = try context.fetch(FetchDescriptor<CategoriaModel>(predicate: #Predicate { $0.id == idDiversos }))
+        XCTAssertEqual(restantes.count, 1)
+        XCTAssertEqual(restantes.first?.nome, "Outros", "A renomeação do usuário vence a cópia criada pelo seed")
+        XCTAssertEqual(restantes.first?.icon, "tray")
+        XCTAssertEqual(restantes.first?.atualizadoEm, edicao)
+        XCTAssertEqual(restantes.first?.instanciaID, editada.instanciaID, "criadoEm menor mantém a identidade")
+        let subs = try context.fetch(FetchDescriptor<SubcategoriaModel>(predicate: #Predicate { $0.id == idSubGeral }))
+        XCTAssertEqual(subs.count, 1)
+        XCTAssertEqual(subs.first?.nome, "Geral")
+    }
+
+    func testSeedNaoCriaRendaSemSubcategoria() throws {
+        let subsDaRenda = [SeedIDs.idSubInvestimentos, SeedIDs.idSubJuros, SeedIDs.idSubPensao,
+                           SeedIDs.idSubRendaGeral, SeedIDs.idSubSalario, SeedIDs.idSubSalarioFamilia]
+        subsDaRenda.forEach { context.insert(SeedRemocaoModel(seedID: $0)) }
+        try context.save()
+
+        try aplicarSeed()
+
+        let renda = try XCTUnwrap(try categoria(id: SeedIDs.idRenda))
+        XCTAssertEqual(renda.subcategorias?.map(\.id), [SeedIDs.idSubRendaGeral], "RN-08: a Renda sempre tem ao menos uma subcategoria")
+    }
 }

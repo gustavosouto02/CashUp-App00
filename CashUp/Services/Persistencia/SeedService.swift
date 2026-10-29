@@ -172,6 +172,7 @@ fileprivate extension Color {
 }
 
 /// Aplica o catálogo sem recriar o que o usuário apagou: num store com dados, só entram itens de versões ainda não aplicadas.
+/// O que o seed cria nasce com `atualizadoEm = .distantPast`: uma cópia do seed nunca conta como edição na deduplicação.
 @MainActor
 final class SeedService {
     private let settings: AppSettingsProtocol
@@ -194,6 +195,7 @@ final class SeedService {
         var houveAlteracao = false
         for categoriaSeed in SeedCatalogo.categorias {
             let categoria: CategoriaModel
+            var categoriaCriadaAgora = false
             if let existente = mapaCategorias[categoriaSeed.id] {
                 categoria = existente
             } else if deveInserir(id: categoriaSeed.id, versao: categoriaSeed.introduzidoNaVersao) {
@@ -206,12 +208,15 @@ final class SeedService {
                     green: g,
                     blue: b
                 )
+                categoria.atualizadoEm = .distantPast
                 context.insert(categoria)
+                categoriaCriadaAgora = true
                 houveAlteracao = true
             } else {
                 continue
             }
 
+            var subcategoriasInseridas = 0
             for subSeed in categoriaSeed.subcategorias
             where !subcategoriaIDs.contains(subSeed.id) && deveInserir(id: subSeed.id, versao: subSeed.introduzidoNaVersao) {
                 let novaSub = SubcategoriaModel(
@@ -220,8 +225,23 @@ final class SeedService {
                     icon: subSeed.icon,
                     categoria: categoria
                 )
+                novaSub.atualizadoEm = .distantPast
                 context.insert(novaSub)
+                subcategoriasInseridas += 1
                 houveAlteracao = true
+            }
+
+            // RN-08: a Renda nova nunca nasce sem subcategoria, mesmo que a lápide tenha apagado todas as do seed.
+            if categoriaCriadaAgora && categoriaSeed.id == SeedIDs.idRenda && subcategoriasInseridas == 0,
+               let geral = categoriaSeed.subcategorias.first(where: { $0.id == SeedIDs.idSubRendaGeral }) {
+                let subGeral = SubcategoriaModel(
+                    id: geral.id,
+                    nome: AppLocalization.string(geral.nome, locale: locale),
+                    icon: geral.icon,
+                    categoria: categoria
+                )
+                subGeral.atualizadoEm = .distantPast
+                context.insert(subGeral)
             }
         }
 

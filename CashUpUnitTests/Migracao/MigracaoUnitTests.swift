@@ -70,9 +70,24 @@ final class MigracaoUnitTests: XCTestCase {
 
         let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
         let transacoes = try contexto.fetch(FetchDescriptor<ExpenseModel>())
+        let categorias = try contexto.fetch(FetchDescriptor<CategoriaModel>())
+        let subcategorias = try contexto.fetch(FetchDescriptor<SubcategoriaModel>())
+        let planejamentos = try contexto.fetch(FetchDescriptor<CategoriaPlanejadaModel>())
+        let itensPlanejados = try contexto.fetch(FetchDescriptor<SubcategoriaPlanejadaModel>())
 
-        XCTAssertEqual(Set(transacoes.map(\.instanciaID)).count, transacoes.count)
+        let instancias = transacoes.map(\.instanciaID)
+            + categorias.map(\.instanciaID)
+            + subcategorias.map(\.instanciaID)
+            + planejamentos.map(\.instanciaID)
+            + itensPlanejados.map(\.instanciaID)
+        XCTAssertEqual(instancias.count, 6)
+        XCTAssertEqual(Set(instancias).count, instancias.count, "Cada registro migrado tem o próprio instanciaID")
+
         XCTAssertTrue(transacoes.allSatisfy { $0.criadoEm == .distantPast })
+        XCTAssertTrue(categorias.allSatisfy { $0.criadoEm == .distantPast && $0.atualizadoEm == .distantPast })
+        XCTAssertTrue(subcategorias.allSatisfy { $0.criadoEm == .distantPast && $0.atualizadoEm == .distantPast })
+        XCTAssertTrue(planejamentos.allSatisfy { $0.criadoEm == .distantPast })
+        XCTAssertTrue(itensPlanejados.allSatisfy { $0.criadoEm == .distantPast && $0.atualizadoEm == .distantPast })
         XCTAssertEqual(try contexto.fetchCount(FetchDescriptor<SeedRemocaoModel>()), 0)
     }
 
