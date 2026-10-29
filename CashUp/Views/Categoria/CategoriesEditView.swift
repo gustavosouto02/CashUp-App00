@@ -26,7 +26,7 @@ struct CategoriesEditView: View {
             ForEach(viewModel.categorias) { cat in
                 let isRenda = cat.id == SeedIDs.idRenda
                 Section {
-                    ForEach(cat.subcategorias) { sub in
+                    ForEach(cat.subcategorias ?? []) { sub in
                         HStack(spacing: 12) {
                             CategoriasViewIcon(
                                 systemName: sub.icon,

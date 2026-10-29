@@ -61,8 +61,8 @@ final class CategoriaEditorViewModelTests: XCTestCase {
 
         XCTAssertEqual(nova.nome, "Tecnologia")
         XCTAssertEqual(nova.icon, "laptopcomputer")
-        XCTAssertEqual(nova.subcategorias.count, 1)
-        XCTAssertEqual(nova.subcategorias.first?.nome, "Diversos")
+        XCTAssertEqual(nova.subcategorias?.count, 1)
+        XCTAssertEqual(nova.subcategorias?.first?.nome, "Diversos")
         XCTAssertEqual(sut.categorias.count, 3)
         XCTAssertEqual(repository.saveCallCount, 1)
     }
@@ -225,7 +225,7 @@ final class CategoriaEditorViewModelTests: XCTestCase {
         let novaSub = try sut.criarSubcategoria(em: lazer, nome: "Jogos", icone: "gamecontroller.fill")
 
         XCTAssertEqual(novaSub.nome, "Jogos")
-        XCTAssertTrue(lazer.subcategorias.contains { $0.nome == "Jogos" })
+        XCTAssertTrue((lazer.subcategorias ?? []).contains { $0.nome == "Jogos" })
         XCTAssertEqual(repository.saveCallCount, 1)
     }
 
@@ -241,7 +241,7 @@ final class CategoriaEditorViewModelTests: XCTestCase {
     func testEditarSubcategoriaComSucesso() throws {
         let sut = makeSUT()
         let lazer = sut.categorias.first { $0.nome == "Lazer" }!
-        let cinema = lazer.subcategorias.first { $0.nome == "Cinema" }!
+        let cinema = lazer.subcategorias!.first { $0.nome == "Cinema" }!
 
         try sut.editarSubcategoria(cinema, novoNome: "Filmes & Séries", novoIcone: "film.fill")
 
@@ -253,23 +253,45 @@ final class CategoriaEditorViewModelTests: XCTestCase {
     func testApagarSubcategoriaComTransacoesRemanejaParaDiversos() throws {
         let sut = makeSUT()
         let lazer = sut.categorias.first { $0.nome == "Lazer" }!
-        let cinema = lazer.subcategorias.first { $0.nome == "Cinema" }!
-        let diversos = lazer.subcategorias.first { $0.nome == "Diversos" }!
+        let cinema = lazer.subcategorias!.first { $0.nome == "Cinema" }!
+        let diversos = lazer.subcategorias!.first { $0.nome == "Diversos" }!
 
         let transacao = ExpenseModel(amount: 30.0, date: Date(), expenseDescription: "Ingresso", categoria: lazer, subcategoria: cinema)
         cinema.transacoes = [transacao]
 
         try sut.apagarSubcategoria(cinema)
 
-        XCTAssertFalse(lazer.subcategorias.contains { $0.nome == "Cinema" })
+        XCTAssertFalse((lazer.subcategorias ?? []).contains { $0.nome == "Cinema" })
         XCTAssertEqual(transacao.subcategoria?.id, diversos.id)
         XCTAssertEqual(repository.saveCallCount, 1)
+    }
+
+    func testApagarSubcategoriaDoSeedGravaLapide() throws {
+        let sut = makeSUT()
+        let lazer = sut.categorias.first { $0.nome == "Lazer" }!
+        let boliche = SubcategoriaModel(id: SeedIDs.idSubBoliche, nome: "Boliche", icon: "figure.bowling", categoria: lazer)
+        lazer.subcategorias = (lazer.subcategorias ?? []) + [boliche]
+
+        try sut.apagarSubcategoria(boliche)
+
+        XCTAssertFalse((lazer.subcategorias ?? []).contains { $0.id == SeedIDs.idSubBoliche })
+        XCTAssertEqual(repository.remocoesSeed.map(\.seedID), [SeedIDs.idSubBoliche])
+    }
+
+    func testApagarSubcategoriaForaDoSeedNaoGravaLapide() throws {
+        let sut = makeSUT()
+        let lazer = sut.categorias.first { $0.nome == "Lazer" }!
+        let cinema = lazer.subcategorias!.first { $0.nome == "Cinema" }!
+
+        try sut.apagarSubcategoria(cinema)
+
+        XCTAssertTrue(repository.remocoesSeed.isEmpty)
     }
 
     func testApagarUltimaSubcategoriaDeRendaFalha() {
         let sut = makeSUT()
         let renda = sut.categorias.first { $0.id == SeedIDs.idRenda }!
-        let unicaSub = renda.subcategorias.first!
+        let unicaSub = renda.subcategorias!.first!
 
         XCTAssertThrowsError(try sut.apagarSubcategoria(unicaSub)) { error in
             XCTAssertEqual(error as? CashUpDomainError, .subcategoriaProtegida)

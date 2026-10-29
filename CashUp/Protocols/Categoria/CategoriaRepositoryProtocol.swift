@@ -13,6 +13,7 @@ protocol CategoriaRepositoryProtocol: AnyObject {
     func fetchSubcategoria(id: UUID) throws -> SubcategoriaModel?
     func insert(_ categoria: CategoriaModel)
     func insert(_ subcategoria: SubcategoriaModel)
+    func insert(_ remocao: SeedRemocaoModel)
     func delete(_ categoria: CategoriaModel)
     func delete(_ subcategoria: SubcategoriaModel)
     func save() throws

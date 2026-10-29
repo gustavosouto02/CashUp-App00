@@ -18,13 +18,7 @@ final class CategoriesUnitTests: XCTestCase {
     var modelContext: ModelContext!
 
     override func setUpWithError() throws {
-        let schema = Schema([
-            CategoriaModel.self,
-            SubcategoriaModel.self,
-            ExpenseModel.self,
-        ])
-        
-        modelContainer = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
+        modelContainer = try CashUpPersistence.makeContainer(inMemory: true)
         modelContext = modelContainer.mainContext
     }
 
@@ -36,20 +30,20 @@ final class CategoriesUnitTests: XCTestCase {
     // Test funcs
 
     func test_runSeedInfoCategories() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
         
         XCTAssertEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 7)
     }
     
     func test_uniqueSeedInfoCategories() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
         
         XCTAssertNotEqual(try modelContext.fetchCount(FetchDescriptor<CategoriaModel>()), 14)
     }
     
     func test_increaseSubCategorieUsageCount() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
 
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,
@@ -70,7 +64,7 @@ final class CategoriesUnitTests: XCTestCase {
     }
     
     func test_addInFavoritesSubCategoriesArray() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
 
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,
@@ -89,7 +83,7 @@ final class CategoriesUnitTests: XCTestCase {
     }
     
     func test_filterFavoritesSubCategories() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
 
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,
@@ -114,7 +108,7 @@ final class CategoriesUnitTests: XCTestCase {
     }
     
     func test_filterAllCategories() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
 
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,
@@ -131,7 +125,7 @@ final class CategoriesUnitTests: XCTestCase {
     }
     
     func test_integrationExpenseAndRegisterCount() async throws {
-        await popularDadosIniciaisSeNecessario(modelContext: modelContext)
+        try SeedService(settings: InMemoryAppSettings()).aplicar(em: modelContext)
         
         let viewModel = CategoriesViewModel(
             modelContext: modelContext,

@@ -99,6 +99,7 @@ final class CategoriaEditorViewModel: ObservableObject {
 
         categoria.nome = nomeTrim
         categoria.icon = novoIcone
+        categoria.atualizadoEm = Date()
 
         do {
             try repository.save()
@@ -114,10 +115,12 @@ final class CategoriaEditorViewModel: ObservableObject {
             throw CashUpDomainError.categoriaProtegida
         }
 
-        if !categoria.transacoes.isEmpty {
-            throw CashUpDomainError.categoriaEmUso(quantidadeTransacoes: categoria.transacoes.count)
+        let transacoes = categoria.transacoes ?? []
+        if !transacoes.isEmpty {
+            throw CashUpDomainError.categoriaEmUso(quantidadeTransacoes: transacoes.count)
         }
 
+        registrarRemocaoSeSeed(id: categoria.id)
         repository.delete(categoria)
 
         do {
@@ -133,7 +136,7 @@ final class CategoriaEditorViewModel: ObservableObject {
         let nomeTrim = nome.trimmingCharacters(in: .whitespacesAndNewlines)
         try validarNome(nomeTrim)
 
-        if categoria.subcategorias.contains(where: { $0.nome.localizedCaseInsensitiveCompare(nomeTrim) == .orderedSame }) {
+        if (categoria.subcategorias ?? []).contains(where: { $0.nome.localizedCaseInsensitiveCompare(nomeTrim) == .orderedSame }) {
             throw CashUpDomainError.nomeDuplicado(nomeTrim)
         }
 
@@ -144,7 +147,7 @@ final class CategoriaEditorViewModel: ObservableObject {
             categoria: categoria
         )
 
-        categoria.subcategorias.append(novaSub)
+        categoria.subcategorias = (categoria.subcategorias ?? []) + [novaSub]
         repository.insert(novaSub)
 
         do {
@@ -162,13 +165,14 @@ final class CategoriaEditorViewModel: ObservableObject {
         try validarNome(nomeTrim)
 
         if let pai = subcategoria.categoria {
-            if pai.subcategorias.contains(where: { $0.id != subcategoria.id && $0.nome.localizedCaseInsensitiveCompare(nomeTrim) == .orderedSame }) {
+            if (pai.subcategorias ?? []).contains(where: { $0.id != subcategoria.id && $0.nome.localizedCaseInsensitiveCompare(nomeTrim) == .orderedSame }) {
                 throw CashUpDomainError.nomeDuplicado(nomeTrim)
             }
         }
 
         subcategoria.nome = nomeTrim
         subcategoria.icon = novoIcone
+        subcategoria.atualizadoEm = Date()
 
         do {
             try repository.save()
@@ -181,31 +185,35 @@ final class CategoriaEditorViewModel: ObservableObject {
 
     func apagarSubcategoria(_ subcategoria: SubcategoriaModel) throws {
         guard let categoriaPai = subcategoria.categoria else {
+            registrarRemocaoSeSeed(id: subcategoria.id)
             repository.delete(subcategoria)
             try repository.save()
             carregar()
             return
         }
 
-        if categoriaPai.id == SeedIDs.idRenda && categoriaPai.subcategorias.count <= 1 {
+        let irmas = categoriaPai.subcategorias ?? []
+        if categoriaPai.id == SeedIDs.idRenda && irmas.count <= 1 {
             throw CashUpDomainError.subcategoriaProtegida
         }
 
-        if !subcategoria.transacoes.isEmpty {
-            let destino = categoriaPai.subcategorias.first(where: {
+        let transacoes = subcategoria.transacoes ?? []
+        if !transacoes.isEmpty {
+            let destino = irmas.first(where: {
                 $0.id != subcategoria.id && $0.nome.localizedCaseInsensitiveCompare("Diversos") == .orderedSame
-            }) ?? categoriaPai.subcategorias.first(where: { $0.id != subcategoria.id })
+            }) ?? irmas.first(where: { $0.id != subcategoria.id })
 
             guard let destinoFinal = destino else {
-                throw CashUpDomainError.subcategoriaEmUso(quantidadeTransacoes: subcategoria.transacoes.count)
+                throw CashUpDomainError.subcategoriaEmUso(quantidadeTransacoes: transacoes.count)
             }
 
-            for transacao in subcategoria.transacoes {
+            for transacao in transacoes {
                 transacao.subcategoria = destinoFinal
             }
         }
 
-        categoriaPai.subcategorias.removeAll { $0.id == subcategoria.id }
+        categoriaPai.subcategorias?.removeAll { $0.id == subcategoria.id }
+        registrarRemocaoSeSeed(id: subcategoria.id)
         repository.delete(subcategoria)
 
         do {
@@ -215,6 +223,11 @@ final class CategoriaEditorViewModel: ObservableObject {
             repository.rollback()
             throw error
         }
+    }
+
+    private func registrarRemocaoSeSeed(id: UUID) {
+        guard SeedCatalogo.todosIDs.contains(id) else { return }
+        repository.insert(SeedRemocaoModel(seedID: id))
     }
 
     private func validarNome(_ nome: String) throws {

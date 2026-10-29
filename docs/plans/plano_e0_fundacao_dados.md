@@ -7,6 +7,18 @@
 
 ---
 
+## Status de Execução
+
+| Sub-etapa | Status | Data | Observações |
+|---|---|---|---|
+| E0.1 | ✅ Concluída | 2026-10-27 | PR #40. 198 testes unitários verdes (+5: `MigracaoUnitTests`). `SchemaV1` (cópia do `main`) e `SchemaV2` (modelos do `develop`) com estágio leve; `typealias` em `ModelosAtuais.swift`; `CashUpPersistence` como fábrica do container do app. A fixture cria o store sem versão, como o `main`. Validação manual feita: build do `main` com dados e build da branch instalado por cima, sem perda. Testes de UI não rodam no simulador iOS 27 (falha de ambiente pré-existente). |
+| E0.2 | 🚧 Em andamento | — | Branch `refactor/e0-2-deduplicacao`. Desvios do plano registrados em [E0.2 — notas de implementação](#e02--notas-de-implementação). |
+| E0.3 | ⏳ Pendente | — | — |
+| E0.4 | ⏳ Pendente | — | — |
+| E0.5 | ⏳ Pendente | — | — |
+
+---
+
 ## Sumário
 
 1. [Achados que mudam o desenho](#1-achados-que-mudam-o-desenho)
@@ -15,7 +27,7 @@
 4. [Sub-etapas (um PR cada)](#4-sub-etapas-um-pr-cada)
 5. [Suíte de testes](#5-suíte-de-testes)
 6. [Riscos e casos de borda](#6-riscos-e-casos-de-borda)
-7. [Decisões em aberto](#7-decisões-em-aberto)
+7. [Decisões (27/10/2026)](#7-decisões-27102026)
 
 ---
 
@@ -170,6 +182,18 @@ As classes passam a viver dentro de `enum SchemaVn: VersionedSchema`. O app usa 
 - Usos de `categoria.subcategorias` e `.transacoes`, que passam a ser opcionais (`?? []`)
 
 **Pronto quando**: os testes da seção 5 passam, uma categoria do seed apagada não volta após reabrir o app, e o store da 1.5 migra até a V3.
+
+#### E0.2 — notas de implementação
+
+- **Deduplicação fora do `didMigrate`**: o estágio V2 → V3 só dá um `instanciaID` novo a cada registro (o default do schema vale para o store inteiro, então todos os registros migrados sairiam com o mesmo valor) e salva. O `DeduplicacaoService` trabalha com os modelos atuais (`typealias`); chamado de dentro de um estágio antigo, ele quebraria assim que a V4 existisse. Como a V2 tem `.unique` em todos os `id`, o store migrado não tem duplicatas, e a deduplicação roda logo depois, na abertura, junto com o seed.
+- **Defaults em todos os atributos**: a V3 já dá default a todos os atributos armazenados, outra exigência do CloudKit (ver E0 no roadmap).
+- **Usuário vindo da 1.5**: store com dados e sem `seedVersaoAplicada` é tratado como versão 1 do catálogo. Só entram itens das versões seguintes (hoje, a subcategoria Reserva, versão 2). Store vazio recebe o catálogo inteiro, menos os itens com lápide.
+- **Lápides**: só itens do catálogo geram lápide. Apagar uma categoria do seed grava a lápide da categoria; as subcategorias somem por cascata e o seed não as recria sem a categoria. `SeedRemocaoModel` também tem `instanciaID`, para que todos os aparelhos fiquem com a mesma lápide quando houver cópias. A lápide da Renda é sempre descartada.
+- **`atualizadoEm`**: atualizado nas edições de categoria e subcategoria (`CategoriaEditorViewModel`) e de `valorPlanejado` (`PlanningViewModel`, `RecommendedPlanningViewModel`).
+- **`atualizadoEm` de transações**: os ViewModels de transação (`ExpensesViewModel`) ainda não atualizam o campo, e a deduplicação de transações mantém a cópia mais antiga sem comparar campos. Hoje não há perda; a comparação por `atualizadoEm` fica para a E9 (restauração de backup), que é quando uma edição mais nova poderia ser descartada.
+- **Cópia do seed não é edição**: itens criados pelo `SeedService` nascem com `atualizadoEm = .distantPast`. No empate de `atualizadoEm`, a deduplicação escolhe a cópia de menor `(criadoEm, instanciaID)`, o que mantém o resultado igual em todos os aparelhos.
+- **Renda e RN-08**: a aplicação de lápides não apaga a última subcategoria da Renda, e o seed insere a subcategoria geral numa Renda criada sem subcategorias.
+- **Fora desta sub-etapa**: `testFalhaNoDidMigrateNaoCorrompeStore` (seção 6). O SwiftData não oferece um jeito limpo de injetar falha no estágio, então fica para a E0.3, o primeiro estágio custom que converte dados.
 
 ### E0.3 — Dinheiro em centavos
 

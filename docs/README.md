@@ -58,9 +58,13 @@ docs/
 - **Propósito**: Template canônico para planejar qualquer nova funcionalidade ou refatoração no CashUp antes de escrever o código.
 - **Conteúdo**: Roteiro estruturado em 12 etapas, cobrindo Models, Protocolos, Repositórios, Services/ViewModels, Views SwiftUI, suíte de testes unitários isolados e testes de interface (XCUITest).
 
-### 8. [`plans/plano_correcao_lacunas.md`](plans/plano_correcao_lacunas.md) — Plano de Correção de Lacunas (ativo)
+### 8. [`plans/plano_correcao_lacunas.md`](plans/plano_correcao_lacunas.md) — Plano de Correção de Lacunas (concluído)
 - **Propósito**: Executar, em ordem de prioridade, as correções do code review de 08/10/2026: 3 bugs críticos de recorrência/persistência, 5 bugs médios, débitos técnicos e as 8 lacunas funcionais (biometria, onboarding, CRUD de categorias, edição de ocorrência única, dicas dinâmicas, camada de repositório).
 - **Conteúdo**: 10 etapas dependency-ordered, cada uma com arquivos a criar/modificar/apagar, assinaturas de código, tabela de testes e bloco obrigatório de limpeza ao final.
+
+### 9. [`plans/plano_e0_fundacao_dados.md`](plans/plano_e0_fundacao_dados.md) — Plano da E0: Fundação de Dados (ativo)
+- **Propósito**: Preparar o schema do SwiftData para a Fase 1 e para o iCloud da Fase 2 sem mudar nada visível para o usuário.
+- **Conteúdo**: Achados que mudam o desenho, estratégia de deduplicação sem `@Attribute(.unique)`, versões do schema (V1 a V5) com seus estágios de migração, cinco sub-etapas (E0.1 a E0.5, um PR cada) com status de execução, suíte de testes, riscos e decisões.
 
 ---
 

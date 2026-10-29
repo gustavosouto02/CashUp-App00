@@ -204,10 +204,12 @@ final class PlanningViewModel: ObservableObject {
 
                 if let numero = formatter.number(from: novoValorString) {
                     subItem.valorPlanejado = numero.doubleValue
+                    subItem.atualizadoEm = Date()
                 } else {
                     let cleanedString = novoValorString.replacingOccurrences(of: ",", with: ".")
                     if let doubleValue = Double(cleanedString) {
                         subItem.valorPlanejado = doubleValue
+                        subItem.atualizadoEm = Date()
                     }
                 }
                 objectWillChange.send()

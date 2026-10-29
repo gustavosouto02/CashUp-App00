@@ -8,15 +8,18 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV2 {
+extension SchemaV3 {
     @Model
     final class SubcategoriaPlanejadaModel {
-        @Attribute(.unique)
-        var id: UUID
-        var valorPlanejado: Double
+        var id: UUID = UUID()
+        var valorPlanejado: Double = 0.0
         var subcategoriaOriginal: SubcategoriaModel?
         @Relationship
         var categoriaPlanejada: CategoriaPlanejadaModel?
+
+        var instanciaID: UUID = UUID()
+        var criadoEm: Date = Date.distantPast
+        var atualizadoEm: Date = Date.distantPast
 
         init(id: UUID = UUID(),
              valorPlanejado: Double = 0.0,
@@ -26,6 +29,9 @@ extension SchemaV2 {
             self.valorPlanejado = valorPlanejado
             self.subcategoriaOriginal = subcategoriaOriginal
             self.categoriaPlanejada = categoriaPlanejada
+            let agora = Date()
+            self.criadoEm = agora
+            self.atualizadoEm = agora
         }
 
         var nomeSubcategoriaOriginal: String {

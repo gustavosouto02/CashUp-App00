@@ -1,15 +1,14 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV2 {
+extension SchemaV3 {
     @Model
     final class ExpenseModel {
-        @Attribute(.unique)
-        var id: UUID
-        var amount: Double
-        var date: Date
-        var expenseDescription: String
-        var isIncome: Bool
+        var id: UUID = UUID()
+        var amount: Double = 0.0
+        var date: Date = Date.distantPast
+        var expenseDescription: String = ""
+        var isIncome: Bool = false
         @Attribute(.externalStorage)
         var repetition: RepetitionData?
 
@@ -17,6 +16,10 @@ extension SchemaV2 {
         var categoria: CategoriaModel?
         @Relationship(deleteRule: .nullify)
         var subcategoria: SubcategoriaModel?
+
+        var instanciaID: UUID = UUID()
+        var criadoEm: Date = Date.distantPast
+        var atualizadoEm: Date = Date.distantPast
 
         init(id: UUID = UUID(),
              amount: Double = 0.0,
@@ -34,6 +37,9 @@ extension SchemaV2 {
             self.repetition = repetition
             self.categoria = categoria
             self.subcategoria = subcategoria
+            let agora = Date()
+            self.criadoEm = agora
+            self.atualizadoEm = agora
         }
     }
 }

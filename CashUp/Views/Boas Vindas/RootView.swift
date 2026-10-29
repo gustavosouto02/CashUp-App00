@@ -11,6 +11,7 @@ struct RootView: View {
     @StateObject private var settingsViewModel: SettingsViewModel
     @State private var isShowingWelcomeScreen: Bool
     @State private var hasCompletedOnboarding: Bool
+    @State private var dadosIniciaisProntos = false
     @Environment(\.scenePhase) private var scenePhase
 
     init(
@@ -54,6 +55,8 @@ struct RootView: View {
             } else if authViewModel.estaBloqueado {
                 BiometricLockView(viewModel: authViewModel)
                     .transition(.opacity.animation(.easeInOut(duration: 0.3)))
+            } else if !dadosIniciaisProntos {
+                Color.black.ignoresSafeArea()
             } else {
                 HomeView(
                     modelContext: modelContainer.mainContext,
@@ -63,10 +66,32 @@ struct RootView: View {
                 .transition(.opacity.animation(.easeInOut(duration: 0.5)))
             }
         }
+        .task {
+            prepararDadosIniciais()
+        }
         .onChange(of: scenePhase) { _, novaFase in
             if novaFase == .background {
                 authViewModel.bloquear()
             }
         }
+    }
+
+    /// Seed e deduplicação rodam uma vez por abertura, no `MainActor`, antes de a Home ler os dados.
+    private func prepararDadosIniciais() {
+        guard !dadosIniciaisProntos else { return }
+        let context = modelContainer.mainContext
+        do {
+            try SeedService(settings: settings).aplicar(em: context)
+        } catch {
+            context.rollback()
+            CashUpLogger.persistence.error("Seed: \(error.localizedDescription, privacy: .public)")
+        }
+        do {
+            try DeduplicacaoService().deduplicar(em: context)
+        } catch {
+            context.rollback()
+            CashUpLogger.persistence.error("Deduplicação: \(error.localizedDescription, privacy: .public)")
+        }
+        dadosIniciaisProntos = true
     }
 }

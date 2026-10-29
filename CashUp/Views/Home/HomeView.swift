@@ -9,7 +9,6 @@ struct HomeView: View {
     @State private var isAddTransactionPresented = false
     @State private var isTipsPresented = false
     @State private var isSettingsPresented = false
-    @State private var dadosIniciaisGarantidos = false
 
     private let settings: AppSettingsProtocol
     private let biometricService: BiometricAuthServiceProtocol
@@ -123,10 +122,6 @@ struct HomeView: View {
                     .environmentObject(homeViewModel.expensesViewModel)
             }
             .task {
-                if !dadosIniciaisGarantidos {
-                    await popularDadosIniciaisSeNecessario(modelContext: modelContext)
-                    dadosIniciaisGarantidos = true
-                }
                 homeViewModel.loadHomeData(for: homeViewModel.currentMonth)
             }
         }
