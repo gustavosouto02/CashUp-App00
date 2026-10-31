@@ -20,10 +20,12 @@
 ## 1. Transações e Lançamentos
 
 ### RN-01 — Validação de Valor Monetário
-- **Regra**: O valor (`amount`) de uma transação deve ser **estritamente maior que zero** (`amount > 0.0`).
-- **Validação**: Tentativas de salvar transações com valor `0.0` ou negativo são rejeitadas na camada de validação do ViewModel (`AddTransactionViewModel.criarTransacaoEChamarClosure`) antes de qualquer chamada de inserção no contexto do banco.
-- **Armazenamento**: Valores são armazenados como ponto flutuante de precisão dupla (`Double`) no `ExpenseModel`.
-- **Formatação**: Exibição obrigatória com duas casas decimais no padrão brasileiro (`R$ 1.250,50`) via `NumberFormatter` com locale `pt_BR`.
+- **Regra**: O valor (`amountInCents`) de uma transação deve ser **estritamente maior que zero** (`amountInCents > 0`).
+- **Validação**: Tentativas de salvar transações com valor `0` ou negativo são rejeitadas na camada de validação do ViewModel (`AddTransactionViewModel.criarTransacaoEChamarClosure`) antes de qualquer chamada de inserção no contexto do banco.
+- **Armazenamento**: Todo valor monetário é um **inteiro em centavos** (`Int64`): `ExpenseModel.amountInCents` e `SubcategoriaPlanejadaModel.valorPlanejadoCentavos` (R$ 12,34 = `1234`). Somas, comparações e divisões são feitas em `Int64`; nunca em `Double`. O `Double` só existe na fronteira com o Swift Charts (`Centavos.double(de:)`).
+- **Conversões**: `Centavos` (`CashUp/Sources/Extensions/Formatters/Centavos.swift`) concentra as conversões `Int64 ↔ Decimal` e o arredondamento comercial (meio para longe do zero). Valores calculados (percentuais, divisão em partes) são arredondados ao centavo mais próximo; nunca truncados.
+- **Migração**: o estágio V3 → V4 converte os `Double` antigos (reais) com `Centavos.de(reais:)`. Os campos `Double` (`amount`, `valorPlanejado`) continuam no schema, só para leitura da migração, até a V5.
+- **Formatação**: Exibição obrigatória com duas casas decimais no padrão da localidade do usuário (`R$ 1.250,50` em `pt_BR`) via `BRLCurrencyFormatter.string(fromCentavos:)`.
 
 ### RN-02 — Classificação Semântica (Despesa vs. Receita)
 - **Regra**: Toda transação é classificada como **Despesa** (`isIncome: false`) ou **Receita** (`isIncome: true`).
