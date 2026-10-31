@@ -46,7 +46,7 @@ final class ExpensesViewModelRemoveTests: XCTestCase {
 
     private func inserirSerieMensal(inicio: Date) throws -> ExpenseModel {
         let serie = ExpenseModel(
-            amount: 1200,
+            amountInCents: 120000,
             date: inicio,
             expenseDescription: "Aluguel",
             repetition: RepetitionData(repeatOption: .mensalmente, endDate: nil)
@@ -107,7 +107,7 @@ final class ExpensesViewModelRemoveTests: XCTestCase {
     }
 
     func testRemoverTransacaoUnicaApagaDoBanco() throws {
-        let unica = ExpenseModel(amount: 80, date: Date.make(year: 2026, month: 3, day: 10), expenseDescription: "Luz")
+        let unica = ExpenseModel(amountInCents: 8000, date: Date.make(year: 2026, month: 3, day: 10), expenseDescription: "Luz")
         try inserir(unica)
         let exibida = try ocorrenciaExibida(em: Date.make(year: 2026, month: 3, day: 1))
 
@@ -117,7 +117,7 @@ final class ExpensesViewModelRemoveTests: XCTestCase {
     }
 
     func testRemoverTransacaoInexistenteLancaErroTipado() {
-        let naoPersistida = DisplayableExpense(from: ExpenseModel(amount: 10))
+        let naoPersistida = DisplayableExpense(from: ExpenseModel(amountInCents: 1000))
 
         XCTAssertThrowsError(try viewModel.removeExpense(naoPersistida, scope: .entireSeries)) { error in
             XCTAssertEqual(error as? CashUpDomainError, .transacaoNaoEncontrada)
@@ -125,7 +125,7 @@ final class ExpensesViewModelRemoveTests: XCTestCase {
     }
 
     func testExcluirComFalhaExpoeMensagemDeErro() {
-        let naoPersistida = DisplayableExpense(from: ExpenseModel(amount: 10))
+        let naoPersistida = DisplayableExpense(from: ExpenseModel(amountInCents: 1000))
 
         viewModel.excluir(naoPersistida, scope: .entireSeries)
 

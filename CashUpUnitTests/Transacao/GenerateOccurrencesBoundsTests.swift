@@ -9,7 +9,7 @@ final class GenerateOccurrencesBoundsTests: XCTestCase {
     }
 
     private func makeExpense(date: Date, repetition: RepetitionData?) -> ExpenseModel {
-        ExpenseModel(amount: 50, date: date, expenseDescription: "Teste", repetition: repetition)
+        ExpenseModel(amountInCents: 5000, date: date, expenseDescription: "Teste", repetition: repetition)
     }
 
     func testSerieDiariaComFimDistanteGeraNoMaximoUmMes() {

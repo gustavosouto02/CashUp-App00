@@ -1,4 +1,4 @@
-typealias SchemaAtual = SchemaV3
+typealias SchemaAtual = SchemaV4
 
 typealias CategoriaModel = SchemaAtual.CategoriaModel
 typealias SubcategoriaModel = SchemaAtual.SubcategoriaModel

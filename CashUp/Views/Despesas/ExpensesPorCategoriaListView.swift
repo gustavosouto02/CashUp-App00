@@ -39,12 +39,12 @@ struct ExpensesPorCategoriaListView: View {
     struct ChartCategoriasData: Identifiable, Hashable {
         let id: UUID
         let categoria: CategoriaModel
-        let total: Double
+        let total: Int64
         let color: Color
         let nome: String
         let icon: String
         
-        init(categoria: CategoriaModel, total: Double) {
+        init(categoria: CategoriaModel, total: Int64) {
             self.id = categoria.id
             self.categoria = categoria
             self.total = total
@@ -68,11 +68,11 @@ struct ExpensesPorCategoriaListView: View {
         
         return groupedByCategoria.compactMap { (categoriaOpt, transacoesCategoria) in
             guard let categoria = categoriaOpt, !transacoesCategoria.isEmpty else { return nil }
-            let totalCategoria = transacoesCategoria.reduce(0) { $0 + $1.amount }
+            let totalCategoria = transacoesCategoria.reduce(0) { $0 + $1.amountInCents }
             guard totalCategoria > 0 else { return nil } 
             return ChartCategoriasData(categoria: categoria, total: totalCategoria)
         }.sorted { itemA, itemB in
-            if abs(itemA.total - itemB.total) > 0.001 {
+            if itemA.total != itemB.total {
                 return itemA.total > itemB.total
             } else {
                 return itemA.nome.localizedCompare(itemB.nome) == .orderedAscending
@@ -89,7 +89,7 @@ struct ExpensesPorCategoriaListView: View {
             let totalA = totalParaCategoria(catA)
             let totalB = totalParaCategoria(catB)
             
-            if abs(totalA - totalB) > 0.001 {
+            if totalA != totalB {
                 return totalA > totalB
             } else {
                 return catA.nome.localizedCompare(catB.nome) == .orderedAscending
@@ -112,7 +112,7 @@ struct ExpensesPorCategoriaListView: View {
                 ZStack {
                     Chart(dataParaGrafico) { dataItem in
                         SectorMark(
-                            angle: .value("Total", dataItem.total),
+                            angle: .value("Total", Centavos.double(de: dataItem.total)),
                             innerRadius: .ratio(0.70),
                             outerRadius: highlightedCategoryID == dataItem.id ? .ratio(1.0) : .ratio(0.96),
                             angularInset: 1.5
@@ -121,7 +121,7 @@ struct ExpensesPorCategoriaListView: View {
                         .cornerRadius(6)
                         .opacity(highlightedCategoryID == nil || highlightedCategoryID == dataItem.id ? 1.0 : 0.3)
                         .accessibilityLabel(dataItem.nome)
-                        .accessibilityValue(BRLCurrencyFormatter.string(from: dataItem.total))
+                        .accessibilityValue(BRLCurrencyFormatter.string(fromCentavos: dataItem.total))
                     }
                     .frame(height: 160)
                     .padding(.vertical, 5)
@@ -158,7 +158,7 @@ struct ExpensesPorCategoriaListView: View {
                                 .font(.callout.bold())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
-                            Text(BRLCurrencyFormatter.string(from: highlightedData.total))
+                            Text(BRLCurrencyFormatter.string(fromCentavos: highlightedData.total))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -168,7 +168,7 @@ struct ExpensesPorCategoriaListView: View {
                             Text(localSelectedTransactionType == 0 ? "Total Gasto" : "Total Recebido")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text(BRLCurrencyFormatter.string(from: dataParaGrafico.reduce(0, { $0 + $1.total })))
+                            Text(BRLCurrencyFormatter.string(fromCentavos: dataParaGrafico.reduce(0, { $0 + $1.total })))
                                 .font(.title3.bold())
                                 .foregroundColor(.primary)
                         }
@@ -238,7 +238,7 @@ struct ExpensesPorCategoriaListView: View {
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
                 Spacer()
-                Text(BRLCurrencyFormatter.string(from: totalParaCategoria(categoriaModel)))
+                Text(BRLCurrencyFormatter.string(fromCentavos: totalParaCategoria(categoriaModel)))
                     .font(.callout)
                     .fontWeight(.medium)
                     .foregroundStyle(.primary)
@@ -252,7 +252,7 @@ struct ExpensesPorCategoriaListView: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("CategoryRow_\(categoriaModel.nome)")
-            .accessibilityLabel("\(categoriaModel.nome), \(BRLCurrencyFormatter.string(from: totalParaCategoria(categoriaModel)))")
+            .accessibilityLabel("\(categoriaModel.nome), \(BRLCurrencyFormatter.string(fromCentavos: totalParaCategoria(categoriaModel)))")
             .onTapGesture {
                 withAnimation(.snappy) {
                     let categoriaID = categoriaModel.id
@@ -287,7 +287,7 @@ struct ExpensesPorCategoriaListView: View {
                                     .foregroundColor(.primary)
                                     .accessibilityIdentifier("SubcategoryRow_\(subModel.nome)")
                                 Spacer()
-                                Text(BRLCurrencyFormatter.string(from: totalParaSubcategoria(subModel)))
+                                Text(BRLCurrencyFormatter.string(fromCentavos: totalParaSubcategoria(subModel)))
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
                                 Image(systemName: "chevron.right")
@@ -334,16 +334,16 @@ struct ExpensesPorCategoriaListView: View {
         }
     }
     
-    func totalParaCategoria(_ categoriaModel: CategoriaModel) -> Double {
+    func totalParaCategoria(_ categoriaModel: CategoriaModel) -> Int64 {
         transacoesRelevantesParaCalculo
             .filter { $0.categoria?.id == categoriaModel.id }
-            .reduce(0.0) { $0 + $1.amount }
+            .reduce(0) { $0 + $1.amountInCents }
     }
     
-    func totalParaSubcategoria(_ subModel: SubcategoriaModel) -> Double {
+    func totalParaSubcategoria(_ subModel: SubcategoriaModel) -> Int64 {
         transacoesRelevantesParaCalculo
             .filter { $0.subcategoria?.id == subModel.id }
-            .reduce(0.0) { $0 + $1.amount }
+            .reduce(0) { $0 + $1.amountInCents }
     }
     
     func toggleCategory(_ id: UUID) {

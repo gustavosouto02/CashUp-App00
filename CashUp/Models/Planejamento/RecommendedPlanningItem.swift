@@ -53,20 +53,20 @@ struct RecommendedPlanningItem: Identifiable, Equatable {
     let id: UUID
     let categoria: CategoriaModel
     var subcategoria: SubcategoriaModel?
-    var valorSugerido: Double
+    var valorSugeridoCentavos: Int64
     let grupo: Regra503020Grupo
 
     init(
         id: UUID = UUID(),
         categoria: CategoriaModel,
         subcategoria: SubcategoriaModel? = nil,
-        valorSugerido: Double,
+        valorSugeridoCentavos: Int64,
         grupo: Regra503020Grupo
     ) {
         self.id = id
         self.categoria = categoria
         self.subcategoria = subcategoria
-        self.valorSugerido = valorSugerido
+        self.valorSugeridoCentavos = valorSugeridoCentavos
         self.grupo = grupo
     }
 }

@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV3 {
+extension SchemaV4 {
     @Model
     final class CategoriaPlanejadaModel {
         var id: UUID = UUID()
@@ -52,8 +52,8 @@ extension SchemaV3 {
 }
 
 extension CategoriaPlanejadaModel {
-    var valorTotalPlanejado: Double {
-        subcategoriasPlanejadas?.reduce(0) { $0 + $1.valorPlanejado } ?? 0
+    var valorTotalPlanejado: Int64 {
+        subcategoriasPlanejadas?.reduce(0) { $0 + $1.valorPlanejadoCentavos } ?? 0
     }
 }
 

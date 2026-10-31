@@ -2,10 +2,10 @@ import Foundation
 
 final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
     func gerarPlanejamentoRecomendado(
-        rendaMensal: Double,
+        rendaMensalCentavos: Int64,
         categoriasDisponiveis: [CategoriaModel]
     ) -> [RecommendedPlanningItem] {
-        guard rendaMensal > 0 else { return [] }
+        guard rendaMensalCentavos > 0 else { return [] }
 
         let categoriasDespesa = categoriasDisponiveis.filter { cat in
             let nomeNormalizado = cat.nome.folding(options: .diacriticInsensitive, locale: .current).lowercased()
@@ -46,11 +46,11 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             categoriasPoupanca.append(fallback)
         }
 
-        let totalNecessidades = rendaMensal * 0.50
-        let totalDesejos = rendaMensal * 0.30
-        let totalPoupanca = rendaMensal * 0.20
+        let totalNecessidades = Centavos.fracao(rendaMensalCentavos, percentual: 50)
+        let totalDesejos = Centavos.fracao(rendaMensalCentavos, percentual: 30)
+        let totalPoupanca = Centavos.fracao(rendaMensalCentavos, percentual: 20)
 
-        itens.append(contentsOf: distribuirNecessidades(categorias: categoriasNecessidades, totalGrupo: totalNecessidades, rendaMensal: rendaMensal))
+        itens.append(contentsOf: distribuirNecessidades(categorias: categoriasNecessidades, totalGrupo: totalNecessidades, rendaMensalCentavos: rendaMensalCentavos))
         itens.append(contentsOf: distribuirDesejos(categorias: categoriasDesejos, totalGrupo: totalDesejos))
         itens.append(contentsOf: distribuirPoupanca(categorias: categoriasPoupanca, totalGrupo: totalPoupanca))
 
@@ -83,7 +83,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         return .desejos
     }
 
-    private func distribuirNecessidades(categorias: [CategoriaModel], totalGrupo: Double, rendaMensal: Double) -> [RecommendedPlanningItem] {
+    private func distribuirNecessidades(categorias: [CategoriaModel], totalGrupo: Int64, rendaMensalCentavos: Int64) -> [RecommendedPlanningItem] {
         guard !categorias.isEmpty else { return [] }
 
         var resultado: [RecommendedPlanningItem] = []
@@ -107,24 +107,24 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         }
 
         if habitacao != nil || alimentacao != nil || transporte != nil {
-            var alocado = 0.0
+            var alocado: Int64 = 0
             if let habitacao {
-                let valor = arredondar(rendaMensal * 0.25)
+                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 25))
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: habitacao, preferencias: ["aluguel", "rent", "alquiler", "contas", "bills", "facturas", "habitacao", "housing", "vivienda"])
-                resultado.append(RecommendedPlanningItem(categoria: habitacao, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
+                resultado.append(RecommendedPlanningItem(categoria: habitacao, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
             if let alimentacao {
-                let valor = arredondar(rendaMensal * 0.15)
+                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 15))
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: alimentacao, preferencias: ["mantimentos", "groceries", "supermercado", "comida", "food"])
-                resultado.append(RecommendedPlanningItem(categoria: alimentacao, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
+                resultado.append(RecommendedPlanningItem(categoria: alimentacao, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
             if let transporte {
-                let valor = arredondar(rendaMensal * 0.10)
+                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 10))
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: transporte, preferencias: ["transporte", "transportation", "combustivel", "gas", "gasolina", "carro", "car", "auto"])
-                resultado.append(RecommendedPlanningItem(categoria: transporte, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
+                resultado.append(RecommendedPlanningItem(categoria: transporte, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
 
             let restantes = categorias.filter { cat in
@@ -132,81 +132,81 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             }
 
             if !restantes.isEmpty {
-                var sobra = max(totalGrupo - alocado, 0.0)
+                var sobra = max(totalGrupo - alocado, 0)
                 for (index, cat) in restantes.enumerated() {
                     let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: [])
-                    let valor: Double
+                    let valor: Int64
                     if index == restantes.count - 1 {
-                        valor = max((sobra * 100).rounded() / 100.0, 0.0)
+                        valor = max(sobra, 0)
                     } else {
-                        let fatia = arredondar(sobra / Double(restantes.count - index))
+                        let fatia = arredondar(Centavos.dividir(sobra, por: restantes.count - index))
                         valor = min(fatia, sobra)
                         sobra -= valor
                     }
-                    resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
+                    resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
                 }
             } else if alocado < totalGrupo && !resultado.isEmpty {
                 let sobra = totalGrupo - alocado
-                resultado[resultado.count - 1].valorSugerido += (sobra * 100).rounded() / 100.0
+                resultado[resultado.count - 1].valorSugeridoCentavos += sobra
             }
         } else {
-            var restante = (totalGrupo * 100).rounded() / 100.0
+            var restante = totalGrupo
             for (index, cat) in categorias.enumerated() {
                 let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: [])
-                let valor: Double
+                let valor: Int64
                 if index == categorias.count - 1 {
-                    valor = max((restante * 100).rounded() / 100.0, 0.0)
+                    valor = max(restante, 0)
                 } else {
-                    let fatia = arredondar(totalGrupo / Double(categorias.count))
+                    let fatia = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
                     valor = min(fatia, restante)
                     restante -= valor
                 }
-                resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .necessidades))
+                resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
         }
 
         return resultado
     }
 
-    private func distribuirDesejos(categorias: [CategoriaModel], totalGrupo: Double) -> [RecommendedPlanningItem] {
+    private func distribuirDesejos(categorias: [CategoriaModel], totalGrupo: Int64) -> [RecommendedPlanningItem] {
         guard !categorias.isEmpty else { return [] }
 
         var resultado: [RecommendedPlanningItem] = []
-        var restante = (totalGrupo * 100).rounded() / 100.0
+        var restante = totalGrupo
 
         for (index, cat) in categorias.enumerated() {
             let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["lazer", "entretenimento", "compras", "restaurante"])
-            let valor: Double
+            let valor: Int64
             if index == categorias.count - 1 {
-                valor = max((restante * 100).rounded() / 100.0, 0.0)
+                valor = max(restante, 0)
             } else {
-                let calculado = arredondar(totalGrupo / Double(categorias.count))
+                let calculado = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
                 valor = min(calculado, restante)
                 restante -= valor
             }
-            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .desejos))
+            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .desejos))
         }
 
         return resultado
     }
 
-    private func distribuirPoupanca(categorias: [CategoriaModel], totalGrupo: Double) -> [RecommendedPlanningItem] {
+    private func distribuirPoupanca(categorias: [CategoriaModel], totalGrupo: Int64) -> [RecommendedPlanningItem] {
         guard !categorias.isEmpty else { return [] }
 
         var resultado: [RecommendedPlanningItem] = []
-        var restante = (totalGrupo * 100).rounded() / 100.0
+        var restante = totalGrupo
 
         for (index, cat) in categorias.enumerated() {
             let sub = escolherSubcategoriaPrincipal(categoria: cat, preferencias: ["reserva", "emergency", "fund", "poupanca", "savings", "ahorro", "investimento", "investment", "inversiones", "diversos", "miscellaneous", "varios", "outros", "geral"])
-            let valor: Double
+            let valor: Int64
             if index == categorias.count - 1 {
-                valor = max((restante * 100).rounded() / 100.0, 0.0)
+                valor = max(restante, 0)
             } else {
-                let calculado = arredondar(totalGrupo / Double(categorias.count))
+                let calculado = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
                 valor = min(calculado, restante)
                 restante -= valor
             }
-            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugerido: valor, grupo: .futuroPoupanca))
+            resultado.append(RecommendedPlanningItem(categoria: cat, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .futuroPoupanca))
         }
 
         return resultado
@@ -227,7 +227,8 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         return subs.first
     }
 
-    private func arredondar(_ valor: Double) -> Double {
-        max((valor / 5.0).rounded() * 5.0, 0.0)
+    /// Os valores sugeridos são arredondados para múltiplos de R$ 5,00.
+    private func arredondar(_ valor: Int64) -> Int64 {
+        Centavos.arredondar(valor, multiploDe: 500)
     }
 }

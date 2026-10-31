@@ -30,7 +30,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
 
     func testInserirEBuscarTodasTransacoes() throws {
         let expense = ExpenseModel(
-            amount: 50.0,
+            amountInCents: 5000,
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Mercado"
         )
@@ -46,7 +46,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
         let id = UUID()
         let expense = ExpenseModel(
             id: id,
-            amount: 100.0,
+            amountInCents: 10000,
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Aluguel"
         )
@@ -55,7 +55,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
 
         let encontrada = try sut.fetch(id: id)
         XCTAssertNotNil(encontrada)
-        XCTAssertEqual(encontrada?.amount, 100.0)
+        XCTAssertEqual(encontrada?.amountInCents, 10000)
 
         let naoEncontrada = try sut.fetch(id: UUID())
         XCTAssertNil(naoEncontrada)
@@ -63,7 +63,7 @@ final class SwiftDataExpenseRepositoryTests: XCTestCase {
 
     func testDeletarTransacao() throws {
         let expense = ExpenseModel(
-            amount: 25.0,
+            amountInCents: 2500,
             date: Date.make(year: 2026, month: 3, day: 12),
             expenseDescription: "Lanche"
         )

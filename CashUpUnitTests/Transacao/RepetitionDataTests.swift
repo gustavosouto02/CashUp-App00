@@ -44,7 +44,7 @@ final class RepetitionDataTests: XCTestCase {
         -> ExpenseModel
     {
         ExpenseModel(
-            amount: 100.0,
+            amountInCents: 10000,
             date: date,
             expenseDescription: "Teste",
             isIncome: false,

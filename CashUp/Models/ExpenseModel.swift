@@ -1,10 +1,13 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV3 {
+extension SchemaV4 {
     @Model
     final class ExpenseModel {
         var id: UUID = UUID()
+        /// Valor em centavos: a única fonte de verdade do dinheiro (RN-01).
+        var amountInCents: Int64 = 0
+        /// Legado da V3 (reais em `Double`): só a conversão para centavos lê, e depois zera. Será removido na V5.
         var amount: Double = 0.0
         var date: Date = Date.distantPast
         var expenseDescription: String = ""
@@ -22,7 +25,7 @@ extension SchemaV3 {
         var atualizadoEm: Date = Date.distantPast
 
         init(id: UUID = UUID(),
-             amount: Double = 0.0,
+             amountInCents: Int64 = 0,
              date: Date = Date(),
              expenseDescription: String = "",
              isIncome: Bool = false,
@@ -30,7 +33,7 @@ extension SchemaV3 {
              categoria: CategoriaModel? = nil,
              subcategoria: SubcategoriaModel? = nil) {
             self.id = id
-            self.amount = amount
+            self.amountInCents = amountInCents
             self.date = date
             self.expenseDescription = expenseDescription
             self.isIncome = isIncome

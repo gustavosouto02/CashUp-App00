@@ -49,7 +49,7 @@ struct ExpensesListView: View {
                 item: $expenseToDelete,
                 titulo: "Apagar Transação Recorrente",
                 mensagemCustomizada: { expense in
-                    let valor = BRLCurrencyFormatter.string(from: expense.amount)
+                    let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
                     let data = expense.date.formatted(date: .numeric, time: .omitted)
                     let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
                     return "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?"
@@ -61,7 +61,7 @@ struct ExpensesListView: View {
                 item: $expenseToEdit,
                 titulo: "Editar Transação Recorrente",
                 mensagemCustomizada: { expense in
-                    let valor = BRLCurrencyFormatter.string(from: expense.amount)
+                    let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
                     let data = expense.date.formatted(date: .numeric, time: .omitted)
                     let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
                     return "\"\(nome)\" de \(valor) em \(data) é recorrente. Quais ocorrências você deseja alterar?"
@@ -128,7 +128,7 @@ struct SectionView: View {
                         .foregroundStyle(.secondary)
                         .accessibilityIdentifier("headerCalendar")
                     Spacer()
-                    Text(BRLCurrencyFormatter.string(from: totalForDay(date)))
+                    Text(BRLCurrencyFormatter.string(fromCentavos: totalForDay(date)))
                         .font(.headline.bold())
                         .foregroundStyle(colorForTotal(totalForDay(date)))
                 }
@@ -159,11 +159,11 @@ struct SectionView: View {
         }
     }
 
-    func totalForDay(_ date: Date) -> Double {
-        expenses.reduce(0) { $0 + $1.amount }
+    func totalForDay(_ date: Date) -> Int64 {
+        expenses.reduce(0) { $0 + $1.amountInCents }
     }
 
-    func colorForTotal(_ total: Double) -> Color {
+    func colorForTotal(_ total: Int64) -> Color {
         return viewModel.selectedTransactionType == 0
             ? (total >= 0 ? .red : .green)
             : (total >= 0 ? .green : .red)
@@ -214,10 +214,10 @@ struct DisplayableExpenseRow: View {
 
             Spacer()
 
-            Text(BRLCurrencyFormatter.string(from: expense.amount))
+            Text(BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents))
                 .foregroundStyle(
                     expense.isIncome
-                        ? .green : (expense.amount > 0 ? .primary : .secondary)
+                        ? .green : (expense.amountInCents > 0 ? .primary : .secondary)
                 )
                 .fontWeight(.bold)
         }

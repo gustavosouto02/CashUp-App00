@@ -72,7 +72,7 @@ final class SwiftDataPlanningRepositoryTests: XCTestCase {
         context.insert(sub)
 
         let plano = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: cat)
-        let subPlano = SubcategoriaPlanejadaModel(valorPlanejado: 200.0, subcategoriaOriginal: sub, categoriaPlanejada: plano)
+        let subPlano = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 20000, subcategoriaOriginal: sub, categoriaPlanejada: plano)
         plano.subcategoriasPlanejadas = [subPlano]
 
         sut.insert(plano)

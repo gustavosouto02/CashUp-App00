@@ -44,9 +44,9 @@ final class TipsViewModelTests: XCTestCase {
         let catLazer = CategoriaModel(nome: "Lazer", icon: "film", red: 1.0, green: 0.0, blue: 0.0)
 
         expenseRepo.expenses = [
-            ExpenseModel(amount: 5000.0, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
-            ExpenseModel(amount: 1500.0, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Aluguel", isIncome: false, categoria: catMoradia),
-            ExpenseModel(amount: 600.0, date: Date.make(year: 2026, month: 6, day: 12), expenseDescription: "Cinema e Jantar", isIncome: false, categoria: catLazer)
+            ExpenseModel(amountInCents: 500000, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
+            ExpenseModel(amountInCents: 150000, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Aluguel", isIncome: false, categoria: catMoradia),
+            ExpenseModel(amountInCents: 60000, date: Date.make(year: 2026, month: 6, day: 12), expenseDescription: "Cinema e Jantar", isIncome: false, categoria: catLazer)
         ]
 
         viewModel.carregar(para: mes, hoje: Date.make(year: 2026, month: 6, day: 15))
@@ -55,10 +55,10 @@ final class TipsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.ruleBreakdown)
 
         let breakdown = viewModel.ruleBreakdown!
-        XCTAssertEqual(breakdown.rendaTotal, 5000.0)
-        XCTAssertEqual(breakdown.necessidades, 1500.0)
-        XCTAssertEqual(breakdown.desejos, 600.0)
-        XCTAssertEqual(breakdown.poupanca, 2900.0)
+        XCTAssertEqual(breakdown.rendaTotal, 500_000)
+        XCTAssertEqual(breakdown.necessidades, 150_000)
+        XCTAssertEqual(breakdown.desejos, 60_000)
+        XCTAssertEqual(breakdown.poupanca, 290_000)
         XCTAssertEqual(breakdown.pctNecessidades, 30.0, accuracy: 0.01)
         XCTAssertEqual(breakdown.pctDesejos, 12.0, accuracy: 0.01)
         XCTAssertEqual(breakdown.pctPoupanca, 58.0, accuracy: 0.01)
@@ -93,14 +93,14 @@ final class TipsViewModelTests: XCTestCase {
         let catSaudeSemAcento = CategoriaModel(nome: "Saude", icon: "cross", red: 1.0, green: 0.0, blue: 0.0)
 
         expenseRepo.expenses = [
-            ExpenseModel(amount: 2000.0, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
-            ExpenseModel(amount: 300.0, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Farmácia", isIncome: false, categoria: catSaudeSemAcento)
+            ExpenseModel(amountInCents: 200000, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
+            ExpenseModel(amountInCents: 30000, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Farmácia", isIncome: false, categoria: catSaudeSemAcento)
         ]
 
         viewModel.carregar(para: mes, hoje: Date.make(year: 2026, month: 6, day: 15))
 
         let breakdown = viewModel.ruleBreakdown
-        XCTAssertEqual(breakdown?.necessidades, 300.0)
-        XCTAssertEqual(breakdown?.desejos, 0.0)
+        XCTAssertEqual(breakdown?.necessidades, 30_000)
+        XCTAssertEqual(breakdown?.desejos, 0)
     }
 }

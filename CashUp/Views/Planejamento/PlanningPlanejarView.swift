@@ -29,7 +29,7 @@ struct PlanningPlanejarView: View {
         let subPlan: SubcategoriaPlanejadaModel
         let categoria: CategoriaModel
         let idsIndisponiveis: Set<UUID>
-        let valorAtual: Double
+        let valorAtual: Int64
     }
 
     @Binding var isRecommendedPlanningSheetPresented: Bool
@@ -312,7 +312,7 @@ struct PlanningPlanejarView: View {
                                     subPlan: subPlanModel,
                                     categoria: catOriginal,
                                     idsIndisponiveis: indisponiveis,
-                                    valorAtual: subPlanModel.valorPlanejado
+                                    valorAtual: subPlanModel.valorPlanejadoCentavos
                                 )
                             },
                             onValorDigitado: {

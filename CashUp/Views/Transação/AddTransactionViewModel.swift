@@ -15,7 +15,7 @@ final class AddTransactionViewModel: ObservableObject {
             }
         }
     }
-    @Published var amount: Double = 0.0
+    @Published var amountInCents: Int64 = 0
     @Published var expenseDescription: String = ""
     @Published var selectedDate: Date = Date()
     @Published var repeatOption: RepeatOption = .nunca
@@ -44,7 +44,7 @@ final class AddTransactionViewModel: ObservableObject {
         self.calendar = calendar
 
         if let ocorrencia = ocorrenciaEmEdicao {
-            amount = ocorrencia.amount
+            amountInCents = ocorrencia.amountInCents
             selectedDate = ocorrencia.date
             expenseDescription = ocorrencia.expenseDescription
             selectedTransactionType = ocorrencia.isIncome ? 1 : 0
@@ -59,7 +59,7 @@ final class AddTransactionViewModel: ObservableObject {
                 repeatEndDate = transacao.repetition?.endDate
             }
         } else if let transacao = transacaoEmEdicao {
-            amount = transacao.amount
+            amountInCents = transacao.amountInCents
             selectedDate = transacao.date
             expenseDescription = transacao.expenseDescription
             selectedTransactionType = transacao.isIncome ? 1 : 0
@@ -73,7 +73,7 @@ final class AddTransactionViewModel: ObservableObject {
     var isEditando: Bool { transacaoEmEdicao != nil || ocorrenciaEmEdicao != nil }
 
     var podeSalvar: Bool {
-        amount > 0 && selectedCategoria != nil && selectedSubcategoria != nil
+        amountInCents > 0 && selectedCategoria != nil && selectedSubcategoria != nil
     }
 
     var tituloDaTela: String {
@@ -116,7 +116,7 @@ final class AddTransactionViewModel: ObservableObject {
             if let ocorrencia = ocorrenciaEmEdicao, let escopo = recurringScope {
                 let repeticao = (escopo == .thisOccurrenceOnly) ? nil : montarRepeticao(preservando: transacaoEmEdicao?.repetition)
                 let edit = ExpenseEdit(
-                    amount: amount,
+                    amountInCents: amountInCents,
                     date: selectedDate,
                     description: expenseDescription,
                     isIncome: resolverIsIncome(),
@@ -138,7 +138,7 @@ final class AddTransactionViewModel: ObservableObject {
     }
 
     private func validarCampos() throws {
-        guard amount > 0 else { throw CashUpDomainError.valorInvalido }
+        guard amountInCents > 0 else { throw CashUpDomainError.valorInvalido }
         guard selectedCategoria != nil, selectedSubcategoria != nil else {
             throw CashUpDomainError.categoriaAusente
         }
@@ -156,7 +156,7 @@ final class AddTransactionViewModel: ObservableObject {
 
     private func montarNovaTransacao() -> ExpenseModel {
         ExpenseModel(
-            amount: amount,
+            amountInCents: amountInCents,
             date: selectedDate,
             expenseDescription: expenseDescription,
             isIncome: resolverIsIncome(),
@@ -168,7 +168,7 @@ final class AddTransactionViewModel: ObservableObject {
 
     private func aplicarEdicao(em transacao: ExpenseModel, usando expensesViewModel: ExpensesViewModel) throws {
         transacao.repetition = montarRepeticao(preservando: transacao.repetition)
-        transacao.amount = amount
+        transacao.amountInCents = amountInCents
         transacao.date = selectedDate
         transacao.expenseDescription = expenseDescription
         transacao.categoria = selectedCategoria

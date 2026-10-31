@@ -8,10 +8,13 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV3 {
+extension SchemaV4 {
     @Model
     final class SubcategoriaPlanejadaModel {
         var id: UUID = UUID()
+        /// Valor planejado em centavos (RN-01).
+        var valorPlanejadoCentavos: Int64 = 0
+        /// Legado da V3 (reais em `Double`): só a conversão para centavos lê, e depois zera. Será removido na V5.
         var valorPlanejado: Double = 0.0
         var subcategoriaOriginal: SubcategoriaModel?
         @Relationship
@@ -22,11 +25,11 @@ extension SchemaV3 {
         var atualizadoEm: Date = Date.distantPast
 
         init(id: UUID = UUID(),
-             valorPlanejado: Double = 0.0,
+             valorPlanejadoCentavos: Int64 = 0,
              subcategoriaOriginal: SubcategoriaModel? = nil,
              categoriaPlanejada: CategoriaPlanejadaModel? = nil) {
             self.id = id
-            self.valorPlanejado = valorPlanejado
+            self.valorPlanejadoCentavos = valorPlanejadoCentavos
             self.subcategoriaOriginal = subcategoriaOriginal
             self.categoriaPlanejada = categoriaPlanejada
             let agora = Date()

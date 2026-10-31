@@ -37,13 +37,13 @@ struct PlanningRestanteView: View {
         }
     }
 
-    private func gasto(em subPlanModel: SubcategoriaPlanejadaModel, totais: [UUID: Double]) -> Double {
+    private func gasto(em subPlanModel: SubcategoriaPlanejadaModel, totais: [UUID: Int64]) -> Int64 {
         guard let id = subPlanModel.subcategoriaOriginal?.id else { return 0 }
         return totais[id] ?? 0
     }
 
     @ViewBuilder
-    private func metaResidualCard(totais: [UUID: Double]) -> some View {
+    private func metaResidualCard(totais: [UUID: Int64]) -> some View {
         let totalPlanejado = planningViewModel.valorTotalPlanejadoParaMesAtual()
 
         let idsPlanejados = Set(
@@ -51,10 +51,10 @@ struct PlanningRestanteView: View {
                 .flatMap { $0.subcategoriasPlanejadas ?? [] }
                 .compactMap { $0.subcategoriaOriginal?.id }
         )
-        let totalGastoEmPlanejado = idsPlanejados.reduce(0.0) { $0 + (totais[$1] ?? 0) }
+        let totalGastoEmPlanejado = idsPlanejados.reduce(Int64(0)) { $0 + (totais[$1] ?? 0) }
 
         let restante = totalPlanejado - totalGastoEmPlanejado
-        let progresso = totalPlanejado > 0 ? min(abs(totalGastoEmPlanejado / totalPlanejado), 1.0) : 0.0
+        let progresso = min(abs(Centavos.razao(totalGastoEmPlanejado, de: totalPlanejado)), 1.0)
         
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 16) {
@@ -83,11 +83,11 @@ struct PlanningRestanteView: View {
                         .font(.subheadline)
                         .padding(.bottom, 2)
 
-                    Text(BRLCurrencyFormatter.string(from: restante))
+                    Text(BRLCurrencyFormatter.string(fromCentavos: restante))
                         .font(.title.bold())
                         .foregroundStyle(restante < 0 ? .red : .primary)
 
-                    Text("Total Planejado: \(BRLCurrencyFormatter.string(from: totalPlanejado))") //
+                    Text("Total Planejado: \(BRLCurrencyFormatter.string(fromCentavos: totalPlanejado))") //
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
@@ -102,12 +102,12 @@ struct PlanningRestanteView: View {
     }
 
     @ViewBuilder
-    func categoriaRestanteView(categoriaPModel: CategoriaPlanejadaModel, totais: [UUID: Double]) -> some View {
+    func categoriaRestanteView(categoriaPModel: CategoriaPlanejadaModel, totais: [UUID: Int64]) -> some View {
         let totalPlanejadoCategoria = planningViewModel.totalParaCategoriaPlanejada(categoriaPModel)
 
-        let totalGastoCategoria = categoriaPModel.subcategoriasPlanejadas?.reduce(0.0) { sum, subPlanModel in
+        let totalGastoCategoria = categoriaPModel.subcategoriasPlanejadas?.reduce(Int64(0)) { sum, subPlanModel in
             sum + gasto(em: subPlanModel, totais: totais)
-        } ?? 0.0
+        } ?? 0
 
         let restanteCategoria = totalPlanejadoCategoria - totalGastoCategoria
 
@@ -123,7 +123,7 @@ struct PlanningRestanteView: View {
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                 Spacer()
-                Text("\(BRLCurrencyFormatter.string(from: restanteCategoria)) restante")
+                Text("\(BRLCurrencyFormatter.string(fromCentavos: restanteCategoria)) restante")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(restanteCategoria < 0 ? .red : .secondary)
                     .minimumScaleFactor(0.5)
@@ -134,8 +134,8 @@ struct PlanningRestanteView: View {
                 VStack(spacing: 12) {
                     ForEach(subcategoriasPlanejadas.sorted(by: { $0.subcategoriaOriginal?.nome ?? "" < $1.subcategoriaOriginal?.nome ?? "" })) { subPlanModel in
                         let gastoNaSub = gasto(em: subPlanModel, totais: totais)
-                        let limiteDaSub = subPlanModel.valorPlanejado
-                        let progressoSub = limiteDaSub > 0 ? min(abs(gastoNaSub / limiteDaSub), 1.0) : 0.0
+                        let limiteDaSub = subPlanModel.valorPlanejadoCentavos
+                        let progressoSub = min(abs(Centavos.razao(gastoNaSub, de: limiteDaSub)), 1.0)
 
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
@@ -148,7 +148,7 @@ struct PlanningRestanteView: View {
                                     .font(.subheadline.weight(.medium))
                                 
                                 Spacer()
-                                Text("\(BRLCurrencyFormatter.string(from: gastoNaSub)) / \(BRLCurrencyFormatter.string(from: limiteDaSub))")
+                                Text("\(BRLCurrencyFormatter.string(fromCentavos: gastoNaSub)) / \(BRLCurrencyFormatter.string(fromCentavos: limiteDaSub))")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }

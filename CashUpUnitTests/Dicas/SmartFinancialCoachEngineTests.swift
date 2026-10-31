@@ -26,10 +26,10 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
 
         let categoria = CategoriaModel(nome: "Alimentação", icon: "cart.fill", red: 1.0, green: 0.0, blue: 0.0)
         let sub = SubcategoriaModel(nome: "Delivery", icon: "bag.fill", categoria: categoria)
-        let subPlan = SubcategoriaPlanejadaModel(valorPlanejado: 1000.0, subcategoriaOriginal: sub)
+        let subPlan = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 100000, subcategoriaOriginal: sub)
         let catPlan = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria, subcategoriasPlanejadas: [subPlan])
 
-        let exp = ExpenseModel(amount: 600.0, date: Date.make(year: 2026, month: 5, day: 5), expenseDescription: "Lanches", isIncome: false, categoria: categoria, subcategoria: sub)
+        let exp = ExpenseModel(amountInCents: 60000, date: Date.make(year: 2026, month: 5, day: 5), expenseDescription: "Lanches", isIncome: false, categoria: categoria, subcategoria: sub)
         let displayable = [DisplayableExpense(from: exp)]
 
         let insights = engine.analyze(
@@ -52,10 +52,10 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         let hoje = Date.make(year: 2026, month: 5, day: 15)
 
         let categoria = CategoriaModel(nome: "Lazer", icon: "film", red: 0.0, green: 1.0, blue: 0.0)
-        let subPlan = SubcategoriaPlanejadaModel(valorPlanejado: 200.0)
+        let subPlan = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 20000)
         let catPlan = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria, subcategoriasPlanejadas: [subPlan])
 
-        let exp = ExpenseModel(amount: 250.0, date: Date.make(year: 2026, month: 5, day: 10), expenseDescription: "Show", isIncome: false)
+        let exp = ExpenseModel(amountInCents: 25000, date: Date.make(year: 2026, month: 5, day: 10), expenseDescription: "Show", isIncome: false)
         let displayable = [DisplayableExpense(from: exp)]
 
         let insights = engine.analyze(
@@ -78,10 +78,10 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         let hoje = Date.make(year: 2026, month: 5, day: 21)
 
         let categoria = CategoriaModel(nome: "Total", icon: "star", red: 0.0, green: 0.0, blue: 1.0)
-        let subPlan = SubcategoriaPlanejadaModel(valorPlanejado: 1000.0)
+        let subPlan = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 100000)
         let catPlan = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria, subcategoriasPlanejadas: [subPlan])
 
-        let exp = ExpenseModel(amount: 500.0, date: Date.make(year: 2026, month: 5, day: 10), expenseDescription: "Gasto", isIncome: false)
+        let exp = ExpenseModel(amountInCents: 50000, date: Date.make(year: 2026, month: 5, day: 10), expenseDescription: "Gasto", isIncome: false)
         let displayable = [DisplayableExpense(from: exp)]
 
         let insights = engine.analyze(
@@ -104,11 +104,11 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         let hoje = Date.make(year: 2026, month: 5, day: 18)
 
         let despesasNormais = [
-            ExpenseModel(amount: 30.0, date: Date.make(year: 2026, month: 5, day: 12), expenseDescription: "Almoço"),
-            ExpenseModel(amount: 25.0, date: Date.make(year: 2026, month: 5, day: 13), expenseDescription: "Farmácia"),
-            ExpenseModel(amount: 40.0, date: Date.make(year: 2026, month: 5, day: 14), expenseDescription: "Mercado")
+            ExpenseModel(amountInCents: 3000, date: Date.make(year: 2026, month: 5, day: 12), expenseDescription: "Almoço"),
+            ExpenseModel(amountInCents: 2500, date: Date.make(year: 2026, month: 5, day: 13), expenseDescription: "Farmácia"),
+            ExpenseModel(amountInCents: 4000, date: Date.make(year: 2026, month: 5, day: 14), expenseDescription: "Mercado")
         ]
-        let pico = ExpenseModel(amount: 350.0, date: Date.make(year: 2026, month: 5, day: 17), expenseDescription: "Tênis Novo")
+        let pico = ExpenseModel(amountInCents: 35000, date: Date.make(year: 2026, month: 5, day: 17), expenseDescription: "Tênis Novo")
 
         let todos = (despesasNormais + [pico]).map { DisplayableExpense(from: $0) }
 
@@ -136,10 +136,10 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         let sexta = Date.make(year: 2026, month: 5, day: 8)
 
         let despesas = [
-            ExpenseModel(amount: 30.0, date: quinta, expenseDescription: "Café"),
-            ExpenseModel(amount: 40.0, date: sexta, expenseDescription: "Lanche"),
-            ExpenseModel(amount: 150.0, date: sabado, expenseDescription: "Restaurante"),
-            ExpenseModel(amount: 120.0, date: domingo, expenseDescription: "Barzinho")
+            ExpenseModel(amountInCents: 3000, date: quinta, expenseDescription: "Café"),
+            ExpenseModel(amountInCents: 4000, date: sexta, expenseDescription: "Lanche"),
+            ExpenseModel(amountInCents: 15000, date: sabado, expenseDescription: "Restaurante"),
+            ExpenseModel(amountInCents: 12000, date: domingo, expenseDescription: "Barzinho")
         ].map { DisplayableExpense(from: $0) }
 
         let insights = engine.analyze(
@@ -161,10 +161,10 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         let hoje = Date.make(year: 2026, month: 5, day: 20)
 
         let categoria = CategoriaModel(nome: "Total", icon: "star", red: 0.0, green: 0.0, blue: 1.0)
-        let subPlan = SubcategoriaPlanejadaModel(valorPlanejado: 1000.0)
+        let subPlan = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 100000)
         let catPlan = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria, subcategoriasPlanejadas: [subPlan])
 
-        let exp = ExpenseModel(amount: 200.0, date: Date.make(year: 2026, month: 5, day: 5), expenseDescription: "Economia", isIncome: false)
+        let exp = ExpenseModel(amountInCents: 20000, date: Date.make(year: 2026, month: 5, day: 5), expenseDescription: "Economia", isIncome: false)
         let displayable = [DisplayableExpense(from: exp)]
 
         let insights = engine.analyze(

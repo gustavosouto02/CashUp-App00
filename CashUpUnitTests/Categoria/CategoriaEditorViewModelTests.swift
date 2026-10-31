@@ -210,7 +210,7 @@ final class CategoriaEditorViewModelTests: XCTestCase {
     func testApagarCategoriaComTransacoesFalha() {
         let sut = makeSUT()
         let lazer = sut.categorias.first { $0.nome == "Lazer" }!
-        let transacao = ExpenseModel(amount: 50.0, date: Date(), expenseDescription: "Cinema", categoria: lazer)
+        let transacao = ExpenseModel(amountInCents: 5000, date: Date(), expenseDescription: "Cinema", categoria: lazer)
         lazer.transacoes = [transacao]
 
         XCTAssertThrowsError(try sut.apagarCategoria(lazer)) { error in
@@ -256,7 +256,7 @@ final class CategoriaEditorViewModelTests: XCTestCase {
         let cinema = lazer.subcategorias!.first { $0.nome == "Cinema" }!
         let diversos = lazer.subcategorias!.first { $0.nome == "Diversos" }!
 
-        let transacao = ExpenseModel(amount: 30.0, date: Date(), expenseDescription: "Ingresso", categoria: lazer, subcategoria: cinema)
+        let transacao = ExpenseModel(amountInCents: 3000, date: Date(), expenseDescription: "Ingresso", categoria: lazer, subcategoria: cinema)
         cinema.transacoes = [transacao]
 
         try sut.apagarSubcategoria(cinema)
@@ -303,7 +303,7 @@ final class CategoriaEditorViewModelTests: XCTestCase {
         let cat = CategoriaModel(id: UUID(), nome: "Avulsa", icon: "tag", red: 0.1, green: 0.2, blue: 0.3)
         let sub = SubcategoriaModel(id: UUID(), nome: "Unica", icon: "tag", categoria: cat)
         cat.subcategorias = [sub]
-        let transacao = ExpenseModel(amount: 10.0, date: Date(), expenseDescription: "Teste", categoria: cat, subcategoria: sub)
+        let transacao = ExpenseModel(amountInCents: 1000, date: Date(), expenseDescription: "Teste", categoria: cat, subcategoria: sub)
         sub.transacoes = [transacao]
 
         XCTAssertThrowsError(try sut.apagarSubcategoria(sub)) { error in

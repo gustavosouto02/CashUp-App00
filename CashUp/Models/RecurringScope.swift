@@ -7,7 +7,7 @@ enum RecurringScope: Equatable {
 }
 
 struct ExpenseEdit: Equatable {
-    var amount: Double
+    var amountInCents: Int64
     var date: Date
     var description: String
     var isIncome: Bool
@@ -16,7 +16,7 @@ struct ExpenseEdit: Equatable {
     var repetition: RepetitionData?
 
     static func == (lhs: ExpenseEdit, rhs: ExpenseEdit) -> Bool {
-        lhs.amount == rhs.amount &&
+        lhs.amountInCents == rhs.amountInCents &&
         lhs.date == rhs.date &&
         lhs.description == rhs.description &&
         lhs.isIncome == rhs.isIncome &&

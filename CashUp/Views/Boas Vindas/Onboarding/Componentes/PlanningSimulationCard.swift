@@ -16,28 +16,28 @@ struct PlanningSimulationCard: View {
         [
             ItemPlanejado(
                 nome: String(localized: "Mercado"),
-                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 680)) de \(BRLCurrencyFormatter.string(from: 1000))"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(fromCentavos: 68000)) de \(BRLCurrencyFormatter.string(fromCentavos: 100000))"),
                 progresso: 0.68,
                 corDestaque: nil,
                 corBarra: .blue
             ),
             ItemPlanejado(
                 nome: String(localized: "Restaurantes"),
-                detalhe: String(localized: "Restam \(BRLCurrencyFormatter.string(from: 70))"),
+                detalhe: String(localized: "Restam \(BRLCurrencyFormatter.string(fromCentavos: 7000))"),
                 progresso: 0.93,
                 corDestaque: Color(red: 255/255, green: 179/255, blue: 64/255),
                 corBarra: Color(red: 255/255, green: 179/255, blue: 64/255)
             ),
             ItemPlanejado(
                 nome: String(localized: "Delivery"),
-                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 220)) de \(BRLCurrencyFormatter.string(from: 350))"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(fromCentavos: 22000)) de \(BRLCurrencyFormatter.string(fromCentavos: 35000))"),
                 progresso: 0.63,
                 corDestaque: nil,
                 corBarra: .blue
             ),
             ItemPlanejado(
                 nome: String(localized: "Transporte"),
-                detalhe: String(localized: "\(BRLCurrencyFormatter.string(from: 190)) de \(BRLCurrencyFormatter.string(from: 400))"),
+                detalhe: String(localized: "\(BRLCurrencyFormatter.string(fromCentavos: 19000)) de \(BRLCurrencyFormatter.string(fromCentavos: 40000))"),
                 progresso: 0.47,
                 corDestaque: nil,
                 corBarra: .blue
@@ -60,7 +60,7 @@ struct PlanningSimulationCard: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(BRLCurrencyFormatter.string(from: 1240))
+                Text(BRLCurrencyFormatter.string(fromCentavos: 124000))
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
 

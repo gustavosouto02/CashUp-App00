@@ -9,17 +9,17 @@ final class FormattersTests: XCTestCase {
 
     func testMoedaEmReais() {
         let ptBR = Locale(identifier: "pt_BR")
-        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(from: 1234.5, locale: ptBR)), "R$ 1.234,50")
-        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(from: 0, locale: ptBR)), "R$ 0,00")
-        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(from: -3.2, locale: ptBR)), "-R$ 3,20")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 123_450, locale: ptBR)), "R$ 1.234,50")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 0, locale: ptBR)), "R$ 0,00")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: -320, locale: ptBR)), "-R$ 3,20")
     }
 
     func testMoedaEmDolarEEuro() {
         let enUS = Locale(identifier: "en_US")
-        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(from: 1234.5, locale: enUS)), "$1,234.50")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 123_450, locale: enUS)), "$1,234.50")
 
         let esES = Locale(identifier: "es_ES")
-        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(from: 1234.5, locale: esES)), "1234,50 €")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 123_450, locale: esES)), "1234,50 €")
     }
 
     func testTituloDeSecaoHojeOntemEDiaDaSemana() {

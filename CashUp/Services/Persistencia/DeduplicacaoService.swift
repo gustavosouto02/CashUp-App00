@@ -136,7 +136,7 @@ final class DeduplicacaoService: DeduplicacaoServiceProtocol {
         for grupo in grupos {
             let (sobrevivente, perdedores) = separar(grupo, criadoEm: \.criadoEm, instanciaID: \.instanciaID)
             let maisRecente = copiaMaisRecente(grupo, atualizadoEm: \.atualizadoEm, criadoEm: \.criadoEm, instanciaID: \.instanciaID) ?? sobrevivente
-            sobrevivente.valorPlanejado = maisRecente.valorPlanejado
+            sobrevivente.valorPlanejadoCentavos = maisRecente.valorPlanejadoCentavos
             sobrevivente.atualizadoEm = maisRecente.atualizadoEm
             perdedores.forEach(context.delete)
         }

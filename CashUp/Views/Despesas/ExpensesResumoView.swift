@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ExpensesResumoView: View {
-    let income: Double
-    let expense: Double
-    var balance: Double {
+    let income: Int64
+    let expense: Int64
+    var balance: Int64 {
         income - expense
     }
     
@@ -34,9 +34,9 @@ struct ExpensesResumoView: View {
         .cornerRadius(12)
     }
     
-    private func resumoItem(value: Double, label: String, color: Color) -> some View {
+    private func resumoItem(value: Int64, label: String, color: Color) -> some View {
         VStack(alignment: .center, spacing: 4) {
-            Text(BRLCurrencyFormatter.string(from: value))
+            Text(BRLCurrencyFormatter.string(fromCentavos: value))
                 .font(.title3)
                 .bold()
                 .foregroundStyle(color)

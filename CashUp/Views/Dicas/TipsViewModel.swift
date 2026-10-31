@@ -1,21 +1,21 @@
 import Foundation
 
 struct FiftyThirtyTwentyBreakdown: Equatable {
-    let rendaTotal: Double
-    let necessidades: Double
-    let desejos: Double
-    let poupanca: Double
+    let rendaTotal: Int64
+    let necessidades: Int64
+    let desejos: Int64
+    let poupanca: Int64
 
     var pctNecessidades: Double {
-        rendaTotal > 0 ? (necessidades / rendaTotal) * 100 : 0
+        Centavos.razao(necessidades, de: rendaTotal) * 100
     }
 
     var pctDesejos: Double {
-        rendaTotal > 0 ? (desejos / rendaTotal) * 100 : 0
+        Centavos.razao(desejos, de: rendaTotal) * 100
     }
 
     var pctPoupanca: Double {
-        rendaTotal > 0 ? (poupanca / rendaTotal) * 100 : 0
+        Centavos.razao(poupanca, de: rendaTotal) * 100
     }
 }
 
@@ -91,11 +91,11 @@ final class TipsViewModel: ObservableObject {
     }
 
     private func calcularRegra503020(displayable: [DisplayableExpense]) {
-        let rendas = displayable.filter { $0.isIncome }.reduce(0.0) { $0 + $1.amount }
+        let rendas = displayable.filter { $0.isIncome }.reduce(0) { $0 + $1.amountInCents }
         let despesas = displayable.filter { !$0.isIncome }
 
-        var necessidades = 0.0
-        var desejos = 0.0
+        var necessidades: Int64 = 0
+        var desejos: Int64 = 0
 
         for item in despesas {
             let nomeNormalizado = (item.categoria?.nome ?? "")
@@ -107,14 +107,14 @@ final class TipsViewModel: ObservableObject {
                 nomeNormalizado.contains("saude") ||
                 nomeNormalizado.contains("transporte") ||
                 nomeNormalizado.contains("educa") {
-                necessidades += item.amount
+                necessidades += item.amountInCents
             } else {
-                desejos += item.amount
+                desejos += item.amountInCents
             }
         }
 
         let totalGasto = necessidades + desejos
-        let poupanca = max(rendas - totalGasto, 0.0)
+        let poupanca = max(rendas - totalGasto, 0)
 
         ruleBreakdown = FiftyThirtyTwentyBreakdown(
             rendaTotal: rendas,

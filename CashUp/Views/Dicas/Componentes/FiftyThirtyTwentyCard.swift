@@ -59,14 +59,14 @@ struct FiftyThirtyTwentyCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    private func linhaBarra(titulo: String, alvo: String, atual: Double, valorAtual: Double, cor: Color) -> some View {
+    private func linhaBarra(titulo: String, alvo: String, atual: Double, valorAtual: Int64, cor: Color) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(titulo)
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.9))
                 Spacer()
-                Text("\(Int(atual))% (\(BRLCurrencyFormatter.string(from: valorAtual)))")
+                Text("\(Int(atual))% (\(BRLCurrencyFormatter.string(fromCentavos: valorAtual)))")
                     .font(.caption.bold())
                     .foregroundColor(.white)
             }

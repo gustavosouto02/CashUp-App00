@@ -37,9 +37,9 @@ final class RecurringEditTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    private func inserirSerieMensal(inicio: Date, valor: Double = 100.0) throws -> ExpenseModel {
+    private func inserirSerieMensal(inicio: Date, valor: Int64 = 10_000) throws -> ExpenseModel {
         let serie = ExpenseModel(
-            amount: valor,
+            amountInCents: valor,
             date: inicio,
             expenseDescription: "Mensalidade",
             isIncome: false,
@@ -64,13 +64,13 @@ final class RecurringEditTests: XCTestCase {
 
     func testEditarSomenteEstaOcorrenciaIsolaTransacaoEPreservaSerie() throws {
         let inicio = Date.make(year: 2026, month: 1, day: 10)
-        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 100.0)
+        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 10_000)
 
         let mesFevereiro = Date.make(year: 2026, month: 2, day: 1)
         let ocorrenciaFev = try ocorrenciaExibida(em: mesFevereiro)
 
         let edit = ExpenseEdit(
-            amount: 150.0,
+            amountInCents: 15000,
             date: ocorrenciaFev.date,
             description: "Mensalidade com taxa",
             isIncome: false,
@@ -88,32 +88,32 @@ final class RecurringEditTests: XCTestCase {
         XCTAssertEqual(serieOriginal.repetition?.excludedDates, [dataExcluidaEsperada])
 
         let isolada = try XCTUnwrap(persistidas.first { $0.id != serieOriginal.id })
-        XCTAssertEqual(isolada.amount, 150.0)
+        XCTAssertEqual(isolada.amountInCents, 15000)
         XCTAssertEqual(isolada.expenseDescription, "Mensalidade com taxa")
         XCTAssertNil(isolada.repetition)
 
         viewModel.currentMonth = mesFevereiro
         viewModel.loadDisplayableExpenses()
         XCTAssertEqual(viewModel.transacoesExibidas.count, 1)
-        XCTAssertEqual(viewModel.transacoesExibidas.first?.amount, 150.0)
+        XCTAssertEqual(viewModel.transacoesExibidas.first?.amountInCents, 15000)
 
         let mesMarco = Date.make(year: 2026, month: 3, day: 1)
         viewModel.currentMonth = mesMarco
         viewModel.loadDisplayableExpenses()
         XCTAssertEqual(viewModel.transacoesExibidas.count, 1)
-        XCTAssertEqual(viewModel.transacoesExibidas.first?.amount, 100.0)
+        XCTAssertEqual(viewModel.transacoesExibidas.first?.amountInCents, 10000)
     }
 
     func testEditarEstaEFuturasEncerraSerieAnteriorECriaNovaSerie() throws {
         let inicio = Date.make(year: 2026, month: 1, day: 10)
-        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 100.0)
+        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 10_000)
 
         let mesMarco = Date.make(year: 2026, month: 3, day: 1)
         let ocorrenciaMarco = try ocorrenciaExibida(em: mesMarco)
 
         let novaData = Date.make(year: 2026, month: 3, day: 15)
         let edit = ExpenseEdit(
-            amount: 180.0,
+            amountInCents: 18000,
             date: novaData,
             description: "Plano Atualizado",
             isIncome: false,
@@ -131,7 +131,7 @@ final class RecurringEditTests: XCTestCase {
         XCTAssertEqual(serieOriginal.repetition?.endDate, fimEsperadoOriginal)
 
         let novaSerie = try XCTUnwrap(persistidas.first { $0.id != serieOriginal.id })
-        XCTAssertEqual(novaSerie.amount, 180.0)
+        XCTAssertEqual(novaSerie.amountInCents, 18000)
         XCTAssertEqual(novaSerie.date, novaData)
         XCTAssertEqual(novaSerie.repetition?.repeatOption, .mensalmente)
 
@@ -139,18 +139,18 @@ final class RecurringEditTests: XCTestCase {
         viewModel.currentMonth = mesAbril
         viewModel.loadDisplayableExpenses()
         XCTAssertEqual(viewModel.transacoesExibidas.count, 1)
-        XCTAssertEqual(viewModel.transacoesExibidas.first?.amount, 180.0)
+        XCTAssertEqual(viewModel.transacoesExibidas.first?.amountInCents, 18000)
     }
 
     func testEditarEstaEFuturasNaPrimeiraOcorrenciaAtualizaOriginalDiretamente() throws {
         let inicio = Date.make(year: 2026, month: 1, day: 10)
-        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 100.0)
+        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 10_000)
 
         let mesJaneiro = Date.make(year: 2026, month: 1, day: 1)
         let primeiraOcorrencia = try ocorrenciaExibida(em: mesJaneiro)
 
         let edit = ExpenseEdit(
-            amount: 130.0,
+            amountInCents: 13000,
             date: Date.make(year: 2026, month: 1, day: 12),
             description: "Primeiro Ajustado",
             isIncome: false,
@@ -164,20 +164,20 @@ final class RecurringEditTests: XCTestCase {
         let persistidas = try todasTransacoesPersistidas()
         XCTAssertEqual(persistidas.count, 1)
         XCTAssertEqual(persistidas.first?.id, serieOriginal.id)
-        XCTAssertEqual(serieOriginal.amount, 130.0)
+        XCTAssertEqual(serieOriginal.amountInCents, 13000)
         XCTAssertEqual(serieOriginal.expenseDescription, "Primeiro Ajustado")
         XCTAssertEqual(serieOriginal.date, Date.make(year: 2026, month: 1, day: 12))
     }
 
     func testEditarTodaASerieModificaOriginalSemCriarNovasTransacoes() throws {
         let inicio = Date.make(year: 2026, month: 1, day: 10)
-        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 100.0)
+        let serieOriginal = try inserirSerieMensal(inicio: inicio, valor: 10_000)
 
         let mesFevereiro = Date.make(year: 2026, month: 2, day: 1)
         let ocorrenciaFev = try ocorrenciaExibida(em: mesFevereiro)
 
         let edit = ExpenseEdit(
-            amount: 220.0,
+            amountInCents: 22000,
             date: inicio,
             description: "Série Inteira Reajustada",
             isIncome: false,
@@ -190,13 +190,13 @@ final class RecurringEditTests: XCTestCase {
 
         let persistidas = try todasTransacoesPersistidas()
         XCTAssertEqual(persistidas.count, 1)
-        XCTAssertEqual(serieOriginal.amount, 220.0)
+        XCTAssertEqual(serieOriginal.amountInCents, 22000)
         XCTAssertEqual(serieOriginal.expenseDescription, "Série Inteira Reajustada")
     }
 
     func testEditarTransacaoNaoRecorrenteAtualizaDiretamente() throws {
         let unica = ExpenseModel(
-            amount: 75.0,
+            amountInCents: 7500,
             date: Date.make(year: 2026, month: 3, day: 14),
             expenseDescription: "Almoço",
             categoria: categoria,
@@ -207,7 +207,7 @@ final class RecurringEditTests: XCTestCase {
 
         let ocorrencia = DisplayableExpense(from: unica)
         let edit = ExpenseEdit(
-            amount: 85.0,
+            amountInCents: 8500,
             date: Date.make(year: 2026, month: 3, day: 14),
             description: "Almoço com sobremesa",
             isIncome: false,
@@ -220,7 +220,7 @@ final class RecurringEditTests: XCTestCase {
 
         let persistidas = try todasTransacoesPersistidas()
         XCTAssertEqual(persistidas.count, 1)
-        XCTAssertEqual(unica.amount, 85.0)
+        XCTAssertEqual(unica.amountInCents, 8500)
         XCTAssertEqual(unica.expenseDescription, "Almoço com sobremesa")
     }
 }

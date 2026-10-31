@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Cartão "Despesas do Mês" da Home: total gasto, categorias principais e gráfico de setores.
 struct ExpensesSummaryCard: View {
-    let totalGasto: Double
+    let totalGasto: Int64
     let categoriasResumo: [CategoriaResumo]
 
     private var categoriasComValor: [CategoriaResumo] {
@@ -39,7 +39,7 @@ struct ExpensesSummaryCard: View {
                 if totalGasto > 0 && !categoriasComValor.isEmpty {
                     Chart(categoriasComValor) { item in
                         SectorMark(
-                            angle: .value("Total Gasto", item.total),
+                            angle: .value("Total Gasto", Centavos.double(de: item.total)),
                             innerRadius: .ratio(0.65),
                             angularInset: 1.5
                         )
@@ -63,7 +63,7 @@ struct ExpensesSummaryCard: View {
         Text("Total Gasto:")
             .font(.caption)
             .foregroundStyle(.secondary)
-        Text(BRLCurrencyFormatter.string(from: totalGasto))
+        Text(BRLCurrencyFormatter.string(fromCentavos: totalGasto))
             .font(.title.bold())
             .minimumScaleFactor(0.5)
             .lineLimit(1)
