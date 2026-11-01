@@ -95,6 +95,7 @@ protocol ExpenseRepositoryProtocol: Sendable {
 - Configurações de relacionamentos explícitas (`@Relationship(deleteRule: .cascade)`).
 - Chaves primárias com UUIDs imutáveis (`@Attribute(.unique)`).
 - Propriedades calculadas leves diretamente nos modelos (ex.: `valorTotalPlanejado`, `generateOccurrences`).
+- O container nasce em `CashUpPersistence`. O store vive no container do App Group `group.br.com.gustavosouto.cashup` (para widgets e App Intents lerem os mesmos dados); na primeira abertura depois do upgrade, o `StoreLocationMigrator` copia o store do `Application Support` antes de abrir o container e só apaga o antigo depois que o novo abre. Sem container de grupo disponível, o app segue no local antigo.
 
 ---
 
