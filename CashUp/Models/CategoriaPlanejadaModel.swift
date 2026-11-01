@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV4 {
+extension SchemaV5 {
     @Model
     final class CategoriaPlanejadaModel {
         var id: UUID = UUID()

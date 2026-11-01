@@ -10,7 +10,7 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
     ) -> [FinancialInsight] {
         var results: [FinancialInsight] = []
 
-        let despesasMes = expenses.filter { !$0.isIncome }
+        let despesasMes = expenses.filter { $0.tipo == .despesa }
         let totalGasto = despesasMes.reduce(0) { $0 + $1.amountInCents }
 
         let totalPlanejado = plannedCategories.reduce(Int64(0)) { acc, cat in

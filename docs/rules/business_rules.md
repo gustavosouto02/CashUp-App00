@@ -24,11 +24,14 @@
 - **Validação**: Tentativas de salvar transações com valor `0` ou negativo são rejeitadas na camada de validação do ViewModel (`AddTransactionViewModel.salvar(usando:)` → `validarCampos()`) antes de qualquer chamada de inserção no contexto do banco.
 - **Armazenamento**: Todo valor monetário é um **inteiro em centavos** (`Int64`): `ExpenseModel.amountInCents` e `SubcategoriaPlanejadaModel.valorPlanejadoCentavos` (R$ 12,34 = `1234`). Somas, comparações e divisões são feitas em `Int64`; nunca em `Double`. O `Double` só existe onde o valor não é dinheiro ou é só visual: razões e percentuais adimensionais (`Centavos.razao`, barras de progresso como o `ProgressView` de `PlanningCard`), o burn-rate do `SmartFinancialCoachEngine` (projeção de dia, não soma de valores) e a fronteira com o Swift Charts (`Centavos.double(de:)`). Esses `Double` nunca são somados nem comparados como dinheiro.
 - **Conversões**: `Centavos` (`CashUp/Sources/Extensions/Formatters/Centavos.swift`) concentra as conversões `Int64 ↔ Decimal` e o arredondamento comercial (meio para longe do zero). Valores calculados (percentuais, divisão em partes) são arredondados ao centavo mais próximo; nunca truncados.
-- **Migração**: o estágio V3 → V4 converte os `Double` antigos (reais) com `Centavos.de(reais:)`. Os campos `Double` (`amount`, `valorPlanejado`) continuam no schema, só para leitura da migração, até a V5.
+- **Migração**: o estágio V3 → V4 converte os `Double` antigos (reais) com `Centavos.de(reais:)`. Os campos `Double` (`amount`, `valorPlanejado`) foram removidos na V5; o `willMigrate` do estágio V4 → V5 termina qualquer conversão pendente antes de removê-los.
 - **Formatação**: Exibição obrigatória com duas casas decimais no padrão da localidade do usuário (`R$ 1.250,50` em `pt_BR`) via `BRLCurrencyFormatter.string(fromCentavos:)`. Views que usam `FormatStyle` (`.currency(code: "BRL")`) devem passar o valor por `Centavos.reais(de:)` (ou `Centavos.moedaBRL(_:)`): passar o `Int64` direto o trata como reais e exibe o valor 100 vezes maior. O `Centavos.moedaBRL` é coberto por teste.
 
-### RN-02 — Classificação Semântica (Despesa vs. Receita)
-- **Regra**: Toda transação é classificada como **Despesa** (`isIncome: false`) ou **Receita** (`isIncome: true`).
+### RN-02 — Classificação Semântica (Despesa, Receita e Transferência)
+- **Regra**: Toda transação tem um **tipo** (`ExpenseModel.tipo`, gravado em `tipoRaw`): **Despesa** (`.despesa`), **Receita** (`.receita`) ou **Transferência** (`.transferencia`, dinheiro que muda de uma conta para outra).
+- **`isIncome`**: continua no modelo e vale `true` só para `.receita`. Despesa e receita são alteradas por `aplicarIsIncome(_:)` (que também atualiza o tipo e não converte uma transferência); o `init` deriva o tipo de `isIncome` quando `tipo` não é informado. O tipo é a fonte de verdade quando os dois divergem.
+- **Transferência fora dos totais**: transferência **não é gasto nem receita**. Ela não entra em nenhum total (RN-14), gráfico, insight, regra 50/30/20 nem na renda detectada do planejamento recomendado. As telas de despesas e receitas listam só `.despesa` e `.receita`; como exibir transferências é decisão da E2.
+- **Migração**: o estágio V4 → V5 define o tipo de toda transação existente a partir de `isIncome` (`true` vira `.receita`; `false`, `.despesa`).
 - **Comportamento Especial da Categoria "Renda"**:
   - A categoria com ID fixo `SeedIDs.idRenda` é a categoria oficial do sistema para entradas financeiras.
   - Qualquer transação vinculada à categoria "Renda" é **forçada automaticamente** como receita (`isIncome = true`), mesmo que o controle na tela estivesse inicialmente em despesa.
@@ -36,8 +39,11 @@
   - Ao cadastrar uma **Despesa**: A categoria "Renda" é omitida da listagem de opções.
   - Ao cadastrar uma **Receita**: Apenas a categoria "Renda" e suas respectivas subcategorias são disponibilizadas para seleção.
 
-### RN-03 — Obrigatoriedade de Associação Taxonômica
+### RN-03 — Obrigatoriedade de Associação Taxonômica e de Conta
 - **Regra**: Nenhuma transação pode ser salva sem estar expressamente vinculada a uma `CategoriaModel` **e** a uma `SubcategoriaModel`.
+- **Conta**: toda transação pertence a uma `ContaModel` (`ExpenseModel.conta`; em transferência, `contaDestino` é a conta que recebe). Hoje o app não tem seletor de conta: todo lançamento novo vai para a **conta padrão**, a "Carteira" (`SeedIDs.idContaCarteira`, tipo `.carteira`), que `ContaRepositoryProtocol.contaPadrao()` cria na primeira necessidade. Se a Carteira não existir mais, vale a primeira conta por `ordem`. Editar uma ocorrência isolada de uma série preserva a conta da série.
+- **Migração**: o estágio V4 → V5 cria a Carteira e liga todas as transações existentes a ela. Se o `didMigrate` falhar, a abertura do container liga à Carteira toda transação sem conta e refaz o tipo (`CashUpMigrationPlan.vincularTransacoesPendentesAContaPadrao`, idempotente).
+- **Apagar conta**: apagar uma conta anula a referência nas transações (`.nullify`); a política de bloqueio fica para a E2.
 - **Campos Opcionais**: O campo `expenseDescription` (descrição textual da transação) é opcional; se deixado em branco, a transação adota visualmente o nome da própria subcategoria selecionada.
 
 ### RN-04 — Recorrência e Projeção Virtual
@@ -160,12 +166,15 @@ No painel principal (`HomeViewModel`), as métricas do mês selecionado são apu
 
 | Métrica | Identificador | Fórmula / Regra |
 |---|---|---|
-| **Total Gasto** | `totalSpentMonth` | $\sum \text{amount}$ de todas as despesas (pontuais + ocorrências virtuais) do mês |
-| **Total de Receitas** | `totalIncomeMonth` | $\sum \text{amount}$ de todas as receitas do mês |
-| **Total Planejado** | `totalPlanejadoMes` | $\sum \text{valorPlanejado}$ de todas as subcategorias orçadas no mês |
-| **Gasto em Planejadas** | `gastoEmPlanejadas` | $\sum \text{amount}$ das despesas cuja categoria **possui orçamento no mês** |
+| **Total Gasto** | `totalSpentMonth` | $\sum \text{amountInCents}$ de todas as despesas (`tipo == .despesa`; pontuais + ocorrências virtuais) do mês |
+| **Total de Receitas** | `totalIncomeMonth` | $\sum \text{amountInCents}$ de todas as receitas (`tipo == .receita`) do mês |
+| **Total Planejado** | `totalPlanejadoMes` | $\sum \text{valorPlanejadoCentavos}$ de todas as subcategorias orçadas no mês |
+| **Gasto em Planejadas** | `gastoEmPlanejadas` | $\sum \text{amountInCents}$ das despesas cuja categoria **possui orçamento no mês** |
 | **Saldo Restante** | `totalRestantePlanejadoMes` | $\text{Total Planejado} - \text{Gasto em Planejadas}$ |
 | **Progresso da Categoria** | `progressoPlanejado` | $\min\left(\frac{\text{Total Gasto na Categoria}}{\text{Valor Planejado da Categoria}}, 1.0\right)$ (limitado a 100%) |
+
+> [!IMPORTANT]
+> **Transferência fora dos totais**: nenhuma métrica desta tabela (nem o gráfico diário da RN-15) conta transações com `tipo == .transferencia`. O `HomeViewModel` as descarta antes de apurar o mês.
 
 > [!IMPORTANT]
 > **Regra de Ouro do Saldo Restante**: Gastos efetuados em categorias que **NÃO foram planejadas** no mês não subtraem do Saldo Restante do Planejamento. O Saldo Restante reflete unicamente a aderência ao orçamento prévio estipulado pelo usuário.

@@ -84,7 +84,7 @@ final class RecommendedPlanningViewModel: ObservableObject {
             let todas = try expenseRepository.fetchAll()
             let ocorrenciasReceita = todas
                 .flatMap { $0.generateOccurrences(forDateInterval: intervalo, calendar: .current) }
-                .filter { $0.isIncome }
+                .filter { $0.tipo == .receita }
             return ocorrenciasReceita.reduce(0) { $0 + $1.amountInCents }
         } catch {
             CashUpLogger.persistence.error("Erro ao detectar renda do mês: \(error.localizedDescription, privacy: .public)")

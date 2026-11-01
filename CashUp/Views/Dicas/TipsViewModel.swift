@@ -91,8 +91,8 @@ final class TipsViewModel: ObservableObject {
     }
 
     private func calcularRegra503020(displayable: [DisplayableExpense]) {
-        let rendas = displayable.filter { $0.isIncome }.reduce(0) { $0 + $1.amountInCents }
-        let despesas = displayable.filter { !$0.isIncome }
+        let rendas = displayable.filter { $0.tipo == .receita }.reduce(0) { $0 + $1.amountInCents }
+        let despesas = displayable.filter { $0.tipo == .despesa }
 
         var necessidades: Int64 = 0
         var desejos: Int64 = 0

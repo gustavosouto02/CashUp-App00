@@ -86,6 +86,27 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(sut.totalIncomeMonth, 100_000)
     }
 
+    func testTransferenciaForaDosTotais() throws {
+        // RN-14: transferência entre contas não é gasto nem receita, mesmo com categoria.
+        context.insert(ExpenseModel(
+            amountInCents: 77_700,
+            date: Date.make(year: 2026, month: 3, day: 6),
+            expenseDescription: "Para a poupança",
+            tipo: .transferencia,
+            categoria: alimentacao,
+            subcategoria: mercado
+        ))
+        try context.save()
+        expensesViewModel.loadDisplayableExpenses()
+        sut.updateCardData()
+
+        XCTAssertEqual(sut.totalSpentMonth, 80_000)
+        XCTAssertEqual(sut.totalIncomeMonth, 100_000)
+        XCTAssertEqual(sut.dailyExpenseChartData.reduce(0) { $0 + $1.totalExpenses }, 80_000)
+        XCTAssertEqual(sut.categoriasResumo.first { $0.categoria.id == alimentacao.id }?.total, 30_000)
+        XCTAssertEqual(sut.totalRestantePlanejadoMes, 0)
+    }
+
     func testCategoriasResumoOrdenadoPorTotalDecrescente() {
         XCTAssertEqual(sut.categoriasResumo.map(\.categoria.id), [transporte.id, alimentacao.id])
         XCTAssertEqual(sut.categoriasResumo.first?.total, 50_000)

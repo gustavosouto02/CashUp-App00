@@ -19,7 +19,10 @@ struct HomeView: View {
         // Dentro do autoclosure: só roda na primeira criação do @StateObject.
         _homeViewModel = StateObject(wrappedValue: {
             let planningVM = PlanningViewModel(repository: SwiftDataPlanningRepository(context: modelContext))
-            let expensesVM = ExpensesViewModel(repository: SwiftDataExpenseRepository(context: modelContext))
+            let expensesVM = ExpensesViewModel(
+                repository: SwiftDataExpenseRepository(context: modelContext),
+                contaRepository: SwiftDataContaRepository(context: modelContext)
+            )
             return HomeViewModel(
                 planningViewModel: planningVM,
                 expensesViewModel: expensesVM
