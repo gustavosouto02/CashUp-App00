@@ -69,6 +69,12 @@ enum Centavos {
         BRLCurrencyFormatter.string(fromCentavos: centavos, locale: locale)
     }
 
+    /// Texto em reais (`.currency(code: "BRL")`) de um valor em centavos. As views que usam `FormatStyle` devem passar por aqui:
+    /// passar o `Int64` direto para `.currency` o trata como reais e mostra o valor 100 vezes maior.
+    static func moedaBRL(_ centavos: Int64, locale: Locale = .autoupdatingCurrent) -> String {
+        reais(de: centavos).formatted(.currency(code: "BRL").locale(locale))
+    }
+
     /// Arredonda (meio para longe do zero) e limita ao teto.
     private static func inteiro(_ valor: Decimal) -> Int64 {
         var bruto = valor

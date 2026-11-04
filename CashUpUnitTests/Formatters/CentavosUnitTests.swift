@@ -71,6 +71,19 @@ final class CentavosUnitTests: XCTestCase {
         XCTAssertEqual(Centavos.arredondar(-300, multiploDe: 500), 0)
     }
 
+    func testMoedaBRLTrataOInteiroComoCentavos() {
+        let ptBR = Locale(identifier: "pt_BR")
+        func semEspacoDuro(_ t: String) -> String { t.replacingOccurrences(of: "\u{00A0}", with: " ") }
+        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(150_000, locale: ptBR)), "R$ 1.500,00")
+        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(0, locale: ptBR)), "R$ 0,00")
+        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(5, locale: ptBR)), "R$ 0,05")
+        // Mesmo texto do formatador usado no resto do app.
+        XCTAssertEqual(
+            semEspacoDuro(Centavos.moedaBRL(123_450, locale: ptBR)),
+            semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 123_450, locale: ptBR))
+        )
+    }
+
     func testDividirEProporcaoNaoPerdemCentavos() {
         XCTAssertEqual(Centavos.dividir(1000, por: 3), 333)
         XCTAssertEqual(Centavos.dividir(1001, por: 2), 501)
