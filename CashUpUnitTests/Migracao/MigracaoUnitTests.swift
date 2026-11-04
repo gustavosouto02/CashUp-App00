@@ -133,10 +133,10 @@ final class MigracaoUnitTests: XCTestCase {
         let valores = valoresDeDuasCasas
         try criarStoreV3(valores: valores)
 
-        // Antes: soma exata em Decimal dos valores como o usuário digitou (a representação decimal mais curta do Double).
-        // Em Double, dez vezes 0,1 somam 0,9999999999999999.
-        let esperado = valores.reduce(Decimal(0)) { $0 + Decimal(string: "\($1)", locale: Locale(identifier: "en_US_POSIX"))! }
-        let esperadoEmCentavos = NSDecimalNumber(decimal: esperado * 100).int64Value
+        // Antes: o total que o app mostrava na V3, somando os `Double` do próprio store (`(soma * 100).rounded()`).
+        let esperadoEmCentavos = try somaEmCentavosDoStoreV3()
+        // Número fixado de propósito: 1.235.836,76 (dez vezes 0,1 em Double somariam 0,9999999999999999).
+        XCTAssertEqual(esperadoEmCentavos, 123_583_676)
 
         let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
         let transacoes = try contexto.fetch(FetchDescriptor<ExpenseModel>())
@@ -146,6 +146,14 @@ final class MigracaoUnitTests: XCTestCase {
 
         let totalDoMes = ExpensesViewModel(modelContext: contexto).totalExpense(in: marco)
         XCTAssertEqual(totalDoMes, esperadoEmCentavos)
+    }
+
+    /// Abre o store com o `SchemaV3` (sem migrar) e soma os `Double` de reais das transações, como a V3 fazia.
+    private func somaEmCentavosDoStoreV3() throws -> Int64 {
+        let schema = Schema(versionedSchema: SchemaV3.self)
+        let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL))
+        let soma = try ModelContext(container).fetch(FetchDescriptor<SchemaV3.ExpenseModel>()).reduce(0.0) { $0 + $1.amount }
+        return Int64((soma * 100).rounded())
     }
 
     func testMigracaoArredondaCadaValorParaOCentavoMaisProximo() throws {
@@ -212,7 +220,20 @@ final class MigracaoUnitTests: XCTestCase {
         )
 
         // O SwiftData já aplicou a mudança estrutural quando o `didMigrate` falha: o store passa a ser V4 com os centavos
-        // zerados. Por isso a abertura do app repara a conversão (`CashUpPersistence.makeContainer`) em vez de abrir com totais zerados.
+        // zerados e o legado intacto. Reabrindo SEM o reparo, é isso que se vê (prova de que o reparo é necessário).
+        do {
+            let semReparo = try ModelContainer(
+                for: CashUpPersistence.schema,
+                migrationPlan: PlanoSemFalhaNoDidMigrate.self,
+                configurations: ModelConfiguration(schema: CashUpPersistence.schema, url: storeURL)
+            )
+            let bruto = try ModelContext(semReparo).fetch(FetchDescriptor<ExpenseModel>())
+            XCTAssertEqual(bruto.count, valores.count)
+            XCTAssertTrue(bruto.allSatisfy { $0.amountInCents == 0 }, "O store ficou V4 com os centavos zerados")
+            XCTAssertTrue(bruto.allSatisfy { $0.amount != 0 }, "O legado em Double continua intacto")
+        }
+
+        // Por isso a abertura do app repara a conversão (`CashUpPersistence.makeContainer`) em vez de abrir com totais zerados.
         let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
         let transacoes = try contexto.fetch(FetchDescriptor<ExpenseModel>())
         XCTAssertEqual(transacoes.count, valores.count)
@@ -238,6 +259,14 @@ final class MigracaoUnitTests: XCTestCase {
                 willMigrate: nil,
                 didMigrate: { _ in throw ErroInjetado.falhou }
             )]
+        }
+    }
+
+    /// Mesmo plano, sem a falha: reabre o store já em V4 sem executar nenhum reparo.
+    private enum PlanoSemFalhaNoDidMigrate: SchemaMigrationPlan {
+        static var schemas: [any VersionedSchema.Type] { [SchemaV3.self, SchemaV4.self] }
+        static var stages: [MigrationStage] {
+            [MigrationStage.custom(fromVersion: SchemaV3.self, toVersion: SchemaV4.self, willMigrate: nil, didMigrate: nil)]
         }
     }
 
