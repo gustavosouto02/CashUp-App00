@@ -21,11 +21,11 @@
 
 ### RN-01 — Validação de Valor Monetário
 - **Regra**: O valor (`amountInCents`) de uma transação deve ser **estritamente maior que zero** (`amountInCents > 0`).
-- **Validação**: Tentativas de salvar transações com valor `0` ou negativo são rejeitadas na camada de validação do ViewModel (`AddTransactionViewModel.criarTransacaoEChamarClosure`) antes de qualquer chamada de inserção no contexto do banco.
-- **Armazenamento**: Todo valor monetário é um **inteiro em centavos** (`Int64`): `ExpenseModel.amountInCents` e `SubcategoriaPlanejadaModel.valorPlanejadoCentavos` (R$ 12,34 = `1234`). Somas, comparações e divisões são feitas em `Int64`; nunca em `Double`. O `Double` só existe na fronteira com o Swift Charts (`Centavos.double(de:)`).
+- **Validação**: Tentativas de salvar transações com valor `0` ou negativo são rejeitadas na camada de validação do ViewModel (`AddTransactionViewModel.salvar(usando:)` → `validarCampos()`) antes de qualquer chamada de inserção no contexto do banco.
+- **Armazenamento**: Todo valor monetário é um **inteiro em centavos** (`Int64`): `ExpenseModel.amountInCents` e `SubcategoriaPlanejadaModel.valorPlanejadoCentavos` (R$ 12,34 = `1234`). Somas, comparações e divisões são feitas em `Int64`; nunca em `Double`. O `Double` só existe onde o valor não é dinheiro ou é só visual: razões e percentuais adimensionais (`Centavos.razao`, barras de progresso como o `ProgressView` de `PlanningCard`), o burn-rate do `SmartFinancialCoachEngine` (projeção de dia, não soma de valores) e a fronteira com o Swift Charts (`Centavos.double(de:)`). Esses `Double` nunca são somados nem comparados como dinheiro.
 - **Conversões**: `Centavos` (`CashUp/Sources/Extensions/Formatters/Centavos.swift`) concentra as conversões `Int64 ↔ Decimal` e o arredondamento comercial (meio para longe do zero). Valores calculados (percentuais, divisão em partes) são arredondados ao centavo mais próximo; nunca truncados.
 - **Migração**: o estágio V3 → V4 converte os `Double` antigos (reais) com `Centavos.de(reais:)`. Os campos `Double` (`amount`, `valorPlanejado`) continuam no schema, só para leitura da migração, até a V5.
-- **Formatação**: Exibição obrigatória com duas casas decimais no padrão da localidade do usuário (`R$ 1.250,50` em `pt_BR`) via `BRLCurrencyFormatter.string(fromCentavos:)`.
+- **Formatação**: Exibição obrigatória com duas casas decimais no padrão da localidade do usuário (`R$ 1.250,50` em `pt_BR`) via `BRLCurrencyFormatter.string(fromCentavos:)`. Views que usam `FormatStyle` (`.currency(code: "BRL")`) devem passar o valor por `Centavos.reais(de:)` (ou `Centavos.moedaBRL(_:)`): passar o `Int64` direto o trata como reais e exibe o valor 100 vezes maior. O `Centavos.moedaBRL` é coberto por teste.
 
 ### RN-02 — Classificação Semântica (Despesa vs. Receita)
 - **Regra**: Toda transação é classificada como **Despesa** (`isIncome: false`) ou **Receita** (`isIncome: true`).

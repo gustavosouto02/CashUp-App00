@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import SwiftData
-import SwiftUI
 
 @MainActor
 final class PlanningViewModel: ObservableObject {
@@ -184,37 +183,6 @@ final class PlanningViewModel: ObservableObject {
         let totalCategoriaValue = totalParaCategoriaPlanejada(categoria)
         let totalPlanejadoMesValor = valorTotalPlanejadoParaMesAtual()
         return Centavos.razao(totalCategoriaValue, de: totalPlanejadoMesValor) * 100
-    }
-
-    func bindingParaValorPlanejado(subItem: SubcategoriaPlanejadaModel) -> Binding<String> {
-        Binding<String>(
-            get: {
-                let formatter = NumberFormatter()
-                formatter.numberStyle = .decimal
-                formatter.maximumFractionDigits = 2
-                formatter.minimumFractionDigits = 2
-                formatter.locale = Locale(identifier: "pt_BR")
-                return formatter.string(from: Centavos.reais(de: subItem.valorPlanejadoCentavos) as NSDecimalNumber) ?? "0,00"
-            },
-            set: { [self] novoValorString in
-                let formatter = NumberFormatter()
-                formatter.numberStyle = .decimal
-                formatter.locale = Locale(identifier: "pt_BR")
-                formatter.generatesDecimalNumbers = true
-
-                if let numero = formatter.number(from: novoValorString) as? NSDecimalNumber {
-                    subItem.valorPlanejadoCentavos = Centavos.de(reais: numero.decimalValue)
-                    subItem.atualizadoEm = Date()
-                } else {
-                    let cleanedString = novoValorString.replacingOccurrences(of: ",", with: ".")
-                    if let decimalValue = Decimal(string: cleanedString, locale: Locale(identifier: "en_US_POSIX")) {
-                        subItem.valorPlanejadoCentavos = Centavos.de(reais: decimalValue)
-                        subItem.atualizadoEm = Date()
-                    }
-                }
-                objectWillChange.send()
-            }
-        )
     }
 
     func navigateMonth(isNext: Bool) {
