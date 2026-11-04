@@ -42,7 +42,7 @@ final class HomeViewModelTests: XCTestCase {
         // 50 despesas em março/2026: 30 de R$10 em Alimentação (300) e 20 de R$25 em Transporte (500).
         for i in 0..<30 {
             context.insert(ExpenseModel(
-                amount: 10,
+                amountInCents: 1000,
                 date: Date.make(year: 2026, month: 3, day: 1 + (i % 28)),
                 expenseDescription: "Mercado \(i)",
                 categoria: alimentacao,
@@ -51,7 +51,7 @@ final class HomeViewModelTests: XCTestCase {
         }
         for i in 0..<20 {
             context.insert(ExpenseModel(
-                amount: 25,
+                amountInCents: 2500,
                 date: Date.make(year: 2026, month: 3, day: 1 + (i % 28)),
                 expenseDescription: "Gasolina \(i)",
                 categoria: transporte,
@@ -59,8 +59,8 @@ final class HomeViewModelTests: XCTestCase {
             ))
         }
         // Ruído: receita no mês e despesa em outro mês não entram no total gasto de março.
-        context.insert(ExpenseModel(amount: 1000, date: Date.make(year: 2026, month: 3, day: 5), expenseDescription: "Salário", isIncome: true))
-        context.insert(ExpenseModel(amount: 999, date: Date.make(year: 2026, month: 4, day: 2), expenseDescription: "Abril", categoria: alimentacao, subcategoria: mercado))
+        context.insert(ExpenseModel(amountInCents: 100000, date: Date.make(year: 2026, month: 3, day: 5), expenseDescription: "Salário", isIncome: true))
+        context.insert(ExpenseModel(amountInCents: 99900, date: Date.make(year: 2026, month: 4, day: 2), expenseDescription: "Abril", categoria: alimentacao, subcategoria: mercado))
         try context.save()
 
         expensesViewModel = ExpensesViewModel(modelContext: context)
@@ -82,32 +82,32 @@ final class HomeViewModelTests: XCTestCase {
     }
 
     func testTotaisDoMesConsideramSoDespesasDeMarco() {
-        XCTAssertEqual(sut.totalSpentMonth, 800, accuracy: 0.001)
-        XCTAssertEqual(sut.totalIncomeMonth, 1000, accuracy: 0.001)
+        XCTAssertEqual(sut.totalSpentMonth, 80_000)
+        XCTAssertEqual(sut.totalIncomeMonth, 100_000)
     }
 
     func testCategoriasResumoOrdenadoPorTotalDecrescente() {
         XCTAssertEqual(sut.categoriasResumo.map(\.categoria.id), [transporte.id, alimentacao.id])
-        XCTAssertEqual(sut.categoriasResumo.first?.total ?? 0, 500, accuracy: 0.001)
+        XCTAssertEqual(sut.categoriasResumo.first?.total, 50_000)
         XCTAssertEqual(sut.categoriasResumo.first?.percentual ?? 0, 0.625, accuracy: 0.001)
         XCTAssertNil(sut.categoriasResumo.first?.progressoPlanejado, "Sem planejamento não há progresso")
     }
 
     func testGraficoDiarioCobreTodosOsDiasDoMesESomaOTotal() {
         XCTAssertEqual(sut.dailyExpenseChartData.count, 31)
-        XCTAssertEqual(sut.dailyExpenseChartData.reduce(0) { $0 + $1.totalExpenses }, 800, accuracy: 0.001)
+        XCTAssertEqual(sut.dailyExpenseChartData.reduce(0) { $0 + $1.totalExpenses }, 80_000)
         XCTAssertEqual(sut.dailyExpenseChartData.map(\.id), sut.dailyExpenseChartData.map(\.date))
     }
 
     func testPlanejamentoReduzRestanteApenasComSubcategoriasPlanejadas() {
         XCTAssertTrue(planningViewModel.adicionarNovaCategoriaAoPlanejamento(categoriaModel: transporte, comSubcategoriaInicial: gasolina))
         let sub = planningViewModel.getCategoriasPlanejadasForCurrentMonth().first?.subcategoriasPlanejadas?.first
-        sub?.valorPlanejado = 600
+        sub?.valorPlanejadoCentavos = 60000
         planningViewModel.currentMonth = marco
         sut.updateCardData()
 
-        XCTAssertEqual(sut.totalPlanejadoMes, 600, accuracy: 0.001)
-        XCTAssertEqual(sut.totalRestantePlanejadoMes, 100, accuracy: 0.001, "600 planejados menos 500 gastos em Gasolina")
+        XCTAssertEqual(sut.totalPlanejadoMes, 60_000)
+        XCTAssertEqual(sut.totalRestantePlanejadoMes, 10_000, "600 planejados menos 500 gastos em Gasolina")
         let transporteResumo = sut.categoriasResumo.first { $0.categoria.id == transporte.id }
         XCTAssertEqual(transporteResumo?.progressoPlanejado ?? 0, 500.0 / 600.0, accuracy: 0.001)
     }

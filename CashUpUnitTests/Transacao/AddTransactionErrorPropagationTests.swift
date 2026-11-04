@@ -38,7 +38,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     private func inserirSerieMensal(inicio: Date, excludedDates: [Date]? = nil) throws -> ExpenseModel {
         let expense = ExpenseModel(
-            amount: 1200,
+            amountInCents: 120000,
             date: inicio,
             expenseDescription: "Aluguel",
             repetition: RepetitionData(repeatOption: .mensalmente, endDate: nil, excludedDates: excludedDates),
@@ -53,11 +53,11 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
     func testEditarSerieSemFimMantemDataFimNula() throws {
         let serie = try inserirSerieMensal(inicio: Date.make(year: 2026, month: 1, day: 5))
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: serie)
-        viewModel.amount = 1300
+        viewModel.amountInCents = 130000
 
         XCTAssertTrue(viewModel.salvar(usando: expensesViewModel))
 
-        XCTAssertEqual(serie.amount, 1300)
+        XCTAssertEqual(serie.amountInCents, 130000)
         XCTAssertEqual(serie.repetition?.repeatOption, .mensalmente)
         XCTAssertNil(serie.repetition?.endDate)
     }
@@ -78,7 +78,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
         let inicioFuturo = Date.make(year: 2027, month: 6, day: 5)
         let serie = try inserirSerieMensal(inicio: inicioFuturo)
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: serie)
-        viewModel.amount = 1500
+        viewModel.amountInCents = 150000
 
         XCTAssertTrue(viewModel.salvar(usando: expensesViewModel))
 
@@ -98,7 +98,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     func testCriarComDataMuitoDistanteFalhaComMensagem() throws {
         let viewModel = AddTransactionViewModel()
-        viewModel.amount = 10
+        viewModel.amountInCents = 1000
         viewModel.selectedCategoria = categoria
         viewModel.selectedSubcategoria = subcategoria
         viewModel.selectedDate = Calendar.current.date(byAdding: .year, value: 101, to: Date())!
@@ -111,7 +111,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     func testCriarComDataFimAnteriorAoInicioFalha() throws {
         let viewModel = AddTransactionViewModel()
-        viewModel.amount = 10
+        viewModel.amountInCents = 1000
         viewModel.selectedCategoria = categoria
         viewModel.selectedSubcategoria = subcategoria
         viewModel.selectedDate = Date.make(year: 2026, month: 5, day: 10)
@@ -125,7 +125,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     func testCriarSemCategoriaFalha() {
         let viewModel = AddTransactionViewModel()
-        viewModel.amount = 10
+        viewModel.amountInCents = 1000
 
         XCTAssertFalse(viewModel.salvar(usando: expensesViewModel))
 
@@ -134,7 +134,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     func testCriarValidoPersisteERecarregaLista() throws {
         let viewModel = AddTransactionViewModel()
-        viewModel.amount = 42
+        viewModel.amountInCents = 4200
         viewModel.selectedCategoria = categoria
         viewModel.selectedSubcategoria = subcategoria
         viewModel.selectedDate = Date.make(year: 2026, month: 3, day: 10)
@@ -149,7 +149,7 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
 
     func testAddExpenseComDataMuitoDistanteLancaErroTipado() {
         let expense = ExpenseModel(
-            amount: 10,
+            amountInCents: 1000,
             date: Calendar.current.date(byAdding: .year, value: 101, to: Date())!,
             categoria: categoria,
             subcategoria: subcategoria

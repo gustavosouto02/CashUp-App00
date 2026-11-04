@@ -13,6 +13,11 @@ enum CashUpPersistence {
     }
 
     private static func makeContainer(configuration: ModelConfiguration) throws -> ModelContainer {
-        try ModelContainer(for: schema, migrationPlan: CashUpMigrationPlan.self, configurations: configuration)
+        let container = try ModelContainer(for: schema, migrationPlan: CashUpMigrationPlan.self, configurations: configuration)
+        let contexto = ModelContext(container)
+        if try CashUpMigrationPlan.converterValoresPendentesParaCentavos(em: contexto) > 0 {
+            try contexto.save()
+        }
+        return container
     }
 }

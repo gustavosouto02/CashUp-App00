@@ -57,7 +57,7 @@ struct RecommendedPlanningSheet: View {
                     categoria: item.categoria,
                     subcategoriaAtualID: item.subcategoria?.id,
                     idsIndisponiveis: viewModel.idsSubcategoriasUsadas(excluindo: item.id),
-                    valorAtual: item.valorSugerido,
+                    valorAtual: item.valorSugeridoCentavos,
                     onSelecionar: { novaSub in
                         viewModel.atualizarSubcategoriaItem(id: item.id, novaSubcategoria: novaSub)
                     }
@@ -109,7 +109,7 @@ struct RecommendedPlanningSheet: View {
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         viewModel.usarRendaDetectada()
                     }) {
-                        Text("Usar detectada (\(BRLCurrencyFormatter.string(from: viewModel.rendaDetectada)))")
+                        Text("Usar detectada (\(BRLCurrencyFormatter.string(fromCentavos: viewModel.rendaDetectadaCentavos)))")
                             .font(.caption.weight(.medium))
                             .foregroundStyle(.blue)
                             .padding(.horizontal, 8)
@@ -120,9 +120,9 @@ struct RecommendedPlanningSheet: View {
                 }
             }
 
-            CurrencyAmountField(amount: $viewModel.rendaInformada)
+            CurrencyAmountField(amount: $viewModel.rendaInformadaCentavos)
                 .frame(maxWidth: .infinity)
-                .onChange(of: viewModel.rendaInformada) { _, _ in
+                .onChange(of: viewModel.rendaInformadaCentavos) { _, _ in
                     viewModel.recalcular()
                 }
 
@@ -202,7 +202,7 @@ struct RecommendedPlanningSheet: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
 
-            Text(BRLCurrencyFormatter.string(from: viewModel.totalPorGrupo(grupo)))
+            Text(BRLCurrencyFormatter.string(fromCentavos: viewModel.totalPorGrupo(grupo)))
                 .font(.subheadline.weight(.bold))
                 .foregroundStyle(.primary)
                 .minimumScaleFactor(0.7)
@@ -328,11 +328,11 @@ struct RecommendedPlanningSheet: View {
                 amount: Binding(
                     get: {
                         if let index = viewModel.itensRecomendados.firstIndex(where: { $0.id == item.id }) {
-                            return viewModel.itensRecomendados[index].valorSugerido
+                            return viewModel.itensRecomendados[index].valorSugeridoCentavos
                         }
-                        return item.valorSugerido
+                        return item.valorSugeridoCentavos
                     },
-                    set: { novo in viewModel.atualizarValorItem(id: item.id, novoValor: novo) }
+                    set: { novo in viewModel.atualizarValorItem(id: item.id, novoValorCentavos: novo) }
                 )
             )
             .id(item.id)

@@ -41,7 +41,7 @@ final class ExpenseModelTests: XCTestCase {
         let inicio = Date.make(year: 2026, month: 3, day: 10)
         let repetitionDataPayload = RepetitionData(repeatOption: .mensalmente, endDate: Date.make(year: 2029, month: 3, day: 10))
         let expenseModel = ExpenseModel(
-            amount: 3000,
+            amountInCents: 300000,
             date: inicio,
             expenseDescription: "",
             isIncome: true,
@@ -68,10 +68,10 @@ final class ExpenseModelTests: XCTestCase {
         
         viewmodel.currentMonth = currentMonthDate
         
-        let income1 = ExpenseModel(amount: 1500.0, date: currentMonthDate, expenseDescription: "Salário", isIncome: true)
-        let income2 = ExpenseModel(amount: 350.0, date: currentMonthDate, expenseDescription: "Freela", isIncome: true)
-        let futureIncome = ExpenseModel(amount: 5000.0, date: nextMonthDate, expenseDescription: "Bônus Futuro", isIncome: true)
-        let expense = ExpenseModel(amount: 100.0, date: currentMonthDate, expenseDescription: "Luz", isIncome: false)
+        let income1 = ExpenseModel(amountInCents: 150000, date: currentMonthDate, expenseDescription: "Salário", isIncome: true)
+        let income2 = ExpenseModel(amountInCents: 35000, date: currentMonthDate, expenseDescription: "Freela", isIncome: true)
+        let futureIncome = ExpenseModel(amountInCents: 500000, date: nextMonthDate, expenseDescription: "Bônus Futuro", isIncome: true)
+        let expense = ExpenseModel(amountInCents: 10000, date: currentMonthDate, expenseDescription: "Luz", isIncome: false)
         
         context.insert(income1)
         context.insert(income2)
@@ -86,7 +86,7 @@ final class ExpenseModelTests: XCTestCase {
         let totalIncome = viewmodel.totalIncome(in: currentMonthDate)
         
         // Assert (Verificação)
-        XCTAssertEqual(totalIncome, 1850.0, "O total de receitas do mês atual deve ser exatamente 1850.0, ignorando despesas e meses futuros.")
+        XCTAssertEqual(totalIncome, 185_000, "O total de receitas do mês atual deve ser exatamente R$ 1.850,00, ignorando despesas e meses futuros.")
     }
     
     func testTotalExpenseForCurrentMonth_ReturnsCorrectSum() throws {
@@ -97,10 +97,10 @@ final class ExpenseModelTests: XCTestCase {
         
         viewmodel.currentMonth = currentMonthDate
         
-        let expense1 = ExpenseModel(amount: 200.0, date: currentMonthDate, expenseDescription: "Mercado", isIncome: false)
-        let expense2 = ExpenseModel(amount: 50.5, date: currentMonthDate, expenseDescription: "Farmácia", isIncome: false)
-        let pastExpense = ExpenseModel(amount: 800.0, date: previousMonthDate, expenseDescription: "Aluguel Antigo", isIncome: false)
-        let income = ExpenseModel(amount: 3000.0, date: currentMonthDate, expenseDescription: "Salário", isIncome: true)
+        let expense1 = ExpenseModel(amountInCents: 20000, date: currentMonthDate, expenseDescription: "Mercado", isIncome: false)
+        let expense2 = ExpenseModel(amountInCents: 5050, date: currentMonthDate, expenseDescription: "Farmácia", isIncome: false)
+        let pastExpense = ExpenseModel(amountInCents: 80000, date: previousMonthDate, expenseDescription: "Aluguel Antigo", isIncome: false)
+        let income = ExpenseModel(amountInCents: 300000, date: currentMonthDate, expenseDescription: "Salário", isIncome: true)
         
         context.insert(expense1)
         context.insert(expense2)
@@ -114,7 +114,7 @@ final class ExpenseModelTests: XCTestCase {
         let totalExpense = viewmodel.totalExpense(in: currentMonthDate)
         
         // Assert (Verificação)
-        XCTAssertEqual(totalExpense, 250.5, "O total de despesas do mês atual deve ser exatamente 250.5, ignorando receitas e meses passados.")
+        XCTAssertEqual(totalExpense, 25_050, "O total de despesas do mês atual deve ser exatamente R$ 250,50, ignorando receitas e meses passados.")
     }
     
     // TESTES DE INTEGRAÇÃO
@@ -128,7 +128,7 @@ final class ExpenseModelTests: XCTestCase {
         let subcategoria = SubcategoriaModel(nome: "subTeste", categoria: categoria)
         context.insert(categoria)
         context.insert(subcategoria)
-        addTransactionVM.amount = 3000.00
+        addTransactionVM.amountInCents = 300000
         addTransactionVM.selectedCategoria = categoria
         addTransactionVM.selectedSubcategoria = subcategoria
 
@@ -141,7 +141,7 @@ final class ExpenseModelTests: XCTestCase {
         let count = try context.fetchCount(FetchDescriptor<ExpenseModel>())
         XCTAssertEqual(count, 1, "Deve existir 1 ExpenseModel no banco após a criação.")
         let expense = try context.fetch(FetchDescriptor<ExpenseModel>())
-        XCTAssert(expense.first?.amount == 3000.00)
+        XCTAssert(expense.first?.amountInCents == 300000)
     }
     
     // Testando se ExpenseModel entra no banco de dados

@@ -57,7 +57,7 @@ struct SubcategoriaPlanejadaRowView: View {
                 Spacer()
 
                 CompactCurrencyTextField(
-                    amount: $subPlanejadaModel.valorPlanejado,
+                    amount: $subPlanejadaModel.valorPlanejadoCentavos,
                     onChanged: { _ in onValorDigitado?() },
                     onCommit: onValorAlterado
                 )

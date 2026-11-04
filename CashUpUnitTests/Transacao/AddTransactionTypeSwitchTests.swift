@@ -64,7 +64,7 @@ final class AddTransactionTypeSwitchTests: XCTestCase {
     }
 
     func testEdicaoDeReceitaIniciaComCategoriaRendaPreservada() {
-        let receita = ExpenseModel(amount: 3000, isIncome: true, categoria: renda, subcategoria: salario)
+        let receita = ExpenseModel(amountInCents: 300000, isIncome: true, categoria: renda, subcategoria: salario)
 
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: receita)
 

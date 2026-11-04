@@ -4,7 +4,7 @@ struct SubcategoriaPickerSheet: View {
     let categoria: CategoriaModel
     let subcategoriaAtualID: UUID?
     let idsIndisponiveis: Set<UUID>
-    let valorAtual: Double?
+    let valorAtual: Int64?
     let onSelecionar: (SubcategoriaModel) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -23,7 +23,7 @@ struct SubcategoriaPickerSheet: View {
                             Text(categoria.nome)
                                 .font(.headline)
                             if let valorAtual {
-                                Text("Valor planejado: \(BRLCurrencyFormatter.string(from: valorAtual))")
+                                Text("Valor planejado: \(BRLCurrencyFormatter.string(fromCentavos: valorAtual))")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }

@@ -54,14 +54,14 @@ final class ExpenseCalculationTests: XCTestCase {
         
         // Despesa 1 pertence à categoria "Comida"
         let despesa1 = ExpenseModel(
-            amount: 50,
+            amountInCents: 5000,
             date: marco,
             categoria: categoria
         )
 
         // Despesa 2 também pertence à categoria "Comida"
         let despesa2 = ExpenseModel(
-            amount: 30,
+            amountInCents: 3000,
             date: marco,
             categoria: categoria
         )
@@ -69,7 +69,7 @@ final class ExpenseCalculationTests: XCTestCase {
         // Despesa 3 não possui categoria
         // Ela serve para garantir que o filtro da função funcione corretamente
         let despesa3 = ExpenseModel(
-            amount: 100,
+            amountInCents: 10000,
             date: marco,
             categoria: nil
         )
@@ -95,6 +95,6 @@ final class ExpenseCalculationTests: XCTestCase {
 
         // Verifica se o valor retornado é o esperado
         // Apenas as despesas da categoria "Comida" devem ser somadas (50 + 30)
-        XCTAssertEqual(total, 80)
+        XCTAssertEqual(total, 8_000)
     }
 }

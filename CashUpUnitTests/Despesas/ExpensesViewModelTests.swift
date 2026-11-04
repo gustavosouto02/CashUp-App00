@@ -54,7 +54,7 @@ final class ExpensesViewModelTests: XCTestCase {
         )
 
         expenseValid1 = ExpenseModel(
-            amount: 100,
+            amountInCents: 10000,
             date: Date.make(year: 2026, month: 3, day: 5),
             expenseDescription: "Teste válido 1",
             isIncome: false,
@@ -62,7 +62,7 @@ final class ExpensesViewModelTests: XCTestCase {
             subcategoria: subcategoria
         )
         expenseValid2 = ExpenseModel(
-            amount: 123,
+            amountInCents: 12300,
             date: Date.make(year: 2026, month: 3, day: 15),
             expenseDescription: "Teste válido 2",
             isIncome: false,
@@ -71,7 +71,7 @@ final class ExpensesViewModelTests: XCTestCase {
         )
         // A regra "dataMuitoDistante" é relativa a hoje (+100 anos); por isso só este caso usa .now.
         expenseInvalid = ExpenseModel(
-            amount: 100,
+            amountInCents: 10000,
             date: Calendar.current.date(byAdding: .year, value: 130, to: .now)!,
             expenseDescription: "Teste inválido",
             isIncome: false,
@@ -122,8 +122,7 @@ final class ExpensesViewModelTests: XCTestCase {
 
         XCTAssertEqual(
             totalGastoMensal,
-            223,
-            accuracy: 0,
+            22_300,
             "O valor da soma dos gastos do mês está incorreta"
         )
     }
@@ -132,8 +131,8 @@ final class ExpensesViewModelTests: XCTestCase {
             DisplayableExpense(from: expenseValid1),
             DisplayableExpense(from: expenseValid2),
         ]
-        let total = expenses.reduce(0) { $0 + $1.amount }
+        let total = expenses.reduce(0) { $0 + $1.amountInCents }
 
-        XCTAssertEqual(total, 223, "O valor do calculo está incorreto")
+        XCTAssertEqual(total, 22_300, "O valor do calculo está incorreto")
     }
 }

@@ -29,7 +29,7 @@ struct PlanningPlanejarView: View {
         let subPlan: SubcategoriaPlanejadaModel
         let categoria: CategoriaModel
         let idsIndisponiveis: Set<UUID>
-        let valorAtual: Double
+        let valorAtual: Int64
     }
 
     @Binding var isRecommendedPlanningSheetPresented: Bool
@@ -192,7 +192,7 @@ struct PlanningPlanejarView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Despesas Planejadas")
                         .font(.headline)
-                    Text(viewModel.valorTotalPlanejadoParaMesAtual(), format: .currency(code: "BRL"))
+                    Text(Centavos.moedaBRL(viewModel.valorTotalPlanejadoParaMesAtual()))
                         .font(.title2.bold())
                         .foregroundColor(viewModel.valorTotalPlanejadoParaMesAtual() > 0 ? .primary : .secondary)
                 }
@@ -239,7 +239,7 @@ struct PlanningPlanejarView: View {
                     .font(.subheadline)
                     .frame(width: 50, alignment: .trailing)
                 
-                Text(total, format: .currency(code: "BRL"))
+                Text(Centavos.moedaBRL(total))
                     .font(.subheadline.weight(.medium))
                     .frame(width: 100, alignment: .trailing)
             }
@@ -312,7 +312,7 @@ struct PlanningPlanejarView: View {
                                     subPlan: subPlanModel,
                                     categoria: catOriginal,
                                     idsIndisponiveis: indisponiveis,
-                                    valorAtual: subPlanModel.valorPlanejado
+                                    valorAtual: subPlanModel.valorPlanejadoCentavos
                                 )
                             },
                             onValorDigitado: {

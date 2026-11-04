@@ -11,10 +11,10 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         var results: [FinancialInsight] = []
 
         let despesasMes = expenses.filter { !$0.isIncome }
-        let totalGasto = despesasMes.reduce(0.0) { $0 + $1.amount }
+        let totalGasto = despesasMes.reduce(0) { $0 + $1.amountInCents }
 
-        let totalPlanejado = plannedCategories.reduce(0.0) { acc, cat in
-            acc + (cat.subcategoriasPlanejadas ?? []).reduce(0.0) { $0 + $1.valorPlanejado }
+        let totalPlanejado = plannedCategories.reduce(Int64(0)) { acc, cat in
+            acc + (cat.subcategoriasPlanejadas ?? []).reduce(Int64(0)) { $0 + $1.valorPlanejadoCentavos }
         }
 
         guard let intervaloMes = calendar.dateInterval(of: .month, for: month) else {
@@ -81,20 +81,20 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
     }
 
     private func avaliarBurnRate(
-        totalGasto: Double,
-        totalPlanejado: Double,
+        totalGasto: Int64,
+        totalPlanejado: Int64,
         diaReferencia: Int,
         totalDiasMes: Int
     ) -> FinancialInsight? {
         guard totalPlanejado > 0, diaReferencia >= 3, totalGasto < totalPlanejado else { return nil }
 
-        let pctGasto = totalGasto / totalPlanejado
+        let pctGasto = Centavos.razao(totalGasto, de: totalPlanejado)
         let pctTempo = Double(diaReferencia) / Double(totalDiasMes)
 
         guard pctGasto >= pctTempo + 0.15 else { return nil }
 
-        let mediaDiaria = totalGasto / Double(diaReferencia)
-        let diaEsgotamento = mediaDiaria > 0 ? min(Int(totalPlanejado / mediaDiaria), totalDiasMes) : diaReferencia
+        let mediaDiaria = Double(totalGasto) / Double(diaReferencia)
+        let diaEsgotamento = mediaDiaria > 0 ? min(Int(Double(totalPlanejado) / mediaDiaria), totalDiasMes) : diaReferencia
         let pctInt = Int(pctGasto * 100)
 
         return FinancialInsight(
@@ -109,8 +109,8 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
     }
 
     private func avaliarDailyBudget(
-        totalGasto: Double,
-        totalPlanejado: Double,
+        totalGasto: Int64,
+        totalPlanejado: Int64,
         diasRestantes: Int
     ) -> FinancialInsight? {
         guard totalPlanejado > 0 else { return nil }
@@ -119,7 +119,7 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
         if saldoRestante <= 0 {
             let estouro = abs(saldoRestante)
-            let formattedEstouro = BRLCurrencyFormatter.string(from: estouro)
+            let formattedEstouro = BRLCurrencyFormatter.string(fromCentavos: estouro)
             return FinancialInsight(
                 title: "Teto Orçamentário Ultrapassado",
                 message: "Você já ultrapassou seu orçamento planejado em \(formattedEstouro). Qualquer novo gasto vai aumentar o vermelho este mês!",
@@ -131,10 +131,10 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
             )
         }
 
-        let limiteDiario = saldoRestante / Double(diasRestantes)
-        let formattedLimite = BRLCurrencyFormatter.string(from: limiteDiario)
+        let limiteDiario = Centavos.dividir(saldoRestante, por: diasRestantes)
+        let formattedLimite = BRLCurrencyFormatter.string(fromCentavos: limiteDiario)
 
-        if limiteDiario < 25.0 {
+        if limiteDiario < 2_500 {
             return FinancialInsight(
                 title: "Orçamento Diário Apertado",
                 message: "Para não fechar no vermelho, você tem no máximo \(formattedLimite) por dia pelos próximos \(diasRestantes) dias.",
@@ -159,22 +159,23 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
 
     private func avaliarPicos(
         despesas: [DisplayableExpense],
-        totalGasto: Double,
+        totalGasto: Int64,
         referencia: Date,
         calendar: Calendar
     ) -> FinancialInsight? {
         guard despesas.count >= 3, totalGasto > 0 else { return nil }
 
-        let mediaPorTransacao = totalGasto / Double(despesas.count)
         let seteDiasAtras = calendar.date(byAdding: .day, value: -7, to: referencia) ?? referencia
 
         let despesasRecentes = despesas.filter { $0.date >= seteDiasAtras }
-        let candidatas = despesasRecentes.filter { $0.amount >= (mediaPorTransacao * 2.5) && $0.amount >= 80.0 }
+        // amount >= 2,5 * média  <=>  amount * 2 * quantidade >= 5 * total (sem dividir, para não perder centavos)
+        let quantidade = Int64(despesas.count)
+        let candidatas = despesasRecentes.filter { $0.amountInCents * 2 * quantidade >= totalGasto * 5 && $0.amountInCents >= 8_000 }
 
-        guard let pico = candidatas.max(by: { $0.amount < $1.amount }) else { return nil }
+        guard let pico = candidatas.max(by: { $0.amountInCents < $1.amountInCents }) else { return nil }
 
         let desc = pico.expenseDescription.isEmpty ? "uma compra recente" : pico.expenseDescription
-        let formattedAmount = BRLCurrencyFormatter.string(from: pico.amount)
+        let formattedAmount = BRLCurrencyFormatter.string(fromCentavos: pico.amountInCents)
         return FinancialInsight(
             title: "Gasto Fora da Curva",
             message: "Detectamos um pico: \(desc) custou \(formattedAmount). Foi uma compra planejada ou deu uma escapada do plano?",
@@ -192,20 +193,20 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
     ) -> FinancialInsight? {
         guard despesas.count >= 4 else { return nil }
 
-        var totalFimDeSemana = 0.0
-        var totalGeral = 0.0
+        var totalFimDeSemana: Int64 = 0
+        var totalGeral: Int64 = 0
 
         for item in despesas {
-            totalGeral += item.amount
+            totalGeral += item.amountInCents
             let weekday = calendar.component(.weekday, from: item.date)
             if weekday == 1 || weekday == 7 {
-                totalFimDeSemana += item.amount
+                totalFimDeSemana += item.amountInCents
             }
         }
 
-        guard totalGeral > 0, totalFimDeSemana >= 100.0 else { return nil }
+        guard totalGeral > 0, totalFimDeSemana >= 10_000 else { return nil }
 
-        let pctFDS = totalFimDeSemana / totalGeral
+        let pctFDS = Centavos.razao(totalFimDeSemana, de: totalGeral)
         guard pctFDS >= 0.50 else { return nil }
 
         let pctInt = Int(pctFDS * 100)
@@ -221,14 +222,14 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
     }
 
     private func avaliarReforcoPositivo(
-        totalGasto: Double,
-        totalPlanejado: Double,
+        totalGasto: Int64,
+        totalPlanejado: Int64,
         diaReferencia: Int,
         totalDiasMes: Int
     ) -> FinancialInsight? {
         guard totalPlanejado > 0 else { return nil }
 
-        let pctGasto = totalGasto / totalPlanejado
+        let pctGasto = Centavos.razao(totalGasto, de: totalPlanejado)
         let pctTempo = Double(diaReferencia) / Double(totalDiasMes)
 
         if totalGasto == 0 {

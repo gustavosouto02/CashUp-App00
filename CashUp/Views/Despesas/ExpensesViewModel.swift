@@ -80,7 +80,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     func editRecurring(_ occurrence: DisplayableExpense, scope: RecurringScope, edit: ExpenseEdit) throws {
         guard let originalID = occurrence.originalExpenseID else {
             let original = try buscarTransacao(id: occurrence.id)
-            original.amount = edit.amount
+            original.amountInCents = edit.amountInCents
             original.date = edit.date
             original.expenseDescription = edit.description
             original.isIncome = edit.isIncome
@@ -98,7 +98,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         switch scope {
         case .thisOccurrenceOnly:
             guard var repeticao = original.repetition else {
-                original.amount = edit.amount
+                original.amountInCents = edit.amountInCents
                 original.date = edit.date
                 original.expenseDescription = edit.description
                 original.isIncome = edit.isIncome
@@ -117,7 +117,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             original.repetition = repeticao
 
             let novaTransacao = ExpenseModel(
-                amount: edit.amount,
+                amountInCents: edit.amountInCents,
                 date: edit.date,
                 expenseDescription: edit.description,
                 isIncome: edit.isIncome,
@@ -132,7 +132,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             let dataInicioOriginal = calendar.startOfDay(for: original.date)
 
             if diaDaOcorrencia <= dataInicioOriginal {
-                original.amount = edit.amount
+                original.amountInCents = edit.amountInCents
                 original.date = edit.date
                 original.expenseDescription = edit.description
                 original.isIncome = edit.isIncome
@@ -148,7 +148,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                 }
 
                 let novaSerie = ExpenseModel(
-                    amount: edit.amount,
+                    amountInCents: edit.amountInCents,
                     date: edit.date,
                     expenseDescription: edit.description,
                     isIncome: edit.isIncome,
@@ -161,7 +161,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             }
 
         case .entireSeries:
-            original.amount = edit.amount
+            original.amountInCents = edit.amountInCents
             original.date = edit.date
             original.expenseDescription = edit.description
             original.isIncome = edit.isIncome
@@ -245,22 +245,22 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         transactions(in: month).filter { $0.isIncome }
     }
 
-    func totalExpense(in month: Date) -> Double {
-        expenses(in: month).reduce(0) { $0 + $1.amount }
+    func totalExpense(in month: Date) -> Int64 {
+        expenses(in: month).reduce(0) { $0 + $1.amountInCents }
     }
 
-    func totalIncome(in month: Date) -> Double {
-        incomes(in: month).reduce(0) { $0 + $1.amount }
+    func totalIncome(in month: Date) -> Int64 {
+        incomes(in: month).reduce(0) { $0 + $1.amountInCents }
     }
 
-    func totaisPorSubcategoria(in month: Date) -> [UUID: Double] {
+    func totaisPorSubcategoria(in month: Date) -> [UUID: Int64] {
         expenses(in: month).reduce(into: [:]) { acc, item in
             guard let id = item.subcategoria?.id else { return }
-            acc[id, default: 0] += item.amount
+            acc[id, default: 0] += item.amountInCents
         }
     }
 
-    func calcularTotalGastoEmCategoriasPlanejadas(paraMes mes: Date, categoriasPlanejadas: [CategoriaPlanejadaModel]) -> Double {
+    func calcularTotalGastoEmCategoriasPlanejadas(paraMes mes: Date, categoriasPlanejadas: [CategoriaPlanejadaModel]) -> Int64 {
         let idsPlanejados = Set(
             categoriasPlanejadas
                 .flatMap { $0.subcategoriasPlanejadas ?? [] }
@@ -272,14 +272,14 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             .reduce(0) { $0 + $1.value }
     }
 
-    func calcularTotalGastoParaCategoria(_ categoriaPlanejada: CategoriaPlanejadaModel, paraMes mes: Date) -> Double {
+    func calcularTotalGastoParaCategoria(_ categoriaPlanejada: CategoriaPlanejadaModel, paraMes mes: Date) -> Int64 {
         guard let id = categoriaPlanejada.categoriaOriginal?.id else { return 0 }
         return expenses(in: mes)
             .filter { $0.categoria?.id == id }
-            .reduce(0) { $0 + $1.amount }
+            .reduce(0) { $0 + $1.amountInCents }
     }
 
-    func calcularTotalGastoParaSubcategoria(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel, paraMes mes: Date) -> Double {
+    func calcularTotalGastoParaSubcategoria(_ subcategoriaPlanejada: SubcategoriaPlanejadaModel, paraMes mes: Date) -> Int64 {
         guard let id = subcategoriaPlanejada.subcategoriaOriginal?.id else { return 0 }
         return totaisPorSubcategoria(in: mes)[id] ?? 0
     }
@@ -316,7 +316,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
 struct DisplayableExpense: Identifiable, Hashable {
     let id: UUID
     let originalExpenseID: UUID?
-    var amount: Double
+    var amountInCents: Int64
     var date: Date
     var expenseDescription: String
     var isIncome: Bool
@@ -331,7 +331,7 @@ struct DisplayableExpense: Identifiable, Hashable {
     init(from expense: ExpenseModel) {
         self.id = expense.id
         self.originalExpenseID = nil
-        self.amount = expense.amount
+        self.amountInCents = expense.amountInCents
         self.date = expense.date
         self.expenseDescription = expense.expenseDescription
         self.isIncome = expense.isIncome
@@ -343,7 +343,7 @@ struct DisplayableExpense: Identifiable, Hashable {
     init(from recurringExpense: ExpenseModel, occurrenceDate: Date) {
         self.id = UUID()
         self.originalExpenseID = recurringExpense.id
-        self.amount = recurringExpense.amount
+        self.amountInCents = recurringExpense.amountInCents
         self.date = occurrenceDate
         self.expenseDescription = recurringExpense.expenseDescription
         self.isIncome = recurringExpense.isIncome
@@ -354,7 +354,7 @@ struct DisplayableExpense: Identifiable, Hashable {
 
     static func == (lhs: DisplayableExpense, rhs: DisplayableExpense) -> Bool {
         lhs.stableID == rhs.stableID &&
-        lhs.amount == rhs.amount &&
+        lhs.amountInCents == rhs.amountInCents &&
         lhs.expenseDescription == rhs.expenseDescription &&
         lhs.date == rhs.date &&
         lhs.categoria?.id == rhs.categoria?.id &&

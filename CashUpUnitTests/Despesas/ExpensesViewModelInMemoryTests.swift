@@ -18,7 +18,7 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
 
     func testAdicionarTransacaoPersisteNoRepositorio() throws {
         let expense = ExpenseModel(
-            amount: 80.0,
+            amountInCents: 8000,
             date: Date.make(year: 2026, month: 3, day: 15),
             expenseDescription: "Supermercado"
         )
@@ -27,13 +27,13 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
 
         XCTAssertEqual(repository.expenses.count, 1)
         XCTAssertEqual(repository.saveCallCount, 1)
-        XCTAssertEqual(repository.expenses.first?.amount, 80.0)
+        XCTAssertEqual(repository.expenses.first?.amountInCents, 8000)
     }
 
     func testFalhaNoSaveDisparaErroTipado() {
         repository.shouldFailSave = true
         let expense = ExpenseModel(
-            amount: 50.0,
+            amountInCents: 5000,
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Teste Falha"
         )
@@ -49,7 +49,7 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
 
     func testExcluirTransacaoSimplesAtualizaRepositorio() throws {
         let expense = ExpenseModel(
-            amount: 30.0,
+            amountInCents: 3000,
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Lanche"
         )
@@ -66,8 +66,8 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
         let marco = Date.make(year: 2026, month: 3, day: 10)
         let abril = Date.make(year: 2026, month: 4, day: 10)
 
-        let expMarco = ExpenseModel(amount: 10.0, date: marco, expenseDescription: "Março")
-        let expAbril = ExpenseModel(amount: 20.0, date: abril, expenseDescription: "Abril")
+        let expMarco = ExpenseModel(amountInCents: 1000, date: marco, expenseDescription: "Março")
+        let expAbril = ExpenseModel(amountInCents: 2000, date: abril, expenseDescription: "Abril")
 
         try sut.addExpense(expMarco)
         try sut.addExpense(expAbril)
@@ -75,10 +75,10 @@ final class ExpensesViewModelInMemoryTests: XCTestCase {
         sut.currentMonth = marco.startOfMonth()
         sut.loadDisplayableExpenses()
         XCTAssertEqual(sut.transacoesExibidas.count, 1)
-        XCTAssertEqual(sut.transacoesExibidas.first?.amount, 10.0)
+        XCTAssertEqual(sut.transacoesExibidas.first?.amountInCents, 1000)
 
         sut.navigateMonth(isNext: true)
         XCTAssertEqual(sut.transacoesExibidas.count, 1)
-        XCTAssertEqual(sut.transacoesExibidas.first?.amount, 20.0)
+        XCTAssertEqual(sut.transacoesExibidas.first?.amountInCents, 2000)
     }
 }

@@ -41,8 +41,8 @@ final class DeduplicacaoUnitTests: XCTestCase {
         return subcategoria
     }
 
-    private func transacao(_ categoria: CategoriaModel?, _ subcategoria: SubcategoriaModel?, valor: Double = 10) -> ExpenseModel {
-        let transacao = ExpenseModel(amount: valor, date: marco, categoria: categoria, subcategoria: subcategoria)
+    private func transacao(_ categoria: CategoriaModel?, _ subcategoria: SubcategoriaModel?, valorEmCentavos: Int64 = 1000) -> ExpenseModel {
+        let transacao = ExpenseModel(amountInCents: valorEmCentavos, date: marco, categoria: categoria, subcategoria: subcategoria)
         context.insert(transacao)
         return transacao
     }
@@ -77,7 +77,7 @@ final class DeduplicacaoUnitTests: XCTestCase {
         let original = copiaSubcategoria(em: categoria, criadoEm: antes, usageCount: 2)
         let copia = copiaSubcategoria(em: categoria, criadoEm: depois, usageCount: 3)
         _ = transacao(categoria, copia)
-        let planejada = SubcategoriaPlanejadaModel(valorPlanejado: 100, subcategoriaOriginal: copia)
+        let planejada = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 10000, subcategoriaOriginal: copia)
         context.insert(planejada)
         try context.save()
 
@@ -135,8 +135,8 @@ final class DeduplicacaoUnitTests: XCTestCase {
         let planoB = CategoriaPlanejadaModel(mesAno: marco, categoriaOriginal: categoria)
         planoA.criadoEm = antes
         planoB.criadoEm = depois
-        let itemA = SubcategoriaPlanejadaModel(valorPlanejado: 100, subcategoriaOriginal: subcategoria, categoriaPlanejada: planoA)
-        let itemB = SubcategoriaPlanejadaModel(valorPlanejado: 250, subcategoriaOriginal: subcategoria, categoriaPlanejada: planoB)
+        let itemA = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 10000, subcategoriaOriginal: subcategoria, categoriaPlanejada: planoA)
+        let itemB = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 25000, subcategoriaOriginal: subcategoria, categoriaPlanejada: planoB)
         itemA.atualizadoEm = antes
         itemB.atualizadoEm = depois
         [planoA, planoB].forEach(context.insert)
@@ -149,14 +149,14 @@ final class DeduplicacaoUnitTests: XCTestCase {
         XCTAssertEqual(planos.count, 1, "RN-09: um planejamento por categoria e mês")
         let itens = try context.fetch(FetchDescriptor<SubcategoriaPlanejadaModel>())
         XCTAssertEqual(itens.count, 1, "RN-10: uma subcategoria por planejamento")
-        XCTAssertEqual(itens.first?.valorPlanejado, 250)
-        XCTAssertEqual(planos.first?.valorTotalPlanejado, 250)
+        XCTAssertEqual(itens.first?.valorPlanejadoCentavos, 25_000)
+        XCTAssertEqual(planos.first?.valorTotalPlanejado, 25_000)
     }
 
     func testDeduplicaTransacoesDoMesmoID() throws {
         let id = UUID()
         [antes, depois].forEach { criadoEm in
-            let copia = ExpenseModel(id: id, amount: 10, date: marco)
+            let copia = ExpenseModel(id: id, amountInCents: 1000, date: marco)
             copia.criadoEm = criadoEm
             context.insert(copia)
         }

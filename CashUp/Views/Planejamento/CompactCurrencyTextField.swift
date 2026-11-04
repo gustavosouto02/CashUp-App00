@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct CompactCurrencyTextField: View {
-    @Binding var amount: Double
-    var onChanged: ((Double) -> Void)? = nil
+    @Binding var amount: Int64
+    var onChanged: ((Int64) -> Void)? = nil
     var onCommit: (() -> Void)? = nil
 
     @FocusState private var isFocused: Bool
@@ -10,30 +10,28 @@ struct CompactCurrencyTextField: View {
     private let maxDigits: Int = 9
 
     var body: some View {
-        TextField(BRLCurrencyFormatter.string(from: 0), text: $text)
+        TextField(BRLCurrencyFormatter.string(fromCentavos: 0), text: $text)
             .keyboardType(.numberPad)
             .focused($isFocused)
             .multilineTextAlignment(.trailing)
             .font(.subheadline.weight(.semibold))
             .onAppear {
-                text = BRLCurrencyFormatter.string(from: amount)
+                text = BRLCurrencyFormatter.string(fromCentavos: amount)
             }
             .onChange(of: amount) { _, newValue in
                 if !isFocused {
-                    text = BRLCurrencyFormatter.string(from: newValue)
+                    text = BRLCurrencyFormatter.string(fromCentavos: newValue)
                 }
             }
             .onChange(of: text) { _, newValue in
-                let digits = newValue.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-                let limitedDigits = String(digits.prefix(maxDigits))
-                let value = (Double(limitedDigits) ?? 0.0) / 100.0
+                let value = Centavos.de(digitos: newValue, maximoDeDigitos: maxDigits)
 
                 if amount != value {
                     amount = value
                     onChanged?(value)
                 }
 
-                let formatted = BRLCurrencyFormatter.string(from: value)
+                let formatted = BRLCurrencyFormatter.string(fromCentavos: value)
                 if text != formatted {
                     text = formatted
                 }
@@ -42,7 +40,7 @@ struct CompactCurrencyTextField: View {
                 if !focused {
                     let currentVal = valorDosDigitos(text)
                     if currentVal != amount {
-                        text = BRLCurrencyFormatter.string(from: amount)
+                        text = BRLCurrencyFormatter.string(fromCentavos: amount)
                     }
                     onCommit?()
                 }
@@ -69,8 +67,7 @@ struct CompactCurrencyTextField: View {
             .frame(minWidth: 95, maxWidth: 120)
     }
 
-    private func valorDosDigitos(_ str: String) -> Double {
-        let digits = str.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-        return (Double(digits) ?? 0.0) / 100.0
+    private func valorDosDigitos(_ str: String) -> Int64 {
+        Centavos.de(digitos: str, maximoDeDigitos: Int.max)
     }
 }

@@ -134,14 +134,14 @@ final class PlanningViewModelInMemoryTests: XCTestCase {
         let subPlanA = try XCTUnwrap(catPlan.subcategoriasPlanejadas?.first(where: { $0.subcategoriaOriginal?.id == subA.id }))
         let subPlanB = try XCTUnwrap(catPlan.subcategoriasPlanejadas?.first(where: { $0.subcategoriaOriginal?.id == subB.id }))
 
-        subPlanA.valorPlanejado = 200.0
-        subPlanB.valorPlanejado = 300.0
+        subPlanA.valorPlanejadoCentavos = 20000
+        subPlanB.valorPlanejadoCentavos = 30000
 
-        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 500.0)
+        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 50_000)
 
         sut.removerSubcategoriaPlanejada(id: subPlanA.id)
 
         XCTAssertEqual(catPlan.subcategoriasPlanejadas?.count, 1)
-        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 300.0)
+        XCTAssertEqual(sut.valorTotalPlanejadoParaMesAtual(), 30_000)
     }
 }

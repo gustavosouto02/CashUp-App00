@@ -14,7 +14,7 @@ struct DailyExpensesDetailView: View {
 
     private var expensesForThisDay: [DisplayableExpense] {
         return expensesViewModel.transactions(on: selectedDate, isIncome: false)
-            .sorted(by: { $0.amount > $1.amount })
+            .sorted(by: { $0.amountInCents > $1.amountInCents })
     }
 
     private var formattedDate: String {

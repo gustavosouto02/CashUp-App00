@@ -50,7 +50,7 @@ final class DisplayableExpenseTests: XCTestCase {
         let subcategoria = SubcategoriaModel(nome: "Restaurante")
         
         let expense = ExpenseModel(
-            amount: 20,
+            amountInCents: 2000,
             date: marco,
             expenseDescription: "Lanche",
             isIncome: false,
@@ -81,7 +81,7 @@ final class DisplayableExpenseTests: XCTestCase {
         let subcategoria = SubcategoriaModel(nome: "Restaurante")
         
         let expense = ExpenseModel(
-            amount: 15,
+            amountInCents: 1500,
             date: marco,
             expenseDescription: "Lanche",
             isIncome: false,
@@ -112,7 +112,7 @@ final class DisplayableExpenseTests: XCTestCase {
         let subcategoria = SubcategoriaModel(nome: "Restaurante")
         
         let expense = ExpenseModel(
-            amount: 30,
+            amountInCents: 3000,
             date: marco,
             expenseDescription: "Jantar",
             isIncome: false,

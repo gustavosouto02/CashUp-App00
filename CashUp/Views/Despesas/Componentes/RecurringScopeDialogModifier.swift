@@ -38,7 +38,7 @@ struct RecurringScopeDialogModifier: ViewModifier {
     }
 
     private func mensagemPadrao(para expense: DisplayableExpense) -> String {
-        let valor = BRLCurrencyFormatter.string(from: expense.amount)
+        let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
         let data = expense.date.formatted(date: .numeric, time: .omitted)
         let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
         return "\"\(nome)\" de \(valor) em \(data) é recorrente. Escolha como deseja prosseguir:"

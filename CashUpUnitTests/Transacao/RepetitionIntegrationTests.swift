@@ -40,7 +40,7 @@ final class RepetitionIntegrationTests: XCTestCase {
     
     @discardableResult
     private func insertExpense(
-        amount: Double = 100.0,
+        amountInCents: Int64 = 10_000,
         date: Date,
         repeatOption: RepeatOption,
         endDate: Date? = nil,
@@ -56,7 +56,7 @@ final class RepetitionIntegrationTests: XCTestCase {
         )
         
         let expense = ExpenseModel(
-            amount: amount,
+            amountInCents: amountInCents,
             date: date,
             expenseDescription: "Teste",
             isIncome: false,
@@ -144,28 +144,28 @@ final class RepetitionIntegrationTests: XCTestCase {
     
     func test_TotalDespesaMensal() throws {
         try insertExpense(
-            amount: 39.90,
+            amountInCents: 3990,
             date: Date.make(year: 2025, month: 1, day: 10),
             repeatOption: .mensalmente
         )
         try insertExpense(
-            amount: 21.90,
+            amountInCents: 2190,
             date: Date.make(year: 2025, month: 1, day: 5),
             repeatOption: .mensalmente
         )
         try insertExpense(
-            amount: 27.90,
+            amountInCents: 2790,
             date: Date.make(year: 2025, month: 1, day: 20),
             repeatOption: .mensalmente
         )
         
         for mes in 1...12 {
             let intervalo = intervaloMes(year: 2025, month: mes)
-            let total = ocorrencias(in: intervalo).reduce(0) { $0 + $1.amount }
+            let total = ocorrencias(in: intervalo).reduce(0) { $0 + $1.amountInCents }
             
-            let esperado = 39.90 + 21.90 + 27.90
+            let esperado: Int64 = 3990 + 2190 + 2790
             
-            XCTAssertEqual(total, esperado, accuracy: 0.01, "Mês \(mes)/2025: total esperado \(esperado), obteve \(total)")
+            XCTAssertEqual(total, esperado, "Mês \(mes)/2025: total esperado \(esperado), obteve \(total)")
         }
     }
     

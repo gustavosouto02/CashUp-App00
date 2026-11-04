@@ -32,10 +32,10 @@ final class ExpenseCalculationByMonthTests: XCTestCase {
         context.insert(mercado)
         context.insert(restaurante)
 
-        context.insert(ExpenseModel(amount: 100, date: marco, categoria: categoria, subcategoria: mercado))
-        context.insert(ExpenseModel(amount: 40, date: marco, categoria: categoria, subcategoria: restaurante))
-        context.insert(ExpenseModel(amount: 500, date: marco, isIncome: true, categoria: categoria, subcategoria: mercado))
-        context.insert(ExpenseModel(amount: 250, date: abril, categoria: categoria, subcategoria: mercado))
+        context.insert(ExpenseModel(amountInCents: 10000, date: marco, categoria: categoria, subcategoria: mercado))
+        context.insert(ExpenseModel(amountInCents: 4000, date: marco, categoria: categoria, subcategoria: restaurante))
+        context.insert(ExpenseModel(amountInCents: 50000, date: marco, isIncome: true, categoria: categoria, subcategoria: mercado))
+        context.insert(ExpenseModel(amountInCents: 25000, date: abril, categoria: categoria, subcategoria: mercado))
         try context.save()
 
         viewModel = ExpensesViewModel(modelContext: context)
@@ -52,7 +52,7 @@ final class ExpenseCalculationByMonthTests: XCTestCase {
     private func planejamento(mes: Date, subcategorias: [SubcategoriaModel]) -> CategoriaPlanejadaModel {
         let plano = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria)
         plano.subcategoriasPlanejadas = subcategorias.map {
-            SubcategoriaPlanejadaModel(valorPlanejado: 300, subcategoriaOriginal: $0, categoriaPlanejada: plano)
+            SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 30000, subcategoriaOriginal: $0, categoriaPlanejada: plano)
         }
         return plano
     }
@@ -60,36 +60,36 @@ final class ExpenseCalculationByMonthTests: XCTestCase {
     func testTotalGastoParaCategoriaHonraOMesPedidoENaoOMesAtual() {
         let plano = planejamento(mes: marco, subcategorias: [mercado])
 
-        XCTAssertEqual(viewModel.calcularTotalGastoParaCategoria(plano, paraMes: marco), 140)
-        XCTAssertEqual(viewModel.calcularTotalGastoParaCategoria(plano, paraMes: abril), 250)
+        XCTAssertEqual(viewModel.calcularTotalGastoParaCategoria(plano, paraMes: marco), 14_000)
+        XCTAssertEqual(viewModel.calcularTotalGastoParaCategoria(plano, paraMes: abril), 25_000)
     }
 
     func testTotalGastoParaSubcategoriaHonraOMesPedido() {
         let plano = planejamento(mes: marco, subcategorias: [mercado, restaurante])
         let subMercado = plano.subcategoriasPlanejadas!.first { $0.subcategoriaOriginal?.id == mercado.id }!
 
-        XCTAssertEqual(viewModel.calcularTotalGastoParaSubcategoria(subMercado, paraMes: marco), 100)
-        XCTAssertEqual(viewModel.calcularTotalGastoParaSubcategoria(subMercado, paraMes: abril), 250)
+        XCTAssertEqual(viewModel.calcularTotalGastoParaSubcategoria(subMercado, paraMes: marco), 10_000)
+        XCTAssertEqual(viewModel.calcularTotalGastoParaSubcategoria(subMercado, paraMes: abril), 25_000)
     }
 
     func testTotalGastoEmCategoriasPlanejadasIgnoraReceitasESubcategoriasNaoPlanejadas() {
         let plano = planejamento(mes: marco, subcategorias: [mercado])
 
-        XCTAssertEqual(viewModel.calcularTotalGastoEmCategoriasPlanejadas(paraMes: marco, categoriasPlanejadas: [plano]), 100)
+        XCTAssertEqual(viewModel.calcularTotalGastoEmCategoriasPlanejadas(paraMes: marco, categoriasPlanejadas: [plano]), 10_000)
     }
 
     func testTotaisPorSubcategoriaAgrupaSomenteDespesas() {
         let totais = viewModel.totaisPorSubcategoria(in: marco)
 
         XCTAssertEqual(totais.count, 2)
-        XCTAssertEqual(totais[mercado.id], 100)
-        XCTAssertEqual(totais[restaurante.id], 40)
+        XCTAssertEqual(totais[mercado.id], 10_000)
+        XCTAssertEqual(totais[restaurante.id], 4_000)
     }
 
     func testTotaisDeReceitaEDespesaPorMes() {
-        XCTAssertEqual(viewModel.totalExpense(in: marco), 140)
-        XCTAssertEqual(viewModel.totalIncome(in: marco), 500)
-        XCTAssertEqual(viewModel.totalExpense(in: abril), 250)
+        XCTAssertEqual(viewModel.totalExpense(in: marco), 14_000)
+        XCTAssertEqual(viewModel.totalIncome(in: marco), 50_000)
+        XCTAssertEqual(viewModel.totalExpense(in: abril), 25_000)
         XCTAssertEqual(viewModel.totalIncome(in: abril), 0)
     }
 

@@ -30,7 +30,7 @@ final class CategoriaDeleteRuleTests: XCTestCase {
         let categoria = CategoriaModel(nome: "Lazer", icon: "gamecontroller", red: 0.1, green: 0.2, blue: 0.3)
         let subcategoria = SubcategoriaModel(nome: "Cinema", icon: "film", categoria: categoria)
         let transacao = ExpenseModel(
-            amount: 40,
+            amountInCents: 4000,
             date: Date.make(year: 2026, month: 3, day: 10),
             expenseDescription: "Ingresso",
             categoria: categoria,

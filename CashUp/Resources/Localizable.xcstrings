@@ -4322,24 +4322,24 @@
         }
       }
     },
-    "O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Tente reinstalar ou entre em contato com o suporte." : {
+    "O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Não apague o app: seus dados continuam no aparelho. Feche e abra de novo; se persistir, fale com o suporte." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CashUp is running without saving. Anything you record now will be lost when closing the app. Try reinstalling or contact support."
+            "value" : "CashUp is running without saving. Anything you record now will be lost when closing the app. Do not delete the app: your data is still on the device. Close and reopen it; if it persists, contact support."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CashUp se está ejecutando sin guardar. Lo que registres ahora se perderá al cerrar la app. Intenta reinstalar o contacta al soporte."
+            "value" : "CashUp se está ejecutando sin guardar. Lo que registres ahora se perderá al cerrar la app. No borres la app: tus datos siguen en el dispositivo. Ciérrala y ábrela de nuevo; si persiste, contacta al soporte."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Tente reinstalar ou entre em contato com o suporte."
+            "value" : "O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Não apague o app: seus dados continuam no aparelho. Feche e abra de novo; se persistir, fale com o suporte."
           }
         }
       }

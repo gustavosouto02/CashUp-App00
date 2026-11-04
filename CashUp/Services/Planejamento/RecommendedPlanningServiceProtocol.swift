@@ -2,7 +2,7 @@ import Foundation
 
 protocol RecommendedPlanningServiceProtocol {
     func gerarPlanejamentoRecomendado(
-        rendaMensal: Double,
+        rendaMensalCentavos: Int64,
         categoriasDisponiveis: [CategoriaModel]
     ) -> [RecommendedPlanningItem]
 }

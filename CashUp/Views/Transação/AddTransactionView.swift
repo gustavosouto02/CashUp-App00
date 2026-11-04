@@ -36,7 +36,7 @@ struct AddTransactionView: View {
                     TransactionPicker(selectedTransactionType: $addTransactionVM.selectedTransactionType)
                         .padding(.horizontal)
 
-                    CurrencyAmountField(amount: $addTransactionVM.amount)
+                    CurrencyAmountField(amount: $addTransactionVM.amountInCents)
 
                     transactionDetailsSection
                         .padding(.horizontal)

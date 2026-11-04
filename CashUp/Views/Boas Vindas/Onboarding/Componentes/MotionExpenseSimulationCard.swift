@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MotionExpenseSimulationCard: View {
-    @State private var valorExibido: String = BRLCurrencyFormatter.string(from: 0)
+    @State private var valorExibido: String = BRLCurrencyFormatter.string(fromCentavos: 0)
     @State private var categoriaSelecionada: Bool = false
     @State private var cursorVisivel: Bool = true
 
@@ -30,19 +30,19 @@ struct MotionExpenseSimulationCard: View {
                 try? await Task.sleep(for: .milliseconds(700))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = BRLCurrencyFormatter.string(from: 4)
+                    valorExibido = BRLCurrencyFormatter.string(fromCentavos: 400)
                 }
 
                 try? await Task.sleep(for: .milliseconds(400))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = BRLCurrencyFormatter.string(from: 40)
+                    valorExibido = BRLCurrencyFormatter.string(fromCentavos: 4000)
                 }
 
                 try? await Task.sleep(for: .milliseconds(400))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeOut(duration: 0.15)) {
-                    valorExibido = BRLCurrencyFormatter.string(from: 40)
+                    valorExibido = BRLCurrencyFormatter.string(fromCentavos: 4000)
                 }
 
                 try? await Task.sleep(for: .milliseconds(600))
@@ -54,7 +54,7 @@ struct MotionExpenseSimulationCard: View {
                 try? await Task.sleep(for: .milliseconds(2800))
                 guard !Task.isCancelled else { break }
                 withAnimation(.easeInOut(duration: 0.25)) {
-                    valorExibido = BRLCurrencyFormatter.string(from: 0)
+                    valorExibido = BRLCurrencyFormatter.string(fromCentavos: 0)
                     categoriaSelecionada = false
                 }
             }

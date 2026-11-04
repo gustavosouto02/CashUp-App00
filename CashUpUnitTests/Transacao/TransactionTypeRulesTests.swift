@@ -65,7 +65,7 @@ final class TransactionTypeRulesTests: XCTestCase {
     }
 
     func testEditarRendaETrocarParaDespesaExigeNovaCategoria() {
-        let transacao = ExpenseModel(amount: 3000, isIncome: true, categoria: renda, subcategoria: salario)
+        let transacao = ExpenseModel(amountInCents: 300000, isIncome: true, categoria: renda, subcategoria: salario)
         context.insert(transacao)
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: transacao)
         XCTAssertEqual(viewModel.selectedTransactionType, 1)
@@ -80,7 +80,7 @@ final class TransactionTypeRulesTests: XCTestCase {
         let expensesViewModel = ExpensesViewModel(modelContext: context)
         let viewModel = AddTransactionViewModel()
         viewModel.selectedTransactionType = 1
-        viewModel.amount = 10
+        viewModel.amountInCents = 1000
         viewModel.selectedSubcategoria = fastFood
         viewModel.selectedCategoria = comida
 
@@ -94,7 +94,7 @@ final class TransactionTypeRulesTests: XCTestCase {
         let expensesViewModel = ExpensesViewModel(modelContext: context)
         let viewModel = AddTransactionViewModel()
         viewModel.selectedTransactionType = 1
-        viewModel.amount = 3000
+        viewModel.amountInCents = 300000
         viewModel.selectedSubcategoria = salario
         viewModel.selectedCategoria = renda
 
@@ -106,7 +106,7 @@ final class TransactionTypeRulesTests: XCTestCase {
     }
 
     func testEditarReceitaLegadaComCategoriaDeDespesaExigeCorrecao() throws {
-        let legada = ExpenseModel(amount: 50, isIncome: true, categoria: comida, subcategoria: fastFood)
+        let legada = ExpenseModel(amountInCents: 5000, isIncome: true, categoria: comida, subcategoria: fastFood)
         context.insert(legada)
         try context.save()
         let expensesViewModel = ExpensesViewModel(modelContext: context)
@@ -122,7 +122,7 @@ final class TransactionTypeRulesTests: XCTestCase {
         let expensesViewModel = ExpensesViewModel(modelContext: context)
         let viewModel = AddTransactionViewModel()
         viewModel.selectedTransactionType = 0
-        viewModel.amount = 3000
+        viewModel.amountInCents = 300000
         viewModel.selectedSubcategoria = salario
         viewModel.selectedCategoria = renda
 

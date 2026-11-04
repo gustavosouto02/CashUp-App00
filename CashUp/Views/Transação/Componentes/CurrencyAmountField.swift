@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CurrencyAmountField: View {
-    @Binding var amount: Double
+    @Binding var amount: Int64
     @FocusState private var isFocused: Bool
     @State private var text: String = ""
 
@@ -20,14 +20,12 @@ struct CurrencyAmountField: View {
                 .keyboardType(.numberPad)
                 .focused($isFocused)
                 .onAppear {
-                    text = BRLCurrencyFormatter.string(from: amount)
+                    text = BRLCurrencyFormatter.string(fromCentavos: amount)
                 }
                 .onChange(of: text) { _, newValue in
-                    let digits = newValue.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-                    let limitedDigits = String(digits.prefix(maxDigits))
-                    let value = (Double(limitedDigits) ?? 0) / 100
+                    let value = Centavos.de(digitos: newValue, maximoDeDigitos: maxDigits)
                     amount = value
-                    text = BRLCurrencyFormatter.string(from: value)
+                    text = BRLCurrencyFormatter.string(fromCentavos: value)
                 }
                 .font(.system(size: 48, weight: .bold))
                 .multilineTextAlignment(.center)

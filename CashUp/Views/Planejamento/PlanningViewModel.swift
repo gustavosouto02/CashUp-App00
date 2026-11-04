@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import SwiftData
-import SwiftUI
 
 @MainActor
 final class PlanningViewModel: ObservableObject {
@@ -87,7 +86,7 @@ final class PlanningViewModel: ObservableObject {
         }
 
         let novaSubPlanejada = SubcategoriaPlanejadaModel(
-            valorPlanejado: 0.0,
+            valorPlanejadoCentavos: 0,
             subcategoriaOriginal: subcategoriaModel,
             categoriaPlanejada: categoriaPlanejada
         )
@@ -116,7 +115,7 @@ final class PlanningViewModel: ObservableObject {
         repository.insert(novaCategoriaPlanejada)
 
         let novaSubPlanejada = SubcategoriaPlanejadaModel(
-            valorPlanejado: 0.0,
+            valorPlanejadoCentavos: 0,
             subcategoriaOriginal: subcategoriaModel,
             categoriaPlanejada: novaCategoriaPlanejada
         )
@@ -171,11 +170,11 @@ final class PlanningViewModel: ObservableObject {
         _ = salvarContexto(operacao: "zerarPlanejamentoDoMes")
     }
 
-    func totalParaCategoriaPlanejada(_ categoriaPlanejada: CategoriaPlanejadaModel) -> Double {
-        categoriaPlanejada.subcategoriasPlanejadas?.reduce(0) { $0 + $1.valorPlanejado } ?? 0.0
+    func totalParaCategoriaPlanejada(_ categoriaPlanejada: CategoriaPlanejadaModel) -> Int64 {
+        categoriaPlanejada.subcategoriasPlanejadas?.reduce(0) { $0 + $1.valorPlanejadoCentavos } ?? 0
     }
 
-    func valorTotalPlanejadoParaMesAtual() -> Double {
+    func valorTotalPlanejadoParaMesAtual() -> Int64 {
         let categoriasDoMes = getCategoriasPlanejadasForCurrentMonth()
         return categoriasDoMes.reduce(0) { $0 + totalParaCategoriaPlanejada($1) }
     }
@@ -183,38 +182,7 @@ final class PlanningViewModel: ObservableObject {
     func calcularPorcentagemTotal(paraCategoriaPlanejada categoria: CategoriaPlanejadaModel) -> Double {
         let totalCategoriaValue = totalParaCategoriaPlanejada(categoria)
         let totalPlanejadoMesValor = valorTotalPlanejadoParaMesAtual()
-        guard totalPlanejadoMesValor > 0 else { return 0 }
-        return (totalCategoriaValue / totalPlanejadoMesValor) * 100
-    }
-
-    func bindingParaValorPlanejado(subItem: SubcategoriaPlanejadaModel) -> Binding<String> {
-        Binding<String>(
-            get: {
-                let formatter = NumberFormatter()
-                formatter.numberStyle = .decimal
-                formatter.maximumFractionDigits = 2
-                formatter.minimumFractionDigits = 2
-                formatter.locale = Locale(identifier: "pt_BR")
-                return formatter.string(from: NSNumber(value: subItem.valorPlanejado)) ?? "0,00"
-            },
-            set: { [self] novoValorString in
-                let formatter = NumberFormatter()
-                formatter.numberStyle = .decimal
-                formatter.locale = Locale(identifier: "pt_BR")
-
-                if let numero = formatter.number(from: novoValorString) {
-                    subItem.valorPlanejado = numero.doubleValue
-                    subItem.atualizadoEm = Date()
-                } else {
-                    let cleanedString = novoValorString.replacingOccurrences(of: ",", with: ".")
-                    if let doubleValue = Double(cleanedString) {
-                        subItem.valorPlanejado = doubleValue
-                        subItem.atualizadoEm = Date()
-                    }
-                }
-                objectWillChange.send()
-            }
-        )
+        return Centavos.razao(totalCategoriaValue, de: totalPlanejadoMesValor) * 100
     }
 
     func navigateMonth(isNext: Bool) {
@@ -316,7 +284,7 @@ final class PlanningViewModel: ObservableObject {
                         continue
                     }
                     let novaSubcategoriaProximoMes = SubcategoriaPlanejadaModel(
-                        valorPlanejado: subAtualPlanejada.valorPlanejado,
+                        valorPlanejadoCentavos: subAtualPlanejada.valorPlanejadoCentavos,
                         subcategoriaOriginal: subcategoriaOriginal,
                         categoriaPlanejada: novaCategoriaPlanejadaProximoMes
                     )

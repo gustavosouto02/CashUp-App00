@@ -5,6 +5,7 @@ struct RootView: View {
     let modelContainer: ModelContainer
     let settings: AppSettingsProtocol
     let biometricService: BiometricAuthServiceProtocol
+    let usandoFallbackEmMemoria: Bool
 
     @StateObject private var authViewModel: AuthViewModel
     @StateObject private var onboardingViewModel: OnboardingViewModel
@@ -18,11 +19,13 @@ struct RootView: View {
         modelContainer: ModelContainer,
         settings: AppSettingsProtocol,
         biometricService: BiometricAuthServiceProtocol,
-        mostrarBoasVindas: Bool
+        mostrarBoasVindas: Bool,
+        usandoFallbackEmMemoria: Bool = false
     ) {
         self.modelContainer = modelContainer
         self.settings = settings
         self.biometricService = biometricService
+        self.usandoFallbackEmMemoria = usandoFallbackEmMemoria
 
         let args = ProcessInfo.processInfo.arguments
         let isUITesting = args.contains("--uitesting")
@@ -79,19 +82,11 @@ struct RootView: View {
     /// Seed e deduplicação rodam uma vez por abertura, no `MainActor`, antes de a Home ler os dados.
     private func prepararDadosIniciais() {
         guard !dadosIniciaisProntos else { return }
-        let context = modelContainer.mainContext
-        do {
-            try SeedService(settings: settings).aplicar(em: context)
-        } catch {
-            context.rollback()
-            CashUpLogger.persistence.error("Seed: \(error.localizedDescription, privacy: .public)")
-        }
-        do {
-            try DeduplicacaoService().deduplicar(em: context)
-        } catch {
-            context.rollback()
-            CashUpLogger.persistence.error("Deduplicação: \(error.localizedDescription, privacy: .public)")
-        }
+        PreparacaoDeDadosIniciais.executar(
+            em: modelContainer.mainContext,
+            settings: settings,
+            usandoFallbackEmMemoria: usandoFallbackEmMemoria
+        )
         dadosIniciaisProntos = true
     }
 }

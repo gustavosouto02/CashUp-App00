@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Cartão "Planejamento do Mês" da Home: restante do orçamento ou convite para planejar.
 struct PlanningCard: View {
-    let totalPlanejado: Double
-    let totalRestante: Double
+    let totalPlanejado: Int64
+    let totalRestante: Int64
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -17,10 +17,10 @@ struct PlanningCard: View {
                     .foregroundStyle(.secondary)
 
                 HStack {
-                    Text(BRLCurrencyFormatter.string(from: totalRestante))
+                    Text(BRLCurrencyFormatter.string(fromCentavos: totalRestante))
                         .font(.title2.bold())
                         .foregroundStyle(totalRestante < 0 ? .red : .primary)
-                    Text("/ \(BRLCurrencyFormatter.string(from: totalPlanejado))")
+                    Text("/ \(BRLCurrencyFormatter.string(fromCentavos: totalPlanejado))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -28,7 +28,7 @@ struct PlanningCard: View {
 
                 let gastoReal = totalPlanejado - totalRestante
                 let base = max(totalPlanejado, 1)
-                ProgressView(value: min(gastoReal, base), total: base)
+                ProgressView(value: Centavos.double(de: min(gastoReal, base)), total: Centavos.double(de: base))
                     .tint(gastoReal > base ? .red : .blue)
             } else {
                 Text("Planejamento do Mês")

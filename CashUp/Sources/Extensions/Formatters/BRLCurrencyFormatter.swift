@@ -15,7 +15,7 @@ enum BRLCurrencyFormatter {
 
     private static let cache = NSCache<NSString, NumberFormatter>()
 
-    static func string(from value: Double, locale: Locale? = nil) -> String {
+    static func string(fromCentavos centavos: Int64, locale: Locale? = nil) -> String {
         let loc = locale ?? effectiveLocale
         let key = loc.identifier as NSString
 
@@ -30,7 +30,7 @@ enum BRLCurrencyFormatter {
             formatter = newFormatter
         }
 
-        return formatter.string(from: NSNumber(value: value)) ?? "0,00"
+        return formatter.string(from: Centavos.reais(de: centavos) as NSDecimalNumber) ?? "0,00"
     }
 }
 

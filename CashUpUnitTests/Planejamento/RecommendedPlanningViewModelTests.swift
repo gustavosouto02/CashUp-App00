@@ -59,7 +59,7 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
     func testCarregarDadosComRendaDetectadaExistente() {
         let mes = Date().startOfMonth()
         let transacaoReceita = ExpenseModel(
-            amount: 5000.0,
+            amountInCents: 500000,
             date: mes.addingTimeInterval(3600 * 24),
             expenseDescription: "Salário",
             isIncome: true
@@ -70,8 +70,8 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
 
         sut.carregarDados(mes: mes)
 
-        XCTAssertEqual(sut.rendaDetectada, 5000.0)
-        XCTAssertEqual(sut.rendaInformada, 5000.0)
+        XCTAssertEqual(sut.rendaDetectadaCentavos, 500_000)
+        XCTAssertEqual(sut.rendaInformadaCentavos, 500_000)
         XCTAssertTrue(sut.temRendaDetectada)
         XCTAssertFalse(sut.itensRecomendados.isEmpty)
     }
@@ -82,8 +82,8 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
 
         sut.carregarDados(mes: mes)
 
-        XCTAssertEqual(sut.rendaDetectada, 0.0)
-        XCTAssertEqual(sut.rendaInformada, 3000.0)
+        XCTAssertEqual(sut.rendaDetectadaCentavos, 0)
+        XCTAssertEqual(sut.rendaInformadaCentavos, 300_000)
         XCTAssertFalse(sut.temRendaDetectada)
         XCTAssertFalse(sut.itensRecomendados.isEmpty)
     }
@@ -99,10 +99,10 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         }
 
         let targetId = primeiro.id
-        sut.atualizarValorItem(id: targetId, novoValor: 1234.0)
+        sut.atualizarValorItem(id: targetId, novoValorCentavos: 123_400)
 
         let atualizado = sut.itensRecomendados.first { $0.id == targetId }
-        XCTAssertEqual(atualizado?.valorSugerido, 1234.0)
+        XCTAssertEqual(atualizado?.valorSugeridoCentavos, 123_400)
 
         let countAnterior = sut.itensRecomendados.count
         sut.removerItem(id: targetId)
@@ -131,7 +131,7 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         let mes = Date().startOfMonth()
         categoriaRepo.categorias = criarCategoriasBase()
         sut.carregarDados(mes: mes)
-        sut.rendaInformada = 4000.0
+        sut.rendaInformadaCentavos = 400_000
         sut.recalcular()
 
         let necessidades = sut.itens(doGrupo: .necessidades)
@@ -142,27 +142,47 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
 
         let primeiro = necessidades[0]
         let segundo = necessidades[1]
-        let valorSegundoAntes = segundo.valorSugerido
+        let valorSegundoAntes = segundo.valorSugeridoCentavos
 
-        sut.atualizarValorItem(id: primeiro.id, novoValor: primeiro.valorSugerido + 300.0)
+        sut.atualizarValorItem(id: primeiro.id, novoValorCentavos: primeiro.valorSugeridoCentavos + 30_000)
 
-        let primeiroDepois = sut.itensRecomendados.first { $0.id == primeiro.id }?.valorSugerido ?? 0
-        let segundoDepois = sut.itensRecomendados.first { $0.id == segundo.id }?.valorSugerido ?? 0
+        let primeiroDepois = sut.itensRecomendados.first { $0.id == primeiro.id }?.valorSugeridoCentavos ?? 0
+        let segundoDepois = sut.itensRecomendados.first { $0.id == segundo.id }?.valorSugeridoCentavos ?? 0
 
-        XCTAssertEqual(primeiroDepois, primeiro.valorSugerido + 300.0)
+        XCTAssertEqual(primeiroDepois, primeiro.valorSugeridoCentavos + 30_000)
         XCTAssertLessThan(segundoDepois, valorSegundoAntes)
-        XCTAssertEqual(sut.totalPorGrupo(.necessidades), 2000.0, accuracy: 15.0)
+        XCTAssertEqual(Double(sut.totalPorGrupo(.necessidades)), 200_000, accuracy: 1_500)
+    }
+
+    func testRebalanceamentoArredondaUmaVezPartindoDoValorExato() {
+        // 30% de R$ 3.349,97 = R$ 1.004,99 dividido entre 2 desejos = R$ 502,495: o múltiplo de R$ 5 mais próximo é R$ 500.
+        for valoresIniciais: (Int64, Int64) in [(0, 0), (1, 1)] {
+            let necessidade = CategoriaModel(nome: "Habitação", icon: "house", red: 0, green: 0, blue: 0)
+            let lazer = CategoriaModel(nome: "Lazer", icon: "tv", red: 0, green: 0, blue: 0)
+            let compras = CategoriaModel(nome: "Compras", icon: "bag", red: 0, green: 0, blue: 0)
+            sut.rendaInformadaCentavos = 334_997
+            sut.itensRecomendados = [
+                RecommendedPlanningItem(categoria: necessidade, valorSugeridoCentavos: 0, grupo: .necessidades),
+                RecommendedPlanningItem(categoria: lazer, valorSugeridoCentavos: valoresIniciais.0, grupo: .desejos),
+                RecommendedPlanningItem(categoria: compras, valorSugeridoCentavos: valoresIniciais.1, grupo: .desejos)
+            ]
+
+            sut.atualizarValorItem(id: sut.itensRecomendados[0].id, novoValorCentavos: 0)
+
+            XCTAssertEqual(sut.itensRecomendados[1].valorSugeridoCentavos, 50_000)
+            XCTAssertEqual(sut.itensRecomendados[2].valorSugeridoCentavos, 50_499)
+        }
     }
 
     func testAtualizarValorProtegePoupancaERespeitaTetoRenda() {
         let mes = Date().startOfMonth()
         categoriaRepo.categorias = criarCategoriasBase()
         sut.carregarDados(mes: mes)
-        sut.rendaInformada = 3000.0
+        sut.rendaInformadaCentavos = 300_000
         sut.recalcular()
 
         let poupancaInicial = sut.totalPorGrupo(.futuroPoupanca)
-        XCTAssertEqual(poupancaInicial, 600.0, accuracy: 5.0)
+        XCTAssertEqual(Double(poupancaInicial), 60_000, accuracy: 500)
 
         guard let itemNecessidade = sut.itens(doGrupo: .necessidades).first else {
             XCTFail("Deveria conter item em necessidades")
@@ -170,22 +190,22 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         }
 
         // Aumenta item de necessidade para além do alvo (1500)
-        sut.atualizarValorItem(id: itemNecessidade.id, novoValor: 2000.0)
+        sut.atualizarValorItem(id: itemNecessidade.id, novoValorCentavos: 200_000)
 
         // Poupança (20% para guardar) NUNCA deve ser alterada
         let poupancaDepois = sut.totalPorGrupo(.futuroPoupanca)
-        XCTAssertEqual(poupancaDepois, poupancaInicial, accuracy: 0.001)
+        XCTAssertEqual(poupancaDepois, poupancaInicial)
 
         // Total nunca pode ultrapassar a renda base (3000)
-        XCTAssertLessThanOrEqual(sut.totalRecomendado, 3000.0)
+        XCTAssertLessThanOrEqual(sut.totalRecomendado, 300_000)
 
         // Estilo de vida (desejos) deve ter diminuído para absorver o excedente
-        XCTAssertLessThan(sut.totalPorGrupo(.desejos), 900.0)
+        XCTAssertLessThan(sut.totalPorGrupo(.desejos), 90_000)
 
         // Teste de valor exorbitante: tenta colocar 5000 em uma renda de 3000
-        sut.atualizarValorItem(id: itemNecessidade.id, novoValor: 5000.0)
-        XCTAssertLessThanOrEqual(sut.totalRecomendado, 3000.0)
-        XCTAssertEqual(sut.totalPorGrupo(.futuroPoupanca), poupancaInicial, accuracy: 0.001)
+        sut.atualizarValorItem(id: itemNecessidade.id, novoValorCentavos: 500_000)
+        XCTAssertLessThanOrEqual(sut.totalRecomendado, 300_000)
+        XCTAssertEqual(sut.totalPorGrupo(.futuroPoupanca), poupancaInicial)
     }
 
     func testTotaisEPercentuais() {
@@ -193,7 +213,7 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         categoriaRepo.categorias = criarCategoriasBase()
         sut.carregarDados(mes: mes)
 
-        sut.rendaInformada = 4000.0
+        sut.rendaInformadaCentavos = 400_000
         sut.recalcular()
 
         let totalNec = sut.totalPorGrupo(.necessidades)
@@ -274,8 +294,8 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         // O valor do outro item aumentou para absorver o orçamento restante do grupo
         let outroItemAtualizado = itensRestantes.first { $0.id == outroItem.id }
         XCTAssertNotNil(outroItemAtualizado)
-        XCTAssertGreaterThan(outroItemAtualizado?.valorSugerido ?? 0, outroItem.valorSugerido)
-        XCTAssertEqual(sut.totalPorGrupo(.necessidades), totalOriginalNecessidades, accuracy: 0.05)
-        XCTAssertLessThanOrEqual(sut.totalRecomendado, sut.rendaInformada + 0.01)
+        XCTAssertGreaterThan(outroItemAtualizado?.valorSugeridoCentavos ?? 0, outroItem.valorSugeridoCentavos)
+        XCTAssertEqual(sut.totalPorGrupo(.necessidades), totalOriginalNecessidades)
+        XCTAssertLessThanOrEqual(sut.totalRecomendado, sut.rendaInformadaCentavos + 1)
     }
 }

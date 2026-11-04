@@ -29,7 +29,7 @@ struct InteractiveDailyExpensesChart: View {
     let selectedBarBlue = Color(red: 0.1, green: 0.45, blue: 1.0)
 
     private var maxYValue: Double {
-        (dailyData.map { $0.totalExpenses }.max() ?? 0) * 1.1 + (dailyData.isEmpty || dailyData.allSatisfy { $0.totalExpenses == 0 } ? 100 : 0)
+        Centavos.double(de: dailyData.map { $0.totalExpenses }.max() ?? 0) * 1.1 + (dailyData.isEmpty || dailyData.allSatisfy { $0.totalExpenses == 0 } ? 100 : 0)
     }
     
     private var selectedDailyItem: DailyExpenseItem? {
@@ -43,7 +43,7 @@ struct InteractiveDailyExpensesChart: View {
                 ForEach(dailyData) { item in
                     BarMark(
                         x: .value("Dia", item.date, unit: .day),
-                        y: .value("Gasto", item.totalExpenses),
+                        y: .value("Gasto", Centavos.double(de: item.totalExpenses)),
                         width: .automatic
                     )
                     .foregroundStyle(barColor(for: item))
@@ -165,7 +165,7 @@ struct InteractiveDailyExpensesChart: View {
     @ViewBuilder
     private func valueAnnotation(for item: DailyExpenseItem) -> some View {
         VStack(spacing: 2) {
-            Text(item.totalExpenses, format: .currency(code: "BRL").precision(.fractionLength(item.totalExpenses == 0 ? 0 : 2)))
+            Text(Centavos.reais(de: item.totalExpenses), format: .currency(code: "BRL").precision(.fractionLength(item.totalExpenses == 0 ? 0 : 2)))
                 .font(.caption.weight(.bold))
                 .foregroundColor(.primary)
         }

@@ -23,10 +23,10 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    @Published var totalSpentMonth: Double = 0.0
-    @Published var totalIncomeMonth: Double = 0.0
-    @Published var totalPlanejadoMes: Double = 0.0
-    @Published var totalRestantePlanejadoMes: Double = 0.0
+    @Published var totalSpentMonth: Int64 = 0
+    @Published var totalIncomeMonth: Int64 = 0
+    @Published var totalPlanejadoMes: Int64 = 0
+    @Published var totalRestantePlanejadoMes: Int64 = 0
     @Published var categoriasResumo: [CategoriaResumo] = []
     @Published var categoriasPlanejadas: [CategoriaPlanejadaModel] = []
     @Published var dailyExpenseChartData: [DailyExpenseItem] = []
@@ -102,8 +102,8 @@ final class HomeViewModel: ObservableObject {
         let transacoesDoMes = expensesViewModel.transactions(in: currentMonth)
         let despesasDoMes = transacoesDoMes.filter { !$0.isIncome }
 
-        totalSpentMonth = despesasDoMes.reduce(0) { $0 + $1.amount }
-        totalIncomeMonth = transacoesDoMes.filter(\.isIncome).reduce(0) { $0 + $1.amount }
+        totalSpentMonth = despesasDoMes.reduce(0) { $0 + $1.amountInCents }
+        totalIncomeMonth = transacoesDoMes.filter(\.isIncome).reduce(0) { $0 + $1.amountInCents }
 
         categoriasPlanejadas = planningViewModel.getCategoriasPlanejadasForCurrentMonth()
         totalPlanejadoMes = categoriasPlanejadas.reduce(0) { $0 + planningViewModel.totalParaCategoriaPlanejada($1) }
@@ -115,10 +115,10 @@ final class HomeViewModel: ObservableObject {
         )
         let gastoEmPlanejadas = despesasDoMes
             .filter { $0.subcategoria.map { idsSubcategoriasPlanejadas.contains($0.id) } ?? false }
-            .reduce(0) { $0 + $1.amount }
+            .reduce(0) { $0 + $1.amountInCents }
         totalRestantePlanejadoMes = totalPlanejadoMes - gastoEmPlanejadas
 
-        let valoresPlanejados: [UUID: Double] = categoriasPlanejadas.reduce(into: [:]) { acc, plano in
+        let valoresPlanejados: [UUID: Int64] = categoriasPlanejadas.reduce(into: [:]) { acc, plano in
             if let id = plano.categoriaOriginal?.id {
                 acc[id] = plano.valorTotalPlanejado
             }
@@ -128,14 +128,14 @@ final class HomeViewModel: ObservableObject {
         categoriasResumo = Dictionary(grouping: despesasDoMes, by: { $0.categoria })
             .compactMap { categoriaOpt, transacoes -> CategoriaResumo? in
                 guard let categoria = categoriaOpt else { return nil }
-                let totalCategoria = transacoes.reduce(0) { $0 + $1.amount }
+                let totalCategoria = transacoes.reduce(0) { $0 + $1.amountInCents }
                 let progresso = valoresPlanejados[categoria.id].flatMap { vp in
-                    vp > 0 ? min(totalCategoria / vp, 1.0) : nil
+                    vp > 0 ? min(Centavos.razao(totalCategoria, de: vp), 1.0) : nil
                 }
                 return CategoriaResumo(
                     categoria: categoria,
                     total: totalCategoria,
-                    percentual: totalGasto > 0 ? totalCategoria / totalGasto : 0,
+                    percentual: Centavos.razao(totalCategoria, de: totalGasto),
                     progressoPlanejado: progresso
                 )
             }
@@ -156,8 +156,8 @@ final class HomeViewModel: ObservableObject {
         let startOfMonth = month.startOfMonth()
         guard let daysInMonth = calendar.range(of: .day, in: .month, for: startOfMonth)?.count else { return [] }
 
-        let totalPorDia = despesas.reduce(into: [Date: Double]()) { acc, item in
-            acc[calendar.startOfDay(for: item.date), default: 0] += item.amount
+        let totalPorDia = despesas.reduce(into: [Date: Int64]()) { acc, item in
+            acc[calendar.startOfDay(for: item.date), default: 0] += item.amountInCents
         }
 
         return (0..<daysInMonth).compactMap { offset in
@@ -183,7 +183,7 @@ final class HomeViewModel: ObservableObject {
 struct CategoriaResumo: Identifiable {
     var id: UUID { categoria.id }
     let categoria: CategoriaModel
-    let total: Double
+    let total: Int64
     let percentual: Double
     let progressoPlanejado: Double?
 }
@@ -191,6 +191,6 @@ struct CategoriaResumo: Identifiable {
 struct DailyExpenseItem: Identifiable {
     var id: Date { date }
     var date: Date
-    var totalExpenses: Double
+    var totalExpenses: Int64
     var isToday: Bool = false
 }
