@@ -134,16 +134,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             repeticao.excludedDates = excluidas
             original.repetition = repeticao
 
-            let novaTransacao = ExpenseModel(
-                amountInCents: edit.amountInCents,
-                date: edit.date,
-                expenseDescription: edit.description,
-                isIncome: edit.isIncome,
-                repetition: nil,
-                categoria: edit.categoria,
-                subcategoria: edit.subcategoria,
-                conta: original.conta
-            )
+            let novaTransacao = try transacaoDerivada(de: original, edit: edit, repetition: nil)
             try validar(novaTransacao)
             repository.insert(novaTransacao)
 
@@ -166,16 +157,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                     original.repetition = repeticaoOriginal
                 }
 
-                let novaSerie = ExpenseModel(
-                    amountInCents: edit.amountInCents,
-                    date: edit.date,
-                    expenseDescription: edit.description,
-                    isIncome: edit.isIncome,
-                    repetition: edit.repetition,
-                    categoria: edit.categoria,
-                    subcategoria: edit.subcategoria,
-                    conta: original.conta
-                )
+                let novaSerie = try transacaoDerivada(de: original, edit: edit, repetition: edit.repetition)
                 try validar(novaSerie)
                 repository.insert(novaSerie)
             }
@@ -192,6 +174,23 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
 
         try persistir()
+    }
+
+    /// Transação nova gerada ao dividir uma série: herda da série o tipo (uma transferência continua transferência) e a
+    /// `contaDestino`, e a conta da série, ou a conta padrão se a série ainda não tiver uma (RN-02, RN-03).
+    private func transacaoDerivada(de original: ExpenseModel, edit: ExpenseEdit, repetition: RepetitionData?) throws -> ExpenseModel {
+        ExpenseModel(
+            amountInCents: edit.amountInCents,
+            date: edit.date,
+            expenseDescription: edit.description,
+            isIncome: edit.isIncome,
+            tipo: original.tipo == .transferencia ? .transferencia : nil,
+            repetition: repetition,
+            categoria: edit.categoria,
+            subcategoria: edit.subcategoria,
+            conta: try original.conta ?? contaPadrao(),
+            contaDestino: original.contaDestino
+        )
     }
 
     private func aplicarEscopoDeExclusao(_ scope: RecurringScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
@@ -255,7 +254,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         transactions(in: day).filter { occurrence in
             calendar.isDate(occurrence.date, inSameDayAs: day)
                 && occurrence.tipo != .transferencia
-                && (isIncome.map { $0 == occurrence.isIncome } ?? true)
+                && (isIncome.map { ($0 ? TipoLancamento.receita : .despesa) == occurrence.tipo } ?? true)
         }
     }
 
