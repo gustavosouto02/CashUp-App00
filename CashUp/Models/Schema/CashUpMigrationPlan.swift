@@ -55,8 +55,8 @@ enum CashUpMigrationPlan: SchemaMigrationPlan {
     )
 
     /// Converte para centavos todo registro que ainda tem valor no `Double` legado e zera o legado em seguida
-    /// (o legado zerado é a marca de "já convertido"). Idempotente; roda no `willMigrate` do estágio V4 → V5, com as
-    /// classes congeladas da V4. Edições feitas na V4 nunca tocam o `Double` legado, então um valor editado para zero
+    /// (o legado zerado é a marca de "já convertido"). Idempotente; roda no `didMigrate` do estágio V3 → V4 e no
+    /// `willMigrate` do V4 → V5 (que cobre o `didMigrate` anterior ter falhado), com as classes congeladas da V4. Edições feitas na V4 nunca tocam o `Double` legado, então um valor editado para zero
     /// não é ressuscitado.
     @discardableResult
     static func converterValoresPendentesParaCentavos(em context: ModelContext) throws -> Int {
@@ -80,10 +80,17 @@ enum CashUpMigrationPlan: SchemaMigrationPlan {
         var descriptor = FetchDescriptor<SchemaV5.ContaModel>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         if let existente = try context.fetch(descriptor).first { return existente }
-        let carteira = SchemaV5.ContaModel(id: id, nome: ContaModel.nomeCarteira, tipo: .carteira)
+        let carteira = SchemaV5.ContaModel(id: id, nome: nomeCarteiraNaV5, tipo: .carteira)
         context.insert(carteira)
         return carteira
     }
+
+    /// Valores literais, congelados com a V5: este reparo roda sobre as classes da `SchemaV5` e não pode depender de
+    /// extensões do modelo vivo (`ContaModel.nomeCarteira`, `ExpenseModel.tipo`), que mudam depois da V5.
+    private static let nomeCarteiraNaV5 = "Carteira"
+    private static let tipoTransferenciaNaV5 = "transferencia"
+    private static let tipoReceitaNaV5 = "receita"
+    private static let tipoDespesaNaV5 = "despesa"
 
     /// Liga à Carteira toda transação sem conta e define o tipo a partir de `isIncome` (uma transferência mantém o tipo).
     /// Idempotente: só toca o que ainda não tem conta. Roda no `didMigrate` do estágio V4 → V5 e na abertura do container
@@ -97,8 +104,8 @@ enum CashUpMigrationPlan: SchemaMigrationPlan {
         let carteira = try garantirCarteira(em: context)
         for transacao in pendentes {
             transacao.conta = carteira
-            if transacao.tipo != .transferencia {
-                transacao.tipo = transacao.isIncome ? .receita : .despesa
+            if transacao.tipoRaw != tipoTransferenciaNaV5 {
+                transacao.tipoRaw = transacao.isIncome ? tipoReceitaNaV5 : tipoDespesaNaV5
             }
         }
         return pendentes.count
