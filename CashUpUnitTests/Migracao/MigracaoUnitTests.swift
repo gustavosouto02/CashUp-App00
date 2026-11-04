@@ -8,13 +8,13 @@ final class MigracaoUnitTests: XCTestCase {
     private var diretorio: URL!
     private var storeURL: URL!
 
-    private let idCategoria = UUID()
-    private let idSubcategoria = UUID()
-    private let idRecorrente = UUID()
-    private let idReceita = UUID()
-    private let idPlanejada = UUID()
-    private let marco = Date.make(year: 2026, month: 3, day: 10)
-    private let excluida = Date.make(year: 2026, month: 5, day: 10)
+    private let idCategoria = FixtureStoreV1.idCategoria
+    private let idSubcategoria = FixtureStoreV1.idSubcategoria
+    private let idRecorrente = FixtureStoreV1.idRecorrente
+    private let idReceita = FixtureStoreV1.idReceita
+    private let idPlanejada = FixtureStoreV1.idPlanejada
+    private let marco = FixtureStoreV1.marco
+    private let excluida = FixtureStoreV1.excluida
 
     override func setUpWithError() throws {
         diretorio = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -503,6 +503,11 @@ final class MigracaoUnitTests: XCTestCase {
         try contexto.save()
     }
 
+    /// Cria o store como o `main` (App Store 1.5) criava: schema sem versão, só com a lista de modelos.
+    private func criarStoreV1() throws {
+        try FixtureStoreV1.criar(em: storeURL)
+    }
+
     /// Cria um store na V3 (reais em `Double`), a versão publicada antes da E0.3.
     private func criarStoreV3(valores: [Double]) throws {
         let schema = Schema(versionedSchema: SchemaV3.self)
@@ -527,43 +532,6 @@ final class MigracaoUnitTests: XCTestCase {
         let planejada = SchemaV3.CategoriaPlanejadaModel(id: idPlanejada, mesAno: marco, categoriaOriginal: categoria)
         contexto.insert(planejada)
         contexto.insert(SchemaV3.SubcategoriaPlanejadaModel(valorPlanejado: 19.899999, subcategoriaOriginal: subcategoria, categoriaPlanejada: planejada))
-
-        try contexto.save()
-    }
-
-    /// Cria o store como o `main` (App Store 1.5) criava: schema sem versão, só com a lista de modelos.
-    private func criarStoreV1() throws {
-        let schema = Schema(SchemaV1.models)
-        let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL))
-        let contexto = ModelContext(container)
-
-        let categoria = SchemaV1.CategoriaModel(id: idCategoria, nome: "Transporte", icon: "car", red: 0.75, green: 0.35, blue: 0.98)
-        let subcategoria = SchemaV1.SubcategoriaModel(id: idSubcategoria, nome: "Ônibus", icon: "bus", categoria: categoria, usageCount: 3)
-        contexto.insert(categoria)
-        contexto.insert(subcategoria)
-
-        contexto.insert(SchemaV1.ExpenseModel(
-            id: idRecorrente,
-            amount: 49.9,
-            date: marco,
-            expenseDescription: "Passe",
-            repetition: RepetitionData(repeatOption: .mensalmente, endDate: nil, excludedDates: [excluida]),
-            categoria: categoria,
-            subcategoria: subcategoria
-        ))
-        contexto.insert(SchemaV1.ExpenseModel(
-            id: idReceita,
-            amount: 1800,
-            date: marco,
-            expenseDescription: "Bolsa",
-            isIncome: true,
-            categoria: categoria,
-            subcategoria: subcategoria
-        ))
-
-        let planejada = SchemaV1.CategoriaPlanejadaModel(id: idPlanejada, mesAno: marco, categoriaOriginal: categoria)
-        contexto.insert(planejada)
-        contexto.insert(SchemaV1.SubcategoriaPlanejadaModel(valorPlanejado: 300, subcategoriaOriginal: subcategoria, categoriaPlanejada: planejada))
 
         try contexto.save()
     }
