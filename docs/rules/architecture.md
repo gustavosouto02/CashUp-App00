@@ -93,8 +93,10 @@ protocol ExpenseRepositoryProtocol: Sendable {
 ### 3.4 Persistência e SwiftData (`CashUp/Models/`)
 - Entidades anotadas com `@Model`.
 - Configurações de relacionamentos explícitas (`@Relationship(deleteRule: .cascade)`).
-- Chaves primárias com UUIDs imutáveis (`@Attribute(.unique)`).
+- Chaves primárias com UUIDs imutáveis (`id`), **sem** `@Attribute(.unique)` (removido na E0.2 por incompatibilidade com o CloudKit); a unicidade por `id` é garantida pelo seed versionado e pelo `DeduplicacaoService`.
 - Propriedades calculadas leves diretamente nos modelos (ex.: `valorTotalPlanejado`, `generateOccurrences`).
+- O container nasce em `CashUpPersistence`. O store vive no container do App Group `group.br.com.gustavosouto.cashup` (para widgets e App Intents lerem os mesmos dados); na primeira abertura depois do upgrade, o `StoreLocationMigrator` copia o store do `Application Support` antes de abrir o container e só apaga o antigo depois que o novo abre. Sem container de grupo disponível, o app segue no local antigo, exceto depois da primeira abertura no grupo (sentinela `default.store.no-app-group`): aí lança `grupoIndisponivel` e o app cai no fallback em memória com aviso, em vez de criar um store vazio. O store inclui `-wal`, `-shm` e o diretório de dados externos do Core Data (`.default_SUPPORT`); o antigo nunca é apagado se foi alterado depois da cópia.
+- **Extensões (widgets, App Intents) nunca criam o store.** Elas só abrem o container se `default.store` já existir no grupo; senão mostram o placeholder. Quem cria e migra o store é sempre o app, via `CashUpPersistence`: uma extensão que abrisse `ModelConfiguration(groupContainer:)` antes do app criaria um store vazio no grupo, e o `StoreLocationMigrator` trataria o grupo como "já existente" e deixaria o store original órfão no local antigo.
 
 ---
 
