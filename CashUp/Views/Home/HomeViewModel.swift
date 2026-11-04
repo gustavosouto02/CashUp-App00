@@ -99,11 +99,12 @@ final class HomeViewModel: ObservableObject {
     }
 
     func updateCardData() {
-        let transacoesDoMes = expensesViewModel.transactions(in: currentMonth)
-        let despesasDoMes = transacoesDoMes.filter { !$0.isIncome }
+        // RN-14: transferência entre contas não é gasto nem receita.
+        let transacoesDoMes = expensesViewModel.transactions(in: currentMonth).filter { $0.tipo != .transferencia }
+        let despesasDoMes = transacoesDoMes.filter { $0.tipo == .despesa }
 
         totalSpentMonth = despesasDoMes.reduce(0) { $0 + $1.amountInCents }
-        totalIncomeMonth = transacoesDoMes.filter(\.isIncome).reduce(0) { $0 + $1.amountInCents }
+        totalIncomeMonth = transacoesDoMes.filter { $0.tipo == .receita }.reduce(0) { $0 + $1.amountInCents }
 
         categoriasPlanejadas = planningViewModel.getCategoriasPlanejadasForCurrentMonth()
         totalPlanejadoMes = categoriasPlanejadas.reduce(0) { $0 + planningViewModel.totalParaCategoriaPlanejada($1) }

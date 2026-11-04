@@ -3,11 +3,11 @@ import SwiftData
 
 enum CashUpMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [SchemaV1.self, SchemaV2.self, SchemaV3.self, SchemaV4.self]
+        [SchemaV1.self, SchemaV2.self, SchemaV3.self, SchemaV4.self, SchemaV5.self]
     }
 
     static var stages: [MigrationStage] {
-        [migrarV1ParaV2, migrarV2ParaV3, migrarV3ParaV4]
+        [migrarV1ParaV2, migrarV2ParaV3, migrarV3ParaV4, migrarV4ParaV5]
     }
 
     static let migrarV1ParaV2 = MigrationStage.lightweight(
@@ -37,13 +37,27 @@ enum CashUpMigrationPlan: SchemaMigrationPlan {
         }
     )
 
+    /// Remove os `Double` legados e cria as contas. O `willMigrate` ainda enxerga a V4 e termina a conversão para centavos
+    /// (inclusive de um store que ficou V4 com centavos zerados por uma falha no estágio V3 → V4), porque depois deste
+    /// estágio o `Double` deixa de existir. O `didMigrate` cria a Carteira e liga todas as transações a ela.
+    static let migrarV4ParaV5 = MigrationStage.custom(
+        fromVersion: SchemaV4.self,
+        toVersion: SchemaV5.self,
+        willMigrate: { context in
+            try converterValoresPendentesParaCentavos(em: context)
+            try context.save()
+        },
+        didMigrate: { context in
+            try garantirCarteira(em: context)
+            try vincularTransacoesPendentesAContaPadrao(em: context)
+            try context.save()
+        }
+    )
+
     /// Converte para centavos todo registro que ainda tem valor no `Double` legado e zera o legado em seguida
-    /// (o legado zerado é a marca de "já convertido"). É idempotente e roda em dois lugares:
-    /// no `didMigrate` do estágio V3 → V4 e na abertura do container (`CashUpPersistence`). O segundo cobre o caso
-    /// em que o `didMigrate` falha: o SwiftData já aplicou a mudança estrutural, o store passa a ser V4 com os
-    /// centavos zerados, e a próxima abertura não repetiria o estágio. Sem o reparo, os totais apareceriam zerados.
-    /// Edições feitas na V4 nunca tocam o `Double` legado, então um valor editado para zero não é ressuscitado.
-    /// Sai junto com os campos legados, na E0.4 (V5).
+    /// (o legado zerado é a marca de "já convertido"). Idempotente; roda no `didMigrate` do estágio V3 → V4 e no
+    /// `willMigrate` do V4 → V5 (que cobre o `didMigrate` anterior ter falhado), com as classes congeladas da V4. Edições feitas na V4 nunca tocam o `Double` legado, então um valor editado para zero
+    /// não é ressuscitado.
     @discardableResult
     static func converterValoresPendentesParaCentavos(em context: ModelContext) throws -> Int {
         let despesas = try context.fetch(FetchDescriptor<SchemaV4.ExpenseModel>(predicate: #Predicate { $0.amount != 0 }))
@@ -57,6 +71,44 @@ enum CashUpMigrationPlan: SchemaMigrationPlan {
             planejada.valorPlanejado = 0
         }
         return despesas.count + planejadas.count
+    }
+
+    /// Garante a Carteira (ID fixo) e a devolve. Idempotente: uma segunda chamada, ou um estágio repetido, reaproveita a conta.
+    @discardableResult
+    static func garantirCarteira(em context: ModelContext) throws -> SchemaV5.ContaModel {
+        let id = SeedIDs.idContaCarteira
+        var descriptor = FetchDescriptor<SchemaV5.ContaModel>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        if let existente = try context.fetch(descriptor).first { return existente }
+        let carteira = SchemaV5.ContaModel(id: id, nome: nomeCarteiraNaV5, tipo: .carteira)
+        context.insert(carteira)
+        return carteira
+    }
+
+    /// Valores literais, congelados com a V5: este reparo roda sobre as classes da `SchemaV5` e não pode depender de
+    /// extensões do modelo vivo (`ContaModel.nomeCarteira`, `ExpenseModel.tipo`), que mudam depois da V5.
+    private static let nomeCarteiraNaV5 = "Carteira"
+    private static let tipoTransferenciaNaV5 = "transferencia"
+    private static let tipoReceitaNaV5 = "receita"
+    private static let tipoDespesaNaV5 = "despesa"
+
+    /// Liga à Carteira toda transação sem conta e define o tipo a partir de `isIncome` (uma transferência mantém o tipo).
+    /// Idempotente: só toca o que ainda não tem conta. Roda no `didMigrate` do estágio V4 → V5 e na abertura do container
+    /// (`CashUpPersistence`); o segundo cobre o `didMigrate` que falha, quando o SwiftData já aplicou a mudança estrutural
+    /// e o store é V5 com transações sem conta e com o tipo no valor padrão (despesa), então as receitas somariam como despesa.
+    /// Sai da abertura do container quando existir uma V6 (o estágio V5 → V6 passa a chamá-la no `willMigrate`).
+    @discardableResult
+    static func vincularTransacoesPendentesAContaPadrao(em context: ModelContext) throws -> Int {
+        let pendentes = try context.fetch(FetchDescriptor<SchemaV5.ExpenseModel>(predicate: #Predicate { $0.conta == nil }))
+        guard !pendentes.isEmpty else { return 0 }
+        let carteira = try garantirCarteira(em: context)
+        for transacao in pendentes {
+            transacao.conta = carteira
+            if transacao.tipoRaw != tipoTransferenciaNaV5 {
+                transacao.tipoRaw = transacao.isIncome ? tipoReceitaNaV5 : tipoDespesaNaV5
+            }
+        }
+        return pendentes.count
     }
 
     private static func renovarInstanciaIDs(em context: ModelContext) throws {

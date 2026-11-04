@@ -7,6 +7,7 @@ typealias RecurringExpenseDeletionScope = RecurringScope
 @MainActor
 final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     private let repository: ExpenseRepositoryProtocol
+    private let contaRepository: ContaRepositoryProtocol
     private let calendar: Calendar
 
     @Published var currentMonth: Date = Date().startOfMonth() {
@@ -24,20 +25,37 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     @Published var transacoesExibidas: [DisplayableExpense] = []
     @Published var errorMessage: String?
 
-    init(repository: ExpenseRepositoryProtocol, calendar: Calendar = .current) {
+    init(repository: ExpenseRepositoryProtocol, contaRepository: ContaRepositoryProtocol, calendar: Calendar = .current) {
         self.repository = repository
+        self.contaRepository = contaRepository
         self.calendar = calendar
         loadDisplayableExpenses()
     }
 
     convenience init(modelContext: ModelContext, calendar: Calendar = .current) {
-        self.init(repository: SwiftDataExpenseRepository(context: modelContext), calendar: calendar)
+        self.init(
+            repository: SwiftDataExpenseRepository(context: modelContext),
+            contaRepository: SwiftDataContaRepository(context: modelContext),
+            calendar: calendar
+        )
     }
 
+    /// Todo lançamento novo vai para a conta padrão (a Carteira); o seletor de conta chega na E2.
     func addExpense(_ expense: ExpenseModel) throws {
         try validar(expense)
+        if expense.conta == nil {
+            expense.conta = try contaPadrao()
+        }
         repository.insert(expense)
         try persistir()
+    }
+
+    private func contaPadrao() throws -> ContaModel {
+        do {
+            return try contaRepository.contaPadrao()
+        } catch {
+            throw CashUpDomainError.persistencia(error.localizedDescription)
+        }
     }
 
     func salvarEdicao() throws {
@@ -83,7 +101,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             original.amountInCents = edit.amountInCents
             original.date = edit.date
             original.expenseDescription = edit.description
-            original.isIncome = edit.isIncome
+            original.aplicarIsIncome(edit.isIncome)
             original.categoria = edit.categoria
             original.subcategoria = edit.subcategoria
             original.repetition = edit.repetition
@@ -101,7 +119,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                 original.amountInCents = edit.amountInCents
                 original.date = edit.date
                 original.expenseDescription = edit.description
-                original.isIncome = edit.isIncome
+                original.aplicarIsIncome(edit.isIncome)
                 original.categoria = edit.categoria
                 original.subcategoria = edit.subcategoria
                 try validar(original)
@@ -116,15 +134,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             repeticao.excludedDates = excluidas
             original.repetition = repeticao
 
-            let novaTransacao = ExpenseModel(
-                amountInCents: edit.amountInCents,
-                date: edit.date,
-                expenseDescription: edit.description,
-                isIncome: edit.isIncome,
-                repetition: nil,
-                categoria: edit.categoria,
-                subcategoria: edit.subcategoria
-            )
+            let novaTransacao = try transacaoDerivada(de: original, edit: edit, repetition: nil)
             try validar(novaTransacao)
             repository.insert(novaTransacao)
 
@@ -135,7 +145,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                 original.amountInCents = edit.amountInCents
                 original.date = edit.date
                 original.expenseDescription = edit.description
-                original.isIncome = edit.isIncome
+                original.aplicarIsIncome(edit.isIncome)
                 original.categoria = edit.categoria
                 original.subcategoria = edit.subcategoria
                 original.repetition = edit.repetition
@@ -147,15 +157,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
                     original.repetition = repeticaoOriginal
                 }
 
-                let novaSerie = ExpenseModel(
-                    amountInCents: edit.amountInCents,
-                    date: edit.date,
-                    expenseDescription: edit.description,
-                    isIncome: edit.isIncome,
-                    repetition: edit.repetition,
-                    categoria: edit.categoria,
-                    subcategoria: edit.subcategoria
-                )
+                let novaSerie = try transacaoDerivada(de: original, edit: edit, repetition: edit.repetition)
                 try validar(novaSerie)
                 repository.insert(novaSerie)
             }
@@ -164,7 +166,7 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
             original.amountInCents = edit.amountInCents
             original.date = edit.date
             original.expenseDescription = edit.description
-            original.isIncome = edit.isIncome
+            original.aplicarIsIncome(edit.isIncome)
             original.categoria = edit.categoria
             original.subcategoria = edit.subcategoria
             original.repetition = edit.repetition
@@ -172,6 +174,23 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
         }
 
         try persistir()
+    }
+
+    /// Transação nova gerada ao dividir uma série: herda da série o tipo (uma transferência continua transferência) e a
+    /// `contaDestino`, e a conta da série, ou a conta padrão se a série ainda não tiver uma (RN-02, RN-03).
+    private func transacaoDerivada(de original: ExpenseModel, edit: ExpenseEdit, repetition: RepetitionData?) throws -> ExpenseModel {
+        ExpenseModel(
+            amountInCents: edit.amountInCents,
+            date: edit.date,
+            expenseDescription: edit.description,
+            isIncome: edit.isIncome,
+            tipo: original.tipo == .transferencia ? .transferencia : nil,
+            repetition: repetition,
+            categoria: edit.categoria,
+            subcategoria: edit.subcategoria,
+            conta: try original.conta ?? contaPadrao(),
+            contaDestino: original.contaDestino
+        )
     }
 
     private func aplicarEscopoDeExclusao(_ scope: RecurringScope, em original: ExpenseModel, dataDaOcorrencia: Date) {
@@ -220,9 +239,9 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
     }
 
     func loadDisplayableExpenses() {
-        let wantsIncome = selectedTransactionType == 1
+        let tipoExibido: TipoLancamento = selectedTransactionType == 1 ? .receita : .despesa
         transacoesExibidas = transactions(in: currentMonth)
-            .filter { $0.isIncome == wantsIncome }
+            .filter { $0.tipo == tipoExibido }
             .sorted { $0.date > $1.date }
     }
 
@@ -233,16 +252,18 @@ final class ExpensesViewModel: ObservableObject, ExpenseCalculation {
 
     func transactions(on day: Date, isIncome: Bool?) -> [DisplayableExpense] {
         transactions(in: day).filter { occurrence in
-            calendar.isDate(occurrence.date, inSameDayAs: day) && (isIncome.map { $0 == occurrence.isIncome } ?? true)
+            calendar.isDate(occurrence.date, inSameDayAs: day)
+                && occurrence.tipo != .transferencia
+                && (isIncome.map { ($0 ? TipoLancamento.receita : .despesa) == occurrence.tipo } ?? true)
         }
     }
 
     func expenses(in month: Date) -> [DisplayableExpense] {
-        transactions(in: month).filter { !$0.isIncome }
+        transactions(in: month).filter { $0.tipo == .despesa }
     }
 
     func incomes(in month: Date) -> [DisplayableExpense] {
-        transactions(in: month).filter { $0.isIncome }
+        transactions(in: month).filter { $0.tipo == .receita }
     }
 
     func totalExpense(in month: Date) -> Int64 {
@@ -320,6 +341,7 @@ struct DisplayableExpense: Identifiable, Hashable {
     var date: Date
     var expenseDescription: String
     var isIncome: Bool
+    var tipo: TipoLancamento
     var categoria: CategoriaModel?
     var subcategoria: SubcategoriaModel?
     var isRecurringInstance: Bool
@@ -335,6 +357,7 @@ struct DisplayableExpense: Identifiable, Hashable {
         self.date = expense.date
         self.expenseDescription = expense.expenseDescription
         self.isIncome = expense.isIncome
+        self.tipo = expense.tipo
         self.categoria = expense.categoria
         self.subcategoria = expense.subcategoria
         self.isRecurringInstance = expense.repetition != nil
@@ -347,6 +370,7 @@ struct DisplayableExpense: Identifiable, Hashable {
         self.date = occurrenceDate
         self.expenseDescription = recurringExpense.expenseDescription
         self.isIncome = recurringExpense.isIncome
+        self.tipo = recurringExpense.tipo
         self.categoria = recurringExpense.categoria
         self.subcategoria = recurringExpense.subcategoria
         self.isRecurringInstance = true

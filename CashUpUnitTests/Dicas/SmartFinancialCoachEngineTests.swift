@@ -180,4 +180,35 @@ final class SmartFinancialCoachEngineTests: XCTestCase {
         XCTAssertEqual(streakInsight?.severity, InsightSeverity.positivo)
         XCTAssertTrue(streakInsight?.title.contains("Mandou bem") == true)
     }
+
+    func testTransferenciaNaoEntraNoGastoDosInsights() {
+        let mes = Date.make(year: 2026, month: 5, day: 1)
+        let hoje = Date.make(year: 2026, month: 5, day: 20)
+
+        let categoria = CategoriaModel(nome: "Total", icon: "star", red: 0.0, green: 0.0, blue: 1.0)
+        let subPlan = SubcategoriaPlanejadaModel(valorPlanejadoCentavos: 100000)
+        let catPlan = CategoriaPlanejadaModel(mesAno: mes, categoriaOriginal: categoria, subcategoriasPlanejadas: [subPlan])
+
+        let despesa = ExpenseModel(amountInCents: 20000, date: Date.make(year: 2026, month: 5, day: 5), expenseDescription: "Economia", isIncome: false)
+        // Uma transferência de R$ 5.000 estouraria o planejado e o ritmo de gasto se contasse como despesa (RN-14).
+        let transferencia = ExpenseModel(amountInCents: 500_000, date: Date.make(year: 2026, month: 5, day: 6), expenseDescription: "Para a poupança", tipo: .transferencia)
+
+        func analisar(_ transacoes: [ExpenseModel]) -> [FinancialInsight] {
+            engine.analyze(
+                month: mes,
+                expenses: transacoes.map { DisplayableExpense(from: $0) },
+                plannedCategories: [catPlan],
+                today: hoje,
+                calendar: calendar
+            )
+        }
+
+        let sem = analisar([despesa])
+        let com = analisar([despesa, transferencia])
+
+        XCTAssertEqual(com.map(\.triggerType), sem.map(\.triggerType))
+        XCTAssertEqual(com.map(\.message), sem.map(\.message))
+        XCTAssertNotNil(com.first { $0.triggerType == InsightTriggerType.positiveStreak })
+        XCTAssertNil(com.first { $0.triggerType == InsightTriggerType.burnRate })
+    }
 }

@@ -17,6 +17,9 @@ struct SeedIDs {
     static let idTransporte      = UUID(uuidString: "F5F5F5F5-F5F5-F5F5-F5F5-F5F5F5F5F5F5")!
     static let idEstiloDeVida    = UUID(uuidString: "A6A6A6A6-A6A6-A6A6-A6A6-A6A6A6A6A6A6")!
 
+    /// Conta padrão ("Carteira"): criada pela migração V4 → V5 ou na primeira abertura, com ID fixo para não duplicar entre aparelhos.
+    static let idContaCarteira   = UUID(uuidString: "AAAAAAAA-0001-4000-8000-000000000001")!
+
     static let categoriasBaseIDs: Set<UUID> = [
         idRenda,
         idEntretenimento,

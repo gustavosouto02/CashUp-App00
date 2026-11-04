@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-extension SchemaV4 {
+extension SchemaV5 {
     /// Lápide de um item do seed apagado pelo usuário: impede que o seed o recrie e avisa os outros aparelhos.
     @Model
     final class SeedRemocaoModel {

@@ -1,17 +1,19 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV4 {
+extension SchemaV5 {
     @Model
     final class ExpenseModel {
         var id: UUID = UUID()
         /// Valor em centavos: a única fonte de verdade do dinheiro (RN-01).
         var amountInCents: Int64 = 0
-        /// Legado da V3 (reais em `Double`): só a conversão para centavos lê, e depois zera. Será removido na V5.
-        var amount: Double = 0.0
         var date: Date = Date.distantPast
         var expenseDescription: String = ""
+        /// Redundante com `tipo` para despesa e receita; mantido porque o app todo lê `isIncome`.
+        /// Altere sempre por `aplicarIsIncome(_:)` ou pelo `init`, para os dois campos não divergirem.
         var isIncome: Bool = false
+        /// `TipoLancamento` gravado como texto. Use `tipo`.
+        var tipoRaw: String = TipoLancamento.despesa.rawValue
         @Attribute(.externalStorage)
         var repetition: RepetitionData?
 
@@ -19,6 +21,13 @@ extension SchemaV4 {
         var categoria: CategoriaModel?
         @Relationship(deleteRule: .nullify)
         var subcategoria: SubcategoriaModel?
+
+        /// Conta onde o lançamento acontece (origem, na transferência).
+        @Relationship(deleteRule: .nullify)
+        var conta: ContaModel?
+        /// Conta que recebe o dinheiro; só existe em transferência.
+        @Relationship(deleteRule: .nullify)
+        var contaDestino: ContaModel?
 
         var instanciaID: UUID = UUID()
         var criadoEm: Date = Date.distantPast
@@ -29,17 +38,24 @@ extension SchemaV4 {
              date: Date = Date(),
              expenseDescription: String = "",
              isIncome: Bool = false,
+             tipo: TipoLancamento? = nil,
              repetition: RepetitionData? = nil,
              categoria: CategoriaModel? = nil,
-             subcategoria: SubcategoriaModel? = nil) {
+             subcategoria: SubcategoriaModel? = nil,
+             conta: ContaModel? = nil,
+             contaDestino: ContaModel? = nil) {
             self.id = id
             self.amountInCents = amountInCents
             self.date = date
             self.expenseDescription = expenseDescription
-            self.isIncome = isIncome
+            let tipoResolvido = tipo ?? (isIncome ? .receita : .despesa)
+            self.isIncome = tipoResolvido == .receita
+            self.tipoRaw = tipoResolvido.rawValue
             self.repetition = repetition
             self.categoria = categoria
             self.subcategoria = subcategoria
+            self.conta = conta
+            self.contaDestino = contaDestino
             let agora = Date()
             self.criadoEm = agora
             self.atualizadoEm = agora
@@ -48,6 +64,20 @@ extension SchemaV4 {
 }
 
 extension ExpenseModel {
+    var tipo: TipoLancamento {
+        get { TipoLancamento(rawValue: tipoRaw) ?? (isIncome ? .receita : .despesa) }
+        set {
+            tipoRaw = newValue.rawValue
+            isIncome = newValue == .receita
+        }
+    }
+
+    /// Edição de despesa para receita (e vice-versa). Uma transferência continua transferência.
+    func aplicarIsIncome(_ isIncome: Bool) {
+        guard tipo != .transferencia else { return }
+        tipo = isIncome ? .receita : .despesa
+    }
+
     func generateOccurrences(forDateInterval queryInterval: DateInterval, calendar: Calendar = .current) -> [DisplayableExpense] {
         guard let repetitionData = repetition, repetitionData.repeatOption != .nunca else {
             return queryInterval.containsExcludingEnd(date) ? [DisplayableExpense(from: self)] : []

@@ -8,14 +8,12 @@
 import SwiftData
 import SwiftUI
 
-extension SchemaV4 {
+extension SchemaV5 {
     @Model
     final class SubcategoriaPlanejadaModel {
         var id: UUID = UUID()
         /// Valor planejado em centavos (RN-01).
         var valorPlanejadoCentavos: Int64 = 0
-        /// Legado da V3 (reais em `Double`): só a conversão para centavos lê, e depois zera. Será removido na V5.
-        var valorPlanejado: Double = 0.0
         var subcategoriaOriginal: SubcategoriaModel?
         @Relationship
         var categoriaPlanejada: CategoriaPlanejadaModel?

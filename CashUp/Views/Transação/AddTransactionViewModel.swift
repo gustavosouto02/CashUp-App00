@@ -173,7 +173,7 @@ final class AddTransactionViewModel: ObservableObject {
         transacao.expenseDescription = expenseDescription
         transacao.categoria = selectedCategoria
         transacao.subcategoria = selectedSubcategoria
-        transacao.isIncome = resolverIsIncome()
+        transacao.aplicarIsIncome(resolverIsIncome())
         try expensesViewModel.salvarEdicao()
     }
 

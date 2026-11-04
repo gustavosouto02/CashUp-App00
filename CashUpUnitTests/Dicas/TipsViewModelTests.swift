@@ -64,6 +64,25 @@ final class TipsViewModelTests: XCTestCase {
         XCTAssertEqual(breakdown.pctPoupanca, 58.0, accuracy: 0.01)
     }
 
+    func testCarregar_transferenciaNaoEntraNaRegra503020() {
+        let mes = Date.make(year: 2026, month: 6, day: 1)
+        let catMoradia = CategoriaModel(nome: "Moradia", icon: "house", red: 0.0, green: 0.0, blue: 1.0)
+
+        expenseRepo.expenses = [
+            ExpenseModel(amountInCents: 500000, date: Date.make(year: 2026, month: 6, day: 5), expenseDescription: "Salário", isIncome: true),
+            ExpenseModel(amountInCents: 150000, date: Date.make(year: 2026, month: 6, day: 10), expenseDescription: "Aluguel", categoria: catMoradia),
+            ExpenseModel(amountInCents: 300000, date: Date.make(year: 2026, month: 6, day: 11), expenseDescription: "Para a poupança", tipo: .transferencia, categoria: catMoradia)
+        ]
+
+        viewModel.carregar(para: mes, hoje: Date.make(year: 2026, month: 6, day: 15))
+
+        let breakdown = viewModel.ruleBreakdown
+        XCTAssertEqual(breakdown?.rendaTotal, 500_000)
+        XCTAssertEqual(breakdown?.necessidades, 150_000)
+        XCTAssertEqual(breakdown?.desejos, 0)
+        XCTAssertEqual(breakdown?.poupanca, 350_000)
+    }
+
     func testDicasFiltradas_retornaApenasDaCategoriaSelecionada() {
         viewModel.carregar(para: Date.make(year: 2026, month: 6, day: 1))
 
