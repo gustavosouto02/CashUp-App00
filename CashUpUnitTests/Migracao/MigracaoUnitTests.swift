@@ -204,17 +204,25 @@ final class MigracaoUnitTests: XCTestCase {
         }
     }
 
-    func testValorEditadoParaZeroNaoRessuscitaDepoisDaConversao() throws {
-        try criarStoreV1()
-
+    func testValorEditadoParaZeroNaoRessuscitaNaMigracaoV4ParaV5() throws {
+        // Store V4 já convertido (legado zerado). O usuário zera um valor planejado e uma despesa na V4: o `willMigrate`
+        // do V4 → V5 só converte registros com legado diferente de zero, então os zeros editados permanecem.
+        try criarStoreV4(valores: [19.9, 0.07], centavosJaConvertidos: true)
         do {
-            let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
-            try contexto.fetch(FetchDescriptor<SubcategoriaPlanejadaModel>()).forEach { $0.valorPlanejadoCentavos = 0 }
+            let schemaV4 = Schema(versionedSchema: SchemaV4.self)
+            let container = try ModelContainer(for: schemaV4, configurations: ModelConfiguration(schema: schemaV4, url: storeURL))
+            let contexto = ModelContext(container)
+            try contexto.fetch(FetchDescriptor<SchemaV4.SubcategoriaPlanejadaModel>()).forEach { $0.valorPlanejadoCentavos = 0 }
+            try contexto.fetch(FetchDescriptor<SchemaV4.ExpenseModel>()).filter { $0.expenseDescription == "19.9" }.forEach { $0.amountInCents = 0 }
             try contexto.save()
         }
 
         let contexto = ModelContext(try CashUpPersistence.makeContainer(url: storeURL))
+
         XCTAssertEqual(try contexto.fetch(FetchDescriptor<SubcategoriaPlanejadaModel>()).first?.valorPlanejadoCentavos, 0)
+        let transacoes = try contexto.fetch(FetchDescriptor<ExpenseModel>())
+        XCTAssertEqual(transacoes.first { $0.expenseDescription == "19.9" }?.amountInCents, 0)
+        XCTAssertEqual(transacoes.first { $0.expenseDescription == "0.07" }?.amountInCents, 7)
     }
 
     func testMigracaoDeValoresTruncariaSeFosseInt64DeValorVezes100() {

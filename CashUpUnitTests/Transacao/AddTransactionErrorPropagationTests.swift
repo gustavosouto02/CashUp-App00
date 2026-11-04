@@ -86,6 +86,49 @@ final class AddTransactionErrorPropagationTests: XCTestCase {
         XCTAssertEqual(serie.generateOccurrences(forDateInterval: mes).count, 1)
     }
 
+    func testEdicaoPelaUIAtualizaOTipoDaTransacao() throws {
+        let renda = CategoriaModel(id: SeedIDs.idRenda, nome: "Renda", icon: "banknote", red: 0.1, green: 0.8, blue: 0.1)
+        let salario = SubcategoriaModel(nome: "Salário", icon: "dollarsign", categoria: renda)
+        context.insert(renda)
+        context.insert(salario)
+        let despesa = ExpenseModel(amountInCents: 1000, date: Date.make(year: 2026, month: 3, day: 5), categoria: categoria, subcategoria: subcategoria)
+        context.insert(despesa)
+        try context.save()
+
+        let paraReceita = AddTransactionViewModel(transacaoEmEdicao: despesa)
+        paraReceita.selectedTransactionType = 1
+        paraReceita.selectedCategoria = renda
+        paraReceita.selectedSubcategoria = salario
+        XCTAssertTrue(paraReceita.salvar(usando: expensesViewModel))
+        XCTAssertEqual(despesa.tipo, .receita)
+        XCTAssertTrue(despesa.isIncome)
+
+        let paraDespesa = AddTransactionViewModel(transacaoEmEdicao: despesa)
+        paraDespesa.selectedTransactionType = 0
+        paraDespesa.selectedCategoria = categoria
+        paraDespesa.selectedSubcategoria = subcategoria
+        XCTAssertTrue(paraDespesa.salvar(usando: expensesViewModel))
+        XCTAssertEqual(despesa.tipo, .despesa)
+        XCTAssertFalse(despesa.isIncome)
+    }
+
+    func testEdicaoPelaUIMantemATransferencia() throws {
+        let transferencia = ExpenseModel(
+            amountInCents: 1000, date: Date.make(year: 2026, month: 3, day: 5), tipo: .transferencia,
+            categoria: categoria, subcategoria: subcategoria
+        )
+        context.insert(transferencia)
+        try context.save()
+
+        let viewModel = AddTransactionViewModel(transacaoEmEdicao: transferencia)
+        viewModel.amountInCents = 2500
+        XCTAssertTrue(viewModel.salvar(usando: expensesViewModel))
+
+        XCTAssertEqual(transferencia.amountInCents, 2500)
+        XCTAssertEqual(transferencia.tipo, .transferencia)
+        XCTAssertFalse(transferencia.isIncome)
+    }
+
     func testEditarParaNuncaRemoveRepeticao() throws {
         let serie = try inserirSerieMensal(inicio: Date.make(year: 2026, month: 1, day: 5))
         let viewModel = AddTransactionViewModel(transacaoEmEdicao: serie)

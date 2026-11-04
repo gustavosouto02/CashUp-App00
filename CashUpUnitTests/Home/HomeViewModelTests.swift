@@ -87,7 +87,16 @@ final class HomeViewModelTests: XCTestCase {
     }
 
     func testTransferenciaForaDosTotais() throws {
-        // RN-14: transferência entre contas não é gasto nem receita, mesmo com categoria.
+        // Planejamento de Alimentação: R$ 400 planejados para Mercado, R$ 300 gastos, restam R$ 100.
+        XCTAssertTrue(planningViewModel.adicionarNovaCategoriaAoPlanejamento(categoriaModel: alimentacao, comSubcategoriaInicial: mercado))
+        planningViewModel.getCategoriasPlanejadasForCurrentMonth().first?.subcategoriasPlanejadas?.first?.valorPlanejadoCentavos = 40_000
+        planningViewModel.currentMonth = marco
+        sut.updateCardData()
+        XCTAssertEqual(sut.totalPlanejadoMes, 40_000)
+        XCTAssertEqual(sut.totalRestantePlanejadoMes, 10_000)
+        let insightAntes = sut.topInsight
+
+        // RN-14: transferência entre contas não é gasto nem receita, mesmo com categoria planejada.
         context.insert(ExpenseModel(
             amountInCents: 77_700,
             date: Date.make(year: 2026, month: 3, day: 6),
@@ -104,7 +113,10 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(sut.totalIncomeMonth, 100_000)
         XCTAssertEqual(sut.dailyExpenseChartData.reduce(0) { $0 + $1.totalExpenses }, 80_000)
         XCTAssertEqual(sut.categoriasResumo.first { $0.categoria.id == alimentacao.id }?.total, 30_000)
-        XCTAssertEqual(sut.totalRestantePlanejadoMes, 0)
+        XCTAssertEqual(sut.totalRestantePlanejadoMes, 10_000, "Os R$ 777 da transferência não consomem o planejado")
+        XCTAssertEqual(sut.topInsight?.title, insightAntes?.title)
+        XCTAssertEqual(sut.topInsight?.message, insightAntes?.message)
+        XCTAssertEqual(sut.topInsight?.triggerType, insightAntes?.triggerType)
     }
 
     func testCategoriasResumoOrdenadoPorTotalDecrescente() {

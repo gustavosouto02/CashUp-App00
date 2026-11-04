@@ -76,6 +76,18 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         XCTAssertFalse(sut.itensRecomendados.isEmpty)
     }
 
+    func testDetectarRendaIgnoraTransferencia() {
+        let mes = Date().startOfMonth()
+        let dia = mes.addingTimeInterval(3600 * 24)
+        expenseRepo.expenses = [
+            ExpenseModel(amountInCents: 500000, date: dia, expenseDescription: "Salário", isIncome: true),
+            ExpenseModel(amountInCents: 200000, date: dia, expenseDescription: "Da poupança", tipo: .transferencia),
+            ExpenseModel(amountInCents: 30000, date: dia, expenseDescription: "Mercado")
+        ]
+
+        XCTAssertEqual(sut.detectarRenda(mes: mes), 500_000)
+    }
+
     func testCarregarDadosSemRendaDetectadaUsaDefault() {
         let mes = Date().startOfMonth()
         categoriaRepo.categorias = criarCategoriasBase()

@@ -123,6 +123,7 @@ final class ContaRepositoryUnitTests: XCTestCase {
 
         XCTAssertEqual(try context.fetchCount(FetchDescriptor<ExpenseModel>()), 2, "Apagar a conta não apaga a transação")
         XCTAssertNil(transacao.conta)
+        XCTAssertNil(transferencia.conta)
         XCTAssertNil(transferencia.contaDestino)
     }
 
