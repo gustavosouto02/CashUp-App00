@@ -7,6 +7,7 @@ struct CashUpApp: App {
     private let isUITesting: Bool
     private let settings: AppSettingsProtocol
     private let biometricService: BiometricAuthServiceProtocol
+    private let usandoFallbackEmMemoria: Bool
     @State private var mostrarAvisoPersistencia: Bool
 
     init() {
@@ -17,6 +18,7 @@ struct CashUpApp: App {
 
         let resultado = Self.makeContainer(inMemory: isUITesting)
         sharedModelContainer = resultado.container
+        usandoFallbackEmMemoria = resultado.usandoFallbackEmMemoria
         _mostrarAvisoPersistencia = State(initialValue: resultado.usandoFallbackEmMemoria)
     }
 
@@ -42,13 +44,14 @@ struct CashUpApp: App {
                 modelContainer: sharedModelContainer,
                 settings: settings,
                 biometricService: biometricService,
-                mostrarBoasVindas: !isUITesting
+                mostrarBoasVindas: !isUITesting,
+                usandoFallbackEmMemoria: usandoFallbackEmMemoria
             )
             .preferredColorScheme(.dark)
             .alert("Não foi possível abrir seus dados", isPresented: $mostrarAvisoPersistencia) {
                 Button("Entendi") {}
             } message: {
-                Text("O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Tente reinstalar ou entre em contato com o suporte.")
+                Text("O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Não apague o app: seus dados continuam no aparelho. Feche e abra de novo; se persistir, fale com o suporte.")
             }
         }
         .modelContainer(sharedModelContainer)
