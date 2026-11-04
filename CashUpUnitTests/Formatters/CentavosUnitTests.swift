@@ -71,6 +71,15 @@ final class CentavosUnitTests: XCTestCase {
         XCTAssertEqual(Centavos.arredondar(-300, multiploDe: 500), 0)
     }
 
+    func testArredondarMultiploPartindoDoValorExatoArredondaUmaVez() {
+        // Arredondar o centavo antes (249,5 -> 250) e o múltiplo depois levaria a 500.
+        XCTAssertEqual(Centavos.arredondar(Decimal(499) / 2, multiploDe: 500), 0)
+        XCTAssertEqual(Centavos.arredondar(Decimal(100_499) / 2, multiploDe: 500), 50_000)
+        XCTAssertEqual(Centavos.arredondar(Decimal(string: "250")!, multiploDe: 500), 500)
+        XCTAssertEqual(Centavos.arredondar(Decimal(-1), multiploDe: 500), 0)
+        XCTAssertEqual(Centavos.arredondar(Decimal(string: "12.5")!, multiploDe: 0), 13)
+    }
+
     func testMoedaBRLTrataOInteiroComoCentavos() {
         let ptBR = Locale(identifier: "pt_BR")
         func semEspacoDuro(_ t: String) -> String { t.replacingOccurrences(of: "\u{00A0}", with: " ") }

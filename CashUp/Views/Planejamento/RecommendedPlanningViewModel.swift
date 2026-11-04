@@ -189,11 +189,11 @@ final class RecommendedPlanningViewModel: ObservableObject {
             if index == itens.count - 1 {
                 itensRecomendados[globalIdx].valorSugeridoCentavos = max(restante, 0)
             } else {
-                let fatia: Int64
+                let fatia: Decimal
                 if somaAtual > 0 {
-                    fatia = Centavos.proporcao(totalLimpo, parte: item.valorSugeridoCentavos, de: somaAtual)
+                    fatia = Decimal(totalLimpo) * Decimal(item.valorSugeridoCentavos) / Decimal(somaAtual)
                 } else {
-                    fatia = Centavos.dividir(totalLimpo, por: itens.count)
+                    fatia = Decimal(totalLimpo) / Decimal(itens.count)
                 }
                 let calculado = arredondar(fatia)
                 let valor = min(calculado, restante)
@@ -246,9 +246,9 @@ final class RecommendedPlanningViewModel: ObservableObject {
         }
     }
 
-    /// Os valores sugeridos são arredondados para múltiplos de R$ 5,00.
-    private func arredondar(_ valor: Int64) -> Int64 {
-        Centavos.arredondar(valor, multiploDe: 500)
+    /// Os valores sugeridos são arredondados para múltiplos de R$ 5,00, uma única vez, a partir do valor exato.
+    private func arredondar(_ exato: Decimal) -> Int64 {
+        Centavos.arredondar(exato, multiploDe: 500)
     }
 
     func atualizarSubcategoriaItem(id: UUID, novaSubcategoria: SubcategoriaModel) {

@@ -75,6 +75,41 @@ final class RecommendedPlanningServiceTests: XCTestCase {
         XCTAssertEqual(itens.reduce(0) { $0 + $1.valorSugeridoCentavos }, renda)
     }
 
+    func testHabitacaoArredondaUmaVezPartindoDoValorExato() {
+        // 25% de R$ 1.009,99 = R$ 252,4975: o múltiplo de R$ 5 mais próximo é R$ 250 (arredondar o centavo antes daria R$ 255).
+        let catHabitacao = CategoriaModel(nome: "Habitação", icon: "house", red: 0.0, green: 0.0, blue: 1.0)
+        let catSaude = CategoriaModel(nome: "Saúde", icon: "cross", red: 0.5, green: 0.0, blue: 0.0) // absorve a sobra das necessidades
+        let catLazer = CategoriaModel(nome: "Entretenimento", icon: "tv", red: 0.8, green: 0.2, blue: 0.8)
+        let catDiversos = CategoriaModel(nome: "Diversos", icon: "ellipsis.circle", red: 0.3, green: 0.3, blue: 0.3)
+        let renda: Int64 = 100_999
+
+        let itens = sut.gerarPlanejamentoRecomendado(rendaMensalCentavos: renda, categoriasDisponiveis: [catHabitacao, catSaude, catLazer, catDiversos])
+
+        XCTAssertEqual(itens.first(where: { $0.categoria.id == catHabitacao.id })?.valorSugeridoCentavos, 25_000)
+    }
+
+    func testSobraDasNecessidadesArredondaUmaVezAoDividirEntreOsRestantes() {
+        // Sobra de R$ 1.004,99 dividida entre 2 categorias = R$ 502,495: o múltiplo mais próximo é R$ 500 (e não R$ 505).
+        let catHabitacao = CategoriaModel(nome: "Habitação", icon: "house", red: 0.0, green: 0.0, blue: 1.0)
+        let catSaude = CategoriaModel(nome: "Saúde", icon: "cross", red: 0.5, green: 0.0, blue: 0.0)
+        let catEducacao = CategoriaModel(nome: "Educação", icon: "book", red: 0.0, green: 0.5, blue: 0.0)
+        let catLazer = CategoriaModel(nome: "Entretenimento", icon: "tv", red: 0.8, green: 0.2, blue: 0.8)
+        let catDiversos = CategoriaModel(nome: "Diversos", icon: "ellipsis.circle", red: 0.3, green: 0.3, blue: 0.3)
+        // 50% = 200.999 e Habitação = 100.500, então a sobra é 100.499.
+        let renda: Int64 = 401_998
+
+        let itens = sut.gerarPlanejamentoRecomendado(
+            rendaMensalCentavos: renda,
+            categoriasDisponiveis: [catHabitacao, catSaude, catEducacao, catLazer, catDiversos]
+        )
+
+        XCTAssertEqual(itens.first(where: { $0.categoria.id == catHabitacao.id })?.valorSugeridoCentavos, 100_500)
+        XCTAssertEqual(itens.first(where: { $0.categoria.id == catSaude.id })?.valorSugeridoCentavos, 50_000)
+        XCTAssertEqual(itens.first(where: { $0.categoria.id == catEducacao.id })?.valorSugeridoCentavos, 50_499)
+        XCTAssertEqual(itens.filter { $0.grupo == .necessidades }.reduce(0) { $0 + $1.valorSugeridoCentavos }, 200_999)
+        XCTAssertEqual(itens.reduce(0) { $0 + $1.valorSugeridoCentavos }, renda)
+    }
+
     func testDiversosComoPoupancaSelecionaSubcategoriaReserva() throws {
         let catDiversos = CategoriaModel(nome: "Diversos", icon: "archivebox", red: 0.3, green: 0.3, blue: 0.3)
         let subCustosBancarios = SubcategoriaModel(nome: "Custos Bancários", icon: "dollarsign")

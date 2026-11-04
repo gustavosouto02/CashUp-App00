@@ -109,19 +109,19 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         if habitacao != nil || alimentacao != nil || transporte != nil {
             var alocado: Int64 = 0
             if let habitacao {
-                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 25))
+                let valor = arredondar(Decimal(rendaMensalCentavos) * 25 / 100)
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: habitacao, preferencias: ["aluguel", "rent", "alquiler", "contas", "bills", "facturas", "habitacao", "housing", "vivienda"])
                 resultado.append(RecommendedPlanningItem(categoria: habitacao, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
             if let alimentacao {
-                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 15))
+                let valor = arredondar(Decimal(rendaMensalCentavos) * 15 / 100)
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: alimentacao, preferencias: ["mantimentos", "groceries", "supermercado", "comida", "food"])
                 resultado.append(RecommendedPlanningItem(categoria: alimentacao, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
             }
             if let transporte {
-                let valor = arredondar(Centavos.fracao(rendaMensalCentavos, percentual: 10))
+                let valor = arredondar(Decimal(rendaMensalCentavos) * 10 / 100)
                 alocado += valor
                 let sub = escolherSubcategoriaPrincipal(categoria: transporte, preferencias: ["transporte", "transportation", "combustivel", "gas", "gasolina", "carro", "car", "auto"])
                 resultado.append(RecommendedPlanningItem(categoria: transporte, subcategoria: sub, valorSugeridoCentavos: valor, grupo: .necessidades))
@@ -139,7 +139,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
                     if index == restantes.count - 1 {
                         valor = max(sobra, 0)
                     } else {
-                        let fatia = arredondar(Centavos.dividir(sobra, por: restantes.count - index))
+                        let fatia = arredondar(Decimal(sobra) / Decimal(restantes.count - index))
                         valor = min(fatia, sobra)
                         sobra -= valor
                     }
@@ -157,7 +157,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
                 if index == categorias.count - 1 {
                     valor = max(restante, 0)
                 } else {
-                    let fatia = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
+                    let fatia = arredondar(Decimal(totalGrupo) / Decimal(categorias.count))
                     valor = min(fatia, restante)
                     restante -= valor
                 }
@@ -180,7 +180,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             if index == categorias.count - 1 {
                 valor = max(restante, 0)
             } else {
-                let calculado = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
+                let calculado = arredondar(Decimal(totalGrupo) / Decimal(categorias.count))
                 valor = min(calculado, restante)
                 restante -= valor
             }
@@ -202,7 +202,7 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
             if index == categorias.count - 1 {
                 valor = max(restante, 0)
             } else {
-                let calculado = arredondar(Centavos.dividir(totalGrupo, por: categorias.count))
+                let calculado = arredondar(Decimal(totalGrupo) / Decimal(categorias.count))
                 valor = min(calculado, restante)
                 restante -= valor
             }
@@ -227,8 +227,8 @@ final class RecommendedPlanningService: RecommendedPlanningServiceProtocol {
         return subs.first
     }
 
-    /// Os valores sugeridos são arredondados para múltiplos de R$ 5,00.
-    private func arredondar(_ valor: Int64) -> Int64 {
-        Centavos.arredondar(valor, multiploDe: 500)
+    /// Os valores sugeridos são arredondados para múltiplos de R$ 5,00, uma única vez, a partir do valor exato.
+    private func arredondar(_ exato: Decimal) -> Int64 {
+        Centavos.arredondar(exato, multiploDe: 500)
     }
 }

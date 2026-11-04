@@ -154,6 +154,26 @@ final class RecommendedPlanningViewModelTests: XCTestCase {
         XCTAssertEqual(Double(sut.totalPorGrupo(.necessidades)), 200_000, accuracy: 1_500)
     }
 
+    func testRebalanceamentoArredondaUmaVezPartindoDoValorExato() {
+        // 30% de R$ 3.349,97 = R$ 1.004,99 dividido entre 2 desejos = R$ 502,495: o múltiplo de R$ 5 mais próximo é R$ 500.
+        for valoresIniciais: (Int64, Int64) in [(0, 0), (1, 1)] {
+            let necessidade = CategoriaModel(nome: "Habitação", icon: "house", red: 0, green: 0, blue: 0)
+            let lazer = CategoriaModel(nome: "Lazer", icon: "tv", red: 0, green: 0, blue: 0)
+            let compras = CategoriaModel(nome: "Compras", icon: "bag", red: 0, green: 0, blue: 0)
+            sut.rendaInformadaCentavos = 334_997
+            sut.itensRecomendados = [
+                RecommendedPlanningItem(categoria: necessidade, valorSugeridoCentavos: 0, grupo: .necessidades),
+                RecommendedPlanningItem(categoria: lazer, valorSugeridoCentavos: valoresIniciais.0, grupo: .desejos),
+                RecommendedPlanningItem(categoria: compras, valorSugeridoCentavos: valoresIniciais.1, grupo: .desejos)
+            ]
+
+            sut.atualizarValorItem(id: sut.itensRecomendados[0].id, novoValorCentavos: 0)
+
+            XCTAssertEqual(sut.itensRecomendados[1].valorSugeridoCentavos, 50_000)
+            XCTAssertEqual(sut.itensRecomendados[2].valorSugeridoCentavos, 50_499)
+        }
+    }
+
     func testAtualizarValorProtegePoupancaERespeitaTetoRenda() {
         let mes = Date().startOfMonth()
         categoriaRepo.categorias = criarCategoriasBase()

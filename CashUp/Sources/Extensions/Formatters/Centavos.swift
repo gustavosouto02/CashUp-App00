@@ -57,12 +57,13 @@ enum Centavos {
         total > 0 ? Double(parte) / Double(total) : 0
     }
 
-    /// Arredonda para o múltiplo de `passo` centavos mais próximo, sem passar de zero.
-    static func arredondar(_ centavos: Int64, multiploDe passo: Int64) -> Int64 {
-        guard passo > 0 else { return max(centavos, 0) }
-        let metade = passo / 2
-        let arredondado = ((centavos + metade) / passo) * passo
-        return max(arredondado, 0)
+    /// Arredonda UMA vez, a partir do valor exato em centavos, para o múltiplo de `passo` centavos mais próximo (meio para longe do zero), sem passar de zero.
+    /// Use no lugar de arredondar o centavo antes (`fracao`/`dividir`/`proporcao`) e o múltiplo depois: o duplo arredondamento muda o resultado perto do ponto médio.
+    static func arredondar(_ exato: Decimal, multiploDe passo: Int64) -> Int64 {
+        guard passo > 0 else { return max(inteiro(exato), 0) }
+        let multiplos = inteiro(exato / Decimal(passo))
+        let (produto, estourou) = multiplos.multipliedReportingOverflow(by: passo)
+        return max(estourou ? limite : min(produto, limite), 0)
     }
 
     static func formatado(_ centavos: Int64, locale: Locale? = nil) -> String {
