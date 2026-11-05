@@ -34,7 +34,7 @@ struct ExpensesResumoView: View {
         .cornerRadius(12)
     }
     
-    private func resumoItem(value: Int64, label: String, color: Color) -> some View {
+    private func resumoItem(value: Int64, label: LocalizedStringKey, color: Color) -> some View {
         VStack(alignment: .center, spacing: 4) {
             Text(BRLCurrencyFormatter.string(fromCentavos: value))
                 .font(.title3)

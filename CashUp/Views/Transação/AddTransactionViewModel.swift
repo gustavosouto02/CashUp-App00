@@ -76,9 +76,12 @@ final class AddTransactionViewModel: ObservableObject {
         amountInCents > 0 && selectedCategoria != nil && selectedSubcategoria != nil
     }
 
-    var tituloDaTela: String {
+    /// Título como recurso localizável: a UI usa `tituloDaTela`; os testes resolvem em outro idioma por aqui.
+    var tituloResource: LocalizedStringResource {
         selectedTransactionType == 0 ? "Registrar Despesa" : "Registrar Receita"
     }
+
+    var tituloDaTela: String { String(localized: tituloResource) }
 
     func formatDate(_ date: Date) -> String {
         if calendar.isDateInToday(date) { return String(localized: "Hoje") }

@@ -76,24 +76,14 @@ struct SubcategoryDetailView: View {
         .recurringScopeDialog(
             item: $expenseToDelete,
             titulo: "Apagar Transação Recorrente",
-            mensagemCustomizada: { expense in
-                let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
-                let data = expense.date.formatted(date: .numeric, time: .omitted)
-                let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
-                return "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?"
-            }
+            mensagem: .apagar
         ) { expense, scope in
             viewModel.excluir(expense, scope: scope)
         }
         .recurringScopeDialog(
             item: $expenseToEdit,
             titulo: "Editar Transação Recorrente",
-            mensagemCustomizada: { expense in
-                let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
-                let data = expense.date.formatted(date: .numeric, time: .omitted)
-                let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
-                return "\"\(nome)\" de \(valor) em \(data) é recorrente. Quais ocorrências você deseja alterar?"
-            }
+            mensagem: .editar
         ) { expense, scope in
             if let model = viewModel.originalExpenseModel(from: expense) {
                 editingPayload = (model: model, occurrence: expense, scope: scope)

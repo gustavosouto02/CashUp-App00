@@ -23,7 +23,7 @@ struct RepeatOptionPicker: View {
                         Image(systemName: "chevron.left")
                             .font(.caption)
                             .foregroundStyle(.blue)
-                        Text(repeatOption.rawValue)
+                        Text(repeatOption.titulo)
                             .foregroundStyle(.blue)
                             .fontWeight(.semibold)
                         Image(systemName: "chevron.right")
@@ -35,7 +35,7 @@ struct RepeatOptionPicker: View {
             }
             .confirmationDialog("Escolha a frequência de repetição", isPresented: $isRepeatDialogPresented, titleVisibility: .visible) {
                 ForEach(RepeatOption.allCases) { option in
-                    Button(option.rawValue) {
+                    Button(option.titulo) {
                         let oldValue = repeatOption
                         repeatOption = option
                         if option == .nunca {
