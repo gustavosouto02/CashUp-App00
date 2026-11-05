@@ -11,11 +11,7 @@ class MonthSelectorViewModel: ObservableObject {
     @Published var selectedMonth: Date = Date()
 
     var displayedMonth: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = .autoupdatingCurrent
-        dateFormatter.dateFormat = "MMMM yyyy"
-        let formattedString = dateFormatter.string(from: selectedMonth)
-        return formattedString.prefix(1).uppercased() + formattedString.dropFirst()
+        MonthYearFormatter.string(from: selectedMonth)
     }
     
     init(selectedMonth: Date = Date()) {

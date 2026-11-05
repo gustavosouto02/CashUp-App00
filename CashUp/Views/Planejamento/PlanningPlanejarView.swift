@@ -359,10 +359,7 @@ struct PlanningPlanejarView: View {
     }
 
     private var mesAnoFormatado: String {
-        let formatter = DateFormatter()
-        formatter.locale = .autoupdatingCurrent
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: viewModel.currentMonth).capitalized
+        MonthYearFormatter.string(from: viewModel.currentMonth)
     }
 
     private var rodapePlanejamento: some View {

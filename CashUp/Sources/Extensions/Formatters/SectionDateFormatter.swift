@@ -18,7 +18,8 @@ enum SectionDateFormatter {
 
         let formatter = DateFormatter()
         formatter.locale = locale
-        formatter.dateFormat = "EEEE, dd/MM"
+        // Template localizado: pt-BR "quarta-feira, 07/10", en-US "Wednesday, 10/07", es "miércoles, 07/10".
+        formatter.setLocalizedDateFormatFromTemplate("EEEEddMM")
         return formatter.string(from: date)
             .replacingOccurrences(of: "-feira", with: "")
             .capitalized
