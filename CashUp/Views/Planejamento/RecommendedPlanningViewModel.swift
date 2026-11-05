@@ -394,7 +394,7 @@ final class RecommendedPlanningViewModel: ObservableObject {
             return true
         } catch {
             CashUpLogger.persistence.error("Erro ao aplicar planejamento recomendado: \(error.localizedDescription, privacy: .public)")
-            mensagemErro = "Não foi possível aplicar o planejamento recomendado. Tente novamente."
+            mensagemErro = String(localized: "Não foi possível aplicar o planejamento recomendado. Tente novamente.")
             showAlertaErro = true
             return false
         }

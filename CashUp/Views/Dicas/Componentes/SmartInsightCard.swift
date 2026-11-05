@@ -22,7 +22,7 @@ struct SmartInsightCard: View {
                 Spacer()
 
                 if let metric = insight.metricLabel {
-                    Text(LocalizedStringKey(metric))
+                    Text(verbatim: metric)
                         .font(.caption.bold())
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)
@@ -33,11 +33,11 @@ struct SmartInsightCard: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(LocalizedStringKey(insight.title))
+                Text(verbatim: insight.title)
                     .font(.headline)
                     .foregroundColor(.white)
 
-                Text(LocalizedStringKey(insight.message))
+                Text(verbatim: insight.message)
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.8))
                     .fixedSize(horizontal: false, vertical: true)
