@@ -162,4 +162,5 @@ Isso garante:
 
 1. **Proteção de UI Thread**: Toda classe de ViewModel deve ser declarada como `@MainActor`.
 2. **Zero FatalErrors em Produção**: Eliminar chamadas de `fatalError()` em fluxos de banco normais; falhas de I/O devem ser capturadas e tratadas com feedback gracioso para o usuário.
-3. **Fallback Resiliente de ModelContainer**: Em caso de falha de migração no `CashUpApp.swift`, aplicar fallback seguro em memória para evitar que o app feche na inicialização.
+3. **Textos de usuário localizados**: qualquer `String` exibida na UI (mensagens de erro, títulos calculados, texto de alertas) nasce com `String(localized:)` na camada que a produz (ViewModel, `LocalizedError`, motor de insights); a View só a exibe. Detalhes e exceções em `project_structure.md` §3.4.
+4. **Fallback Resiliente de ModelContainer**: Em caso de falha de migração no `CashUpApp.swift`, aplicar fallback seguro em memória para evitar que o app feche na inicialização.

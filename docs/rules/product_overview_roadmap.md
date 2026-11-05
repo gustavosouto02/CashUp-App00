@@ -301,7 +301,7 @@ Uma única migração, testada contra um store gerado pela versão publicada.
 
 - [ ] Upgrade a partir da versão da App Store sem perda de dados
 - [ ] VoiceOver, Dynamic Type e estados vazios em todas as telas novas
-- [ ] Textos novos no `Localizable.xcstrings`
+- [ ] Textos novos no `Localizable.xcstrings` (pt-BR, en e es; texto visível em `String` ⇒ `String(localized:)`, ver `project_structure.md` §3.4)
 - [ ] Testes unitários para os motores (parcelas, fatura, safe-to-spend) e testes de UI para os fluxos de cartão e parcelamento
 - [ ] Nenhuma tela nova sem retorno visual em erro de persistência (`ErrorAlertModifier`)
 
