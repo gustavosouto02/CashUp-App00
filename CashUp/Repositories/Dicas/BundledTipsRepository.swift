@@ -1,22 +1,43 @@
 import Foundation
 
+/// Dicas educativas embutidas no app.
+///
+/// - `Resources/tips.json` é a fonte de verdade (lido do bundle); `fallbackTips` só entra se o JSON faltar ou não decodificar
+///   e precisa espelhar o JSON (um teste confere).
+/// - `title`, `body` e `tag` guardam o texto em pt-BR, que também é a **chave** no `Localizable.xcstrings`.
+///   Como a chave é dinâmica (o Xcode não a extrai do código), essas entradas ficam no catálogo com `extractionState: manual`.
+///   O repositório devolve as dicas já traduzidas para o idioma do usuário.
 final class BundledTipsRepository: TipsRepositoryProtocol {
     private let bundle: Bundle
+    private let locale: Locale
 
-    init(bundle: Bundle = .main) {
+    init(bundle: Bundle = .main, locale: Locale = .autoupdatingCurrent) {
         self.bundle = bundle
+        self.locale = locale
     }
 
     func loadEducationalTips() -> [Tip] {
+        let tips: [Tip]
         if let url = bundle.url(forResource: "tips", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let decoded = try? JSONDecoder().decode([Tip].self, from: data) {
-            return decoded
+            tips = decoded
+        } else {
+            tips = Self.fallbackTips
         }
-        return fallbackTips
+        return tips.map(traduzida)
     }
 
-    private var fallbackTips: [Tip] {
+    private func traduzida(_ tip: Tip) -> Tip {
+        Tip(id: tip.id,
+            title: AppLocalization.string(tip.title, locale: locale),
+            body: AppLocalization.string(tip.body, locale: locale),
+            icon: tip.icon,
+            category: tip.category,
+            tag: AppLocalization.string(tip.tag, locale: locale))
+    }
+
+    static var fallbackTips: [Tip] {
         [
             Tip(id: "tip-01",
                 title: "Regra dos 3 Dias para Desejos",
