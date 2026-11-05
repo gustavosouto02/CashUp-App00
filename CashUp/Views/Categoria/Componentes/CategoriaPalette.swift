@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CategoriaCor: Identifiable, Equatable {
     let id: String
+    /// Nome em pt-BR (também é a chave do catálogo); para exibir use `nomeExibicao`.
     let nome: String
     let red: Double
     let green: Double
@@ -9,6 +10,12 @@ struct CategoriaCor: Identifiable, Equatable {
 
     var color: Color {
         Color(red: red, green: green, blue: blue)
+    }
+
+    /// Nome no idioma do usuário. Chave dinâmica: as cores da paleta ficam no catálogo como `manual`.
+    /// Cores sem tradução (ex.: a cor atual de uma categoria do usuário) caem no próprio `nome`.
+    var nomeExibicao: String {
+        AppLocalization.string(nome)
     }
 
     func isSimilar(red otherR: Double, green otherG: Double, blue otherB: Double, tolerance: Double = 0.12) -> Bool {

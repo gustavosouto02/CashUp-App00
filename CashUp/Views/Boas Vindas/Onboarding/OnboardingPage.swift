@@ -2,8 +2,8 @@ import Foundation
 
 struct OnboardingPage: Identifiable, Equatable {
     let id: Int
-    let titulo: String
-    let mensagem: String
+    let titulo: LocalizedStringResource
+    let mensagem: LocalizedStringResource
     let icone: String
 
     static let padrao: [OnboardingPage] = [

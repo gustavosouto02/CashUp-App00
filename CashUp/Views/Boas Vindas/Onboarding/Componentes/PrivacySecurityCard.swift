@@ -54,7 +54,7 @@ struct PrivacySecurityCard: View {
         )
     }
 
-    private func itemLinha(icone: String, titulo: String, subtitulo: String) -> some View {
+    private func itemLinha(icone: String, titulo: LocalizedStringKey, subtitulo: LocalizedStringKey) -> some View {
         HStack(spacing: 14) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
@@ -67,11 +67,11 @@ struct PrivacySecurityCard: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(LocalizedStringKey(titulo))
+                Text(titulo)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.white)
 
-                Text(LocalizedStringKey(subtitulo))
+                Text(subtitulo)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

@@ -38,7 +38,7 @@ struct SubcategoriaPlanejadaRowView: View {
 
                         VStack(alignment: .leading, spacing: 2) {
                             HStack(spacing: 4) {
-                                Text(subPlanejadaModel.subcategoriaOriginal?.nome ?? "Subcategoria Desconhecida")
+                                Text(subPlanejadaModel.subcategoriaOriginal?.nome ?? String(localized: "Subcategoria Desconhecida"))
                                     .font(.body)
                                     .foregroundStyle(.primary)
 
