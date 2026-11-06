@@ -1,6 +1,30 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CashUp"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CashUp"
+          }
+        }
+      }
+    },
     "NSFaceIDUsageDescription" : {
       "comment" : "Texto exibido pelo sistema ao pedir permissão do Face ID (substitui INFOPLIST_KEY_NSFaceIDUsageDescription por idioma).",
       "localizations" : {
