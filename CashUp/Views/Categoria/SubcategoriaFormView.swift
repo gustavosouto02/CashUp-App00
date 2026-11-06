@@ -81,7 +81,7 @@ struct SubcategoriaFormView: View {
             )
 
             VStack(spacing: 4) {
-                Text(nome.isEmpty ? "Nome da Subcategoria" : nome)
+                Text(nome.isEmpty ? String(localized: "Nome da Subcategoria") : nome)
                     .font(.title3.weight(.bold))
                     .foregroundStyle(nome.isEmpty ? Color.gray : Color.primary)
                     .lineLimit(1)

@@ -12,6 +12,7 @@ CashUp/
 ├── CashUp/                             ← Código-fonte principal da aplicação iOS
 │   ├── CashUpApp.swift                 ← Ponto de entrada (@main) e inicialização do SwiftData
 │   ├── Assets.xcassets/                ← Ícones do app, paleta AccentColor e recursos visuais
+│   ├── Resources/                      ← Localizable.xcstrings (pt-BR/en/es), InfoPlist.xcstrings (Face ID) e tips.json
 │   │
 │   ├── Models/                         ← Modelos de dados e entidades SwiftData (@Model)
 │   │   ├── CategoriaModel.swift        ← Categoria macro (cor, ícone, relacionamento 1:N)
@@ -127,5 +128,16 @@ func cadastrarTransacao(_ payload: TransactionPayload) throws {
 }
 ```
 
-### 3.4 Desacoplamento e Injeção de Dependências
+### 3.4 Textos Visíveis ao Usuário (i18n)
+- **Regra**: texto visível em `String` ⇒ `String(localized: "...")`. Um literal que chega à tela como `String` (retorno, variável, atribuição, ternário com variável, parâmetro `String`) **não** é traduzido; só `Text("...")`, `Button("...")`, `LocalizedStringKey`, `LocalizedStringResource` e `String(localized:)` passam pelo catálogo.
+- O idioma-fonte é pt-BR e o literal é a chave. Todo texto novo entra em `CashUp/Resources/Localizable.xcstrings` com pt-BR, en e es (mesmo tom: informal, amigável; "tú" em es) e os mesmos placeholders (`%@`, `%lld`) nos três idiomas.
+- Parâmetros que só repassam o texto a um `Text` devem ser `LocalizedStringKey` (ou `LocalizedStringResource`, quando o valor precisa ser resolvido em outro idioma, como em testes). Enums de persistência (`rawValue`) nunca são traduzidos: exiba por uma propriedade própria (`titulo`).
+- Contagens usam variações de plural do xcstrings (`variations.plural`), nunca "item(ns)".
+- A lógica nunca compara texto traduzido: use enum ou estado (ex.: `AuthViewModel.Estado.cancelado`).
+- Chave dinâmica (montada em runtime, como as dicas de `tips.json` e os nomes do seed) é buscada com `AppLocalization.string(_:locale:)` e fica no catálogo com `extractionState: manual`, para o Xcode não marcá-la como `stale`.
+- Não localize logs, ids, chaves de persistência, nomes gravados no banco nem `fatalError`.
+- Datas usam `setLocalizedDateFormatFromTemplate` ou `Date.FormatStyle`, nunca um `dateFormat` fixo (ver `SectionDateFormatter` e `MonthYearFormatter`).
+- A regressão é coberta por `CashUpUnitTests/Localizacao/` (catálogo completo e sem `stale`, placeholders iguais, traduções resolvidas em en/es e scan de literais em português fora de contextos localizados).
+
+### 3.5 Desacoplamento e Injeção de Dependências
 - ViewModels não devem instanciar singletons opacos de banco de dados diretamente; devem receber o `ModelContext` ou o `Repository` correspondente através do construtor (`init`).

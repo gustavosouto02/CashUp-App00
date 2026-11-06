@@ -34,11 +34,19 @@ final class FormattersTests: XCTestCase {
         let enUS = Locale(identifier: "en_US")
         XCTAssertEqual(SectionDateFormatter.titulo(para: hoje, hoje: hoje, locale: enUS), "Today")
         XCTAssertEqual(SectionDateFormatter.titulo(para: Date.make(year: 2026, month: 10, day: 8), hoje: hoje, locale: enUS), "Yesterday")
-        XCTAssertEqual(SectionDateFormatter.titulo(para: Date.make(year: 2026, month: 10, day: 7), hoje: hoje, locale: enUS), "Wednesday, 07/10")
+        XCTAssertEqual(SectionDateFormatter.titulo(para: Date.make(year: 2026, month: 10, day: 7), hoje: hoje, locale: enUS), "Wednesday, 10/07")
 
         let esES = Locale(identifier: "es_ES")
         XCTAssertEqual(SectionDateFormatter.titulo(para: hoje, hoje: hoje, locale: esES), "Hoy")
         XCTAssertEqual(SectionDateFormatter.titulo(para: Date.make(year: 2026, month: 10, day: 8), hoje: hoje, locale: esES), "Ayer")
         XCTAssertEqual(SectionDateFormatter.titulo(para: Date.make(year: 2026, month: 10, day: 7), hoje: hoje, locale: esES), "Miércoles, 07/10")
+    }
+
+    func testMesEAnoPorExtensoRespeitaOIdiomaEPreservaOPtBR() {
+        let outubro = Date.make(year: 2026, month: 10, day: 15)
+
+        XCTAssertEqual(MonthYearFormatter.string(from: outubro, locale: Locale(identifier: "pt_BR")), "Outubro 2026")
+        XCTAssertEqual(MonthYearFormatter.string(from: outubro, locale: Locale(identifier: "en_US")), "October 2026")
+        XCTAssertEqual(MonthYearFormatter.string(from: outubro, locale: Locale(identifier: "es_ES")), "Octubre de 2026")
     }
 }

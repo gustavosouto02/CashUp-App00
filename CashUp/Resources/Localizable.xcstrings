@@ -23,6 +23,304 @@
         }
       }
     },
+    "\"%@\" de %@ em %@ é recorrente. Como você gostaria de apagá-la?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" for %2$@ on %3$@ is recurring. How would you like to delete it?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ el %3$@ es recurrente. ¿Cómo te gustaría eliminarla?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ em %3$@ é recorrente. Como você gostaria de apagá-la?"
+          }
+        }
+      }
+    },
+    "\"%@\" de %@ em %@ é recorrente. Escolha como deseja prosseguir:" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" for %2$@ on %3$@ is recurring. Choose how you'd like to proceed:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ el %3$@ es recurrente. Elige cómo deseas continuar:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ em %3$@ é recorrente. Escolha como deseja prosseguir:"
+          }
+        }
+      }
+    },
+    "\"%@\" de %@ em %@ é recorrente. Quais ocorrências você deseja alterar?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" for %2$@ on %3$@ is recurring. Which occurrences do you want to change?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ el %3$@ es recurrente. ¿Qué ocurrencias deseas modificar?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" de %2$@ em %3$@ é recorrente. Quais ocorrências você deseja alterar?"
+          }
+        }
+      }
+    },
+    "%lld categoria(s) (%@) já existia(m) em %@ e foi(ram) pulada(s). Nenhuma nova categoria foi copiada." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld category (%2$@) already existed in %3$@ and was skipped. No new categories were copied."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categories (%2$@) already existed in %3$@ and were skipped. No new categories were copied."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoría (%2$@) ya existía en %3$@ y se omitió. No se copió ninguna categoría nueva."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorías (%2$@) ya existían en %3$@ y se omitieron. No se copió ninguna categoría nueva."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoria (%2$@) já existia em %3$@ e foi pulada. Nenhuma nova categoria foi copiada."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorias (%2$@) já existiam em %3$@ e foram puladas. Nenhuma nova categoria foi copiada."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld categoria(s) (%@) pulada(s) pois já existiam." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld category (%2$@) skipped because it already existed."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categories (%2$@) skipped because they already existed."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoría (%2$@) omitida porque ya existía."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorías (%2$@) omitidas porque ya existían."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoria (%2$@) pulada pois já existia."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorias (%2$@) puladas pois já existiam."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld categoria(s) copiada(s) para %@." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld category copied to %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categories copied to %2$@."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoría copiada a %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorías copiadas a %2$@."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoria copiada para %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorias copiadas para %2$@."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld categoria(s) planejada(s) copiada(s) com sucesso para %@." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld planned category copied successfully to %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld planned categories copied successfully to %2$@."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoría planificada copiada con éxito a %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorías planificadas copiadas con éxito a %2$@."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categoria planejada copiada com sucesso para %2$@."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld categorias planejadas copiadas com sucesso para %2$@."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ %@" : {
       "localizations" : {
         "en" : {
@@ -91,9 +389,21 @@
     },
     "%@ de %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ de %2$@"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ de %2$@"
           }
         }
@@ -144,7 +454,6 @@
       }
     },
     "%@/dia" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -188,47 +497,60 @@
         }
       }
     },
-    "%1 de %2" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1 of %2"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1 de %2"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1 de %2"
-          }
-        }
-      }
-    },
     "%lld alerta(s)" : {
       "localizations" : {
         "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld alert(s)"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alert"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alerts"
+                }
+              }
+            }
           }
         },
         "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld alerta(s)"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alerta"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alertas"
+                }
+              }
+            }
           }
         },
         "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld alerta(s)"
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alerta"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld alertas"
+                }
+              }
+            }
           }
         }
       }
@@ -300,7 +622,6 @@
       }
     },
     "%lld%% do seu dinheiro foi gasto no sábado e domingo. Dá uma segurada no combo delivery, passeios e saidinhas para não desbalancear a semana!" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -323,7 +644,6 @@
       }
     },
     "%lld%% do teto consumido" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -346,7 +666,6 @@
       }
     },
     "%lld%% no FDS" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -364,6 +683,204 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%% no FDS"
+          }
+        }
+      }
+    },
+    "20% Guardar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "20% Savings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "20% Ahorro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "20% Guardar"
+          }
+        }
+      }
+    },
+    "30% Estilo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30% Lifestyle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30% Estilo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30% Estilo"
+          }
+        }
+      }
+    },
+    "50% Necessidades" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50% Needs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50% Necesidades"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50% Necessidades"
+          }
+        }
+      }
+    },
+    "A cada 10 dias" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every 10 days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada 10 días"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cada 10 dias"
+          }
+        }
+      }
+    },
+    "A categoria Renda é protegida pelo sistema e não pode ser alterada ou apagada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Income category is protected by the system and cannot be changed or deleted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La categoría Ingresos está protegida por el sistema y no se puede modificar ni eliminar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A categoria Renda é protegida pelo sistema e não pode ser alterada ou apagada."
+          }
+        }
+      }
+    },
+    "A categoria Renda só pode ser usada em receitas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Income category can only be used for income."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La categoría Ingresos solo puede usarse en ingresos."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A categoria Renda só pode ser usada em receitas."
+          }
+        }
+      }
+    },
+    "A cor das categorias padrão do sistema não pode ser alterada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The color of the system's default categories cannot be changed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El color de las categorías predeterminadas del sistema no se puede cambiar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cor das categorias padrão do sistema não pode ser alterada."
+          }
+        }
+      }
+    },
+    "A data final da repetição não pode ser anterior à data da transação." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The repeat end date cannot be earlier than the transaction date."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fecha de fin de la repetición no puede ser anterior a la fecha de la transacción."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A data final da repetição não pode ser anterior à data da transação."
+          }
+        }
+      }
+    },
+    "A data não pode ultrapassar 100 anos no futuro." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The date cannot be more than 100 years in the future."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fecha no puede superar los 100 años en el futuro."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A data não pode ultrapassar 100 anos no futuro."
           }
         }
       }
@@ -390,8 +907,53 @@
         }
       }
     },
+    "A repetição não pode ultrapassar %lld anos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The repeat cannot exceed %lld years."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La repetición no puede superar los %lld años."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A repetição não pode ultrapassar %lld anos."
+          }
+        }
+      }
+    },
+    "A série anterior será encerrada e uma nova começará nesta data." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The previous series will end and a new one will start on this date."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La serie anterior finalizará y una nueva comenzará en esta fecha."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A série anterior será encerrada e uma nova começará nesta data."
+          }
+        }
+      }
+    },
     "Academia" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -414,7 +976,6 @@
       }
     },
     "Acompanhar" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -503,7 +1064,8 @@
       }
     },
     "Água" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -592,7 +1154,6 @@
       }
     },
     "Alerta de Final de Semana" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -614,8 +1175,32 @@
         }
       }
     },
+    "Alimentação" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Food & Dining"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alimentación"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alimentação"
+          }
+        }
+      }
+    },
     "Aluguel" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -681,8 +1266,31 @@
         }
       }
     },
+    "Amarelo Dourado" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Golden Yellow"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarillo Dorado"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amarelo Dourado"
+          }
+        }
+      }
+    },
     "Analisar FDS" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -705,7 +1313,8 @@
       }
     },
     "Animal Estimação" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -723,6 +1332,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animal Estimação"
+          }
+        }
+      }
+    },
+    "Anualmente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anualmente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anualmente"
           }
         }
       }
@@ -745,6 +1376,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ao ativar, o CashUp pede autenticação sempre que você voltar ao app."
+          }
+        }
+      }
+    },
+    "Apagar Transação Recorrente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Recurring Transaction"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar Transacción Recurrente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar Transação Recorrente"
           }
         }
       }
@@ -818,7 +1471,6 @@
       }
     },
     "Armazenamento" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -841,7 +1493,8 @@
       }
     },
     "Artigos para o lar" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -863,8 +1516,31 @@
         }
       }
     },
+    "As outras repetições desta transação permanecerão inalteradas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The other repeats of this transaction will stay unchanged."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las demás repeticiones de esta transacción permanecerán sin cambios."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As outras repetições desta transação permanecerão inalteradas."
+          }
+        }
+      }
+    },
     "Assinatura" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -930,6 +1606,54 @@
         }
       }
     },
+    "Auditoria de Assinaturas Recorrentes" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audit Your Subscriptions"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auditoría de Suscripciones Recurrentes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auditoria de Assinaturas Recorrentes"
+          }
+        }
+      }
+    },
+    "Autocontrole" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Self-Control"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocontrol"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autocontrole"
+          }
+        }
+      }
+    },
     "Aviso diário para registrar gastos" : {
       "localizations" : {
         "en" : {
@@ -952,8 +1676,33 @@
         }
       }
     },
+    "Azul Elétrico" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Electric Blue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azul Eléctrico"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Azul Elétrico"
+          }
+        }
+      }
+    },
     "Banco" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -976,7 +1725,8 @@
       }
     },
     "Bebidas" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1043,7 +1793,8 @@
       }
     },
     "Boate" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1066,7 +1817,8 @@
       }
     },
     "Boliche" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1089,7 +1841,8 @@
       }
     },
     "Café" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1134,7 +1887,8 @@
       }
     },
     "Caridade" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1157,7 +1911,8 @@
       }
     },
     "Carros de Aplicativo" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1175,6 +1930,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carros de Aplicativo"
+          }
+        }
+      }
+    },
+    "Cartão" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit Card"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarjeta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartão"
+          }
+        }
+      }
+    },
+    "Casa & Família" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home & Family"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hogar y Familia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Casa & Família"
           }
         }
       }
@@ -1267,8 +2068,33 @@
         }
       }
     },
+    "Ciano Celeste" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sky Cyan"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cian Celeste"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciano Celeste"
+          }
+        }
+      }
+    },
     "Cinema" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1290,8 +2116,33 @@
         }
       }
     },
+    "Cinza Ardósia" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slate Gray"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gris Pizarra"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinza Ardósia"
+          }
+        }
+      }
+    },
     "Clube" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1309,6 +2160,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clube"
+          }
+        }
+      }
+    },
+    "código do iPhone" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone passcode"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "código del iPhone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "código do iPhone"
           }
         }
       }
@@ -1358,7 +2231,6 @@
       }
     },
     "Comemorar" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1403,7 +2275,8 @@
       }
     },
     "Comidas e Bebidas" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1426,7 +2299,8 @@
       }
     },
     "Compras" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1448,8 +2322,31 @@
         }
       }
     },
+    "Compras & Mercado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping & Groceries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compras y Supermercado"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compras & Mercado"
+          }
+        }
+      }
+    },
     "Comunidade" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1511,6 +2408,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurações"
+          }
+        }
+      }
+    },
+    "Configure Face ID, Touch ID ou um código no iPhone para ativar o bloqueio." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up Face ID, Touch ID, or a passcode on your iPhone to turn on the lock."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura Face ID, Touch ID o un código en el iPhone para activar el bloqueo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure Face ID, Touch ID ou um código no iPhone para ativar o bloqueio."
           }
         }
       }
@@ -1581,8 +2500,77 @@
         }
       }
     },
+    "Confirme sua identidade para ativar o bloqueio do CashUp." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm your identity to turn on the CashUp lock."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirma tu identidad para activar el bloqueo de CashUp."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirme sua identidade para ativar o bloqueio do CashUp."
+          }
+        }
+      }
+    },
+    "Conquista" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achievement"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conquista"
+          }
+        }
+      }
+    },
+    "Construa sua Reserva de Paz" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build Your Peace-of-Mind Fund"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Construye tu Reserva de Tranquilidad"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Construa sua Reserva de Paz"
+          }
+        }
+      }
+    },
     "Contas" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1693,7 +2681,8 @@
       }
     },
     "Creche" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1716,7 +2705,8 @@
       }
     },
     "Custos Bancários" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1739,7 +2729,8 @@
       }
     },
     "Custos do Carro" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1762,7 +2753,6 @@
       }
     },
     "Dá uma segurada no gasto!" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1851,7 +2841,6 @@
       }
     },
     "Defina tetos por subcategoria e acompanhe em tempo real o que ainda sobra para gastar." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1895,8 +2884,33 @@
         }
       }
     },
+    "Delivery: O Ralo Silencioso" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Takeout: The Silent Budget Drain"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delivery: La Fuga Silenciosa"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delivery: O Ralo Silencioso"
+          }
+        }
+      }
+    },
     "Dentista" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1918,8 +2932,31 @@
         }
       }
     },
+    "Desbloqueie o CashUp para ver suas finanças." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock CashUp to see your finances."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloquea CashUp para ver tus finanzas."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desbloqueie o CashUp para ver suas finanças."
+          }
+        }
+      }
+    },
     "Desconhecido" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1987,33 +3024,44 @@
     },
     "Deseja copiar o planejamento de %@ para %@?" : {
       "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Deseja copiar o planejamento de %1$@ para %2$@?"
-          }
-        }
-      }
-    },
-    "Deseja copiar o planejamento de %1 para %2?" : {
-      "extractionState" : "stale",
-      "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you want to copy the budget from %1 to %2?"
+            "value" : "Do you want to copy the budget from %1$@ to %2$@?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Deseas copiar el presupuesto de %1 a %2?"
+            "value" : "¿Deseas copiar el presupuesto de %1$@ a %2$@?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deseja copiar o planejamento de %1 para %2?"
+            "value" : "Deseja copiar o planejamento de %1$@ para %2$@?"
+          }
+        }
+      }
+    },
+    "Desejos Pessoais (Lazer, Compras)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Wants (Leisure, Shopping)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deseos Personales (Ocio, Compras)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desejos Pessoais (Lazer, Compras)"
           }
         }
       }
@@ -2062,6 +3110,28 @@
         }
       }
     },
+    "Despesas essenciais para moradia, mercado, saúde e transporte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essential expenses for housing, groceries, health and transportation."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos esenciales de vivienda, supermercado, salud y transporte."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despesas essenciais para moradia, mercado, saúde e transporte."
+          }
+        }
+      }
+    },
     "Despesas Planejadas" : {
       "localizations" : {
         "en" : {
@@ -2084,25 +3154,24 @@
         }
       }
     },
-    "Detectamos um pico: %1 custou %2. Foi uma compra planejada ou deu uma escapada do plano?" : {
-      "extractionState" : "stale",
+    "Detectamos um pico: %@ custou %@. Foi uma compra planejada ou deu uma escapada do plano?" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We noticed a spike: %1 was %2. Was this planned or an unexpected splurge?"
+            "value" : "We noticed a spike: %1$@ was %2$@. Was this planned or an unexpected splurge?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detectamos un pico: %1 costó %2. ¿Fue una compra planificada o una salida del plan?"
+            "value" : "Detectamos un pico: %1$@ costó %2$@. ¿Fue una compra planificada o una salida del plan?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Detectamos um pico: %1 custou %2. Foi uma compra planejada ou deu uma escapada do plano?"
+            "value" : "Detectamos um pico: %1$@ custou %2$@. Foi uma compra planejada ou deu uma escapada do plano?"
           }
         }
       }
@@ -2151,6 +3220,28 @@
         }
       }
     },
+    "Diariamente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diariamente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diariamente"
+          }
+        }
+      }
+    },
     "Dicas & Insights" : {
       "localizations" : {
         "en" : {
@@ -2169,6 +3260,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dicas & Insights"
+          }
+        }
+      }
+    },
+    "Disciplina" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discipline"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
           }
         }
       }
@@ -2196,7 +3311,8 @@
       }
     },
     "Diversos" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2218,8 +3334,33 @@
         }
       }
     },
+    "Divisão 50/30/20 Descomplicada" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The 50/30/20 Rule, Simplified"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "División 50/30/20 sin Complicaciones"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Divisão 50/30/20 Descomplicada"
+          }
+        }
+      }
+    },
     "Doce" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2237,6 +3378,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Doce"
+          }
+        }
+      }
+    },
+    "Duas refeições por aplicativo a menos na semana costumam representar mais de R$ 300,00 poupados no fim do mês. Cozinhar em lote no domingo salva seu bolso." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skipping just two food delivery orders a week can easily save you over $60 a month. Batch cooking on Sundays does wonders for your wallet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dos comidas menos por app a la semana suelen sumar más de R$ 300,00 ahorrados a fin de mes. Cocinar por tandas el domingo salva tu bolsillo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duas refeições por aplicativo a menos na semana costumam representar mais de R$ 300,00 poupados no fim do mês. Cozinhar em lote no domingo salva seu bolso."
+          }
+        }
+      }
+    },
+    "Economia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Savings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Economia"
+          }
+        }
+      }
+    },
+    "Editando apenas esta ocorrência" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editing this occurrence only"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando solo esta ocurrencia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando apenas esta ocorrência"
+          }
+        }
+      }
+    },
+    "Editando esta e futuras ocorrências" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editing this and future occurrences"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando esta y las futuras ocurrencias"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando esta e futuras ocorrências"
+          }
+        }
+      }
+    },
+    "Editando toda a série recorrente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editing the entire recurring series"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando toda la serie recurrente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editando toda a série recorrente"
           }
         }
       }
@@ -2329,8 +3582,31 @@
         }
       }
     },
+    "Editar Transação Recorrente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Recurring Transaction"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Transacción Recurrente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Transação Recorrente"
+          }
+        }
+      }
+    },
     "Educação" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2353,7 +3629,8 @@
       }
     },
     "Eletricidade" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2376,7 +3653,8 @@
       }
     },
     "Eletrônicos" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2443,7 +3721,8 @@
       }
     },
     "Entretenimento" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2532,7 +3811,8 @@
       }
     },
     "Escritório" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2555,7 +3835,8 @@
       }
     },
     "Esportes" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2573,6 +3854,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esportes"
+          }
+        }
+      }
+    },
+    "Esta categoria possui %lld transação(ões) e não pode ser apagada." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This category has %lld transaction and cannot be deleted."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This category has %lld transactions and cannot be deleted."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta categoría tiene %lld transacción y no se puede eliminar."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta categoría tiene %lld transacciones y no se puede eliminar."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta categoria possui %lld transação e não pode ser apagada."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta categoria possui %lld transações e não pode ser apagada."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Esta cor já está sendo usada por outra categoria. Escolha uma cor diferente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This color is already used by another category. Pick a different color."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este color ya lo usa otra categoría. Elige un color diferente."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta cor já está sendo usada por outra categoria. Escolha uma cor diferente."
           }
         }
       }
@@ -2599,8 +3960,89 @@
         }
       }
     },
+    "Esta subcategoria é essencial e não pode ser apagada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This subcategory is essential and cannot be deleted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta subcategoría es esencial y no se puede eliminar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta subcategoria é essencial e não pode ser apagada."
+          }
+        }
+      }
+    },
+    "Esta subcategoria possui %lld transação(ões) e não há outra subcategoria disponível para remanejo." : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This subcategory has %lld transaction and there is no other subcategory available to move it to."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "This subcategory has %lld transactions and there is no other subcategory available to move them to."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta subcategoría tiene %lld transacción y no hay otra subcategoría disponible para reasignarla."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta subcategoría tiene %lld transacciones y no hay otra subcategoría disponible para reasignarlas."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta subcategoria possui %lld transação e não há outra subcategoria disponível para remanejo."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Esta subcategoria possui %lld transações e não há outra subcategoria disponível para remanejo."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Estacionamento" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2645,7 +4087,6 @@
       }
     },
     "Estilo de Vida" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2668,7 +4109,6 @@
       }
     },
     "Estourado" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2686,6 +4126,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estourado"
+          }
+        }
+      }
+    },
+    "Estratégia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strategy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estrategia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estratégia"
           }
         }
       }
@@ -2708,6 +4170,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estratégias para seu Bolso"
+          }
+        }
+      }
+    },
+    "Evite Parcelamentos Menores que 3x" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rethink Short-Term Installments"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evita las Cuotas Menores a 3x"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evite Parcelamentos Menores que 3x"
           }
         }
       }
@@ -2867,7 +4353,6 @@
       }
     },
     "Falha ao buscar planejamento atual." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2889,8 +4374,53 @@
         }
       }
     },
+    "Falha ao salvar o planejamento copiado: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to save the copied budget: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al guardar el presupuesto copiado: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao salvar o planejamento copiado: %@"
+          }
+        }
+      }
+    },
+    "Falha ao verificar planejamento existente no próximo mês." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to check the existing budget for next month."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error al verificar el presupuesto existente del próximo mes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao verificar planejamento existente no próximo mês."
+          }
+        }
+      }
+    },
     "Farmácia" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2913,7 +4443,8 @@
       }
     },
     "FastFood" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2931,6 +4462,30 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "FastFood"
+          }
+        }
+      }
+    },
+    "Fazer compras com fome ou sem conferir o que já tem na despensa aumenta as compras por impulso em até 40%." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grocery shopping while hungry or without checking your pantry first spikes impulse purchases by up to 40%."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hacer las compras con hambre o sin revisar lo que ya tienes en la despensa aumenta las compras por impulso hasta un 40%."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fazer compras com fome ou sem conferir o que já tem na despensa aumenta as compras por impulso em até 40%."
           }
         }
       }
@@ -2958,7 +4513,8 @@
       }
     },
     "Férias" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2980,8 +4536,53 @@
         }
       }
     },
+    "Final de Semana" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de Semana"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final de Semana"
+          }
+        }
+      }
+    },
+    "Finanças & Metas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finance & Goals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finanzas y Metas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finanças & Metas"
+          }
+        }
+      }
+    },
     "Financiamento" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3025,8 +4626,33 @@
         }
       }
     },
+    "Fixos" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bills"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fijos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixos"
+          }
+        }
+      }
+    },
     "Gasolina" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3071,7 +4697,6 @@
       }
     },
     "Gasto Fora da Curva" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3089,6 +4714,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gasto Fora da Curva"
+          }
+        }
+      }
+    },
+    "Gastos de lazer, entretenimento, compras e conforto pessoal." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spending on leisure, entertainment, shopping and personal comfort."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos de ocio, entretenimiento, compras y comodidad personal."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos de lazer, entretenimento, compras e conforto pessoal."
           }
         }
       }
@@ -3159,8 +4806,53 @@
         }
       }
     },
+    "Guardar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorrar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        }
+      }
+    },
+    "Guardar Dinheiro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Savings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorrar Dinero"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar Dinheiro"
+          }
+        }
+      }
+    },
     "Habitação" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3178,6 +4870,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habitação"
+          }
+        }
+      }
+    },
+    "Hábitos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hábitos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hábitos"
           }
         }
       }
@@ -3227,7 +4941,8 @@
       }
     },
     "Hotel" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3272,7 +4987,8 @@
       }
     },
     "Impostos" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3316,8 +5032,31 @@
         }
       }
     },
+    "Informe um valor maior que zero." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter an amount greater than zero."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresa un monto mayor que cero."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informe um valor maior que zero."
+          }
+        }
+      }
+    },
     "Internet" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3340,7 +5079,8 @@
       }
     },
     "Investimentos" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3384,6 +5124,28 @@
         }
       }
     },
+    "Já existe uma categoria ou subcategoria com o nome \"%@\"." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A category or subcategory named \"%@\" already exists."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una categoría o subcategoría con el nombre \"%@\"."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já existe uma categoria ou subcategoria com o nome \"%@\"."
+          }
+        }
+      }
+    },
     "Já planejada" : {
       "localizations" : {
         "en" : {
@@ -3407,7 +5169,8 @@
       }
     },
     "Jardim" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3430,7 +5193,8 @@
       }
     },
     "Juros" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3448,6 +5212,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Juros"
+          }
+        }
+      }
+    },
+    "Lazer & Cultura" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leisure & Culture"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocio y Cultura"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lazer & Cultura"
           }
         }
       }
@@ -3540,6 +5326,30 @@
         }
       }
     },
+    "Magenta Pink" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magenta Pink"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magenta Rosado"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magenta Pink"
+          }
+        }
+      }
+    },
     "Mais Frequentes" : {
       "localizations" : {
         "en" : {
@@ -3585,7 +5395,6 @@
       }
     },
     "Mandou bem demais!" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3607,8 +5416,33 @@
         }
       }
     },
+    "Mantenha até 50% para necessidades básicas, 30% para estilo de vida e lazer, e garanta 20% para quitar dívidas ou construir patrimônio." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep up to 50% for core essentials, 30% for lifestyle and fun, and commit at least 20% toward paying off debt or building wealth."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destina hasta un 50% a necesidades básicas, un 30% a estilo de vida y ocio, y asegura un 20% para saldar deudas o construir patrimonio."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenha até 50% para necessidades básicas, 30% para estilo de vida e lazer, e garanta 20% para quitar dívidas ou construir patrimônio."
+          }
+        }
+      }
+    },
     "Mantimentos" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3631,7 +5465,8 @@
       }
     },
     "Manutenção" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3654,7 +5489,8 @@
       }
     },
     "Médico" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3672,6 +5508,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Médico"
+          }
+        }
+      }
+    },
+    "Mensalmente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensualmente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensalmente"
           }
         }
       }
@@ -3699,7 +5557,6 @@
       }
     },
     "Mês Limpo até Aqui" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3722,7 +5579,6 @@
       }
     },
     "Meta de Gasto Diário" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3766,6 +5622,28 @@
         }
       }
     },
+    "Meta: %lld%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target: %lld%%"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meta: %lld%%"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meta: %lld%%"
+          }
+        }
+      }
+    },
     "Modo" : {
       "localizations" : {
         "en" : {
@@ -3789,7 +5667,6 @@
       }
     },
     "Nada sai do seu iPhone. Sem servidores externos e com proteção biométrica nativa." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3855,8 +5732,51 @@
         }
       }
     },
+    "Não foi possível aplicar o planejamento recomendado. Tente novamente." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not apply the recommended budget. Please try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo aplicar la planificación recomendada. Inténtalo de nuevo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível aplicar o planejamento recomendado. Tente novamente."
+          }
+        }
+      }
+    },
+    "Não foi possível confirmar sua identidade." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not verify your identity."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo confirmar tu identidad."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível confirmar sua identidade."
+          }
+        }
+      }
+    },
     "Não foi possível determinar o próximo mês." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3874,6 +5794,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível determinar o próximo mês."
+          }
+        }
+      }
+    },
+    "Não foi possível salvar: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo guardar: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível salvar: %@"
+          }
+        }
+      }
+    },
+    "Não guarde o que sobra após os gastos: defina o valor da sua poupança ou reserva e transfira logo no dia em que o salário ou rendimento cai." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't just save what's left over. Set your savings or emergency transfer amount and automate it the day your paycheck lands."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No ahorres lo que sobra después de los gastos: define el monto de tu ahorro o reserva y transfiérelo el mismo día en que llega tu salario o ingreso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não guarde o que sobra após os gastos: defina o valor da sua poupança ou reserva e transfira logo no dia em que o salário ou rendimento cai."
           }
         }
       }
@@ -3900,8 +5866,73 @@
         }
       }
     },
+    "Não há planejamento no mês atual para copiar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There is no budget in the current month to copy."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay presupuesto en el mes actual para copiar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não há planejamento no mês atual para copiar."
+          }
+        }
+      }
+    },
+    "Necessidades" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needs"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesidades"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necessidades"
+          }
+        }
+      }
+    },
+    "Necessidades (Moradia, Comida, Saúde)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Needs (Housing, Food, Health)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesidades (Vivienda, Comida, Salud)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necessidades (Moradia, Comida, Saúde)"
+          }
+        }
+      }
+    },
     "Nenhum" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3924,7 +5955,6 @@
       }
     },
     "Nenhum gasto registrado ainda este mês. Excelente oportunidade para começar poupando forte!" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3990,6 +6020,50 @@
         }
       }
     },
+    "Nenhuma Ação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Action Taken"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Acción"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma Ação"
+          }
+        }
+      }
+    },
+    "Nenhuma ação de cópia necessitou ser realizada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No copy action was needed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No fue necesaria ninguna acción de copia."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma ação de cópia necessitou ser realizada."
+          }
+        }
+      }
+    },
     "Nenhuma categoria adicionada neste grupo." : {
       "localizations" : {
         "en" : {
@@ -4012,6 +6086,28 @@
         }
       }
     },
+    "Nenhuma Categoria Copiada" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Categories Copied"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna Categoría Copiada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma Categoria Copiada"
+          }
+        }
+      }
+    },
     "Nenhuma categoria corresponde ao filtro selecionado." : {
       "localizations" : {
         "en" : {
@@ -4030,6 +6126,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma categoria corresponde ao filtro selecionado."
+          }
+        }
+      }
+    },
+    "Nenhuma categoria válida foi encontrada para copiar (verifique se possuem categorias originais associadas)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No valid categories were found to copy (check that they have original categories linked)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró ninguna categoría válida para copiar (verifica que tengan categorías originales asociadas)."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma categoria válida foi encontrada para copiar (verifique se possuem categorias originais associadas)."
           }
         }
       }
@@ -4210,31 +6328,29 @@
         }
       }
     },
-    "Nesse ritmo, seu orçamento estoura por volta do dia %1, e o mês tem %2 dias. Hora de pisar no freio!" : {
-      "extractionState" : "stale",
+    "Nesse ritmo, seu orçamento estoura por volta do dia %lld, e o mês tem %lld dias. Hora de pisar no freio!" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "At this pace, your budget will run out around day %1, and the month has %2 days. Time to slow down!"
+            "value" : "At this pace, your budget will run out around day %1$lld, and the month has %2$lld days. Time to slow down!"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A este ritmo, tu presupuesto se agotará alrededor del día %1, y el mes tiene %2 días. ¡Hora de frenar!"
+            "value" : "A este ritmo, tu presupuesto se agotará alrededor del día %1$lld, y el mes tiene %2$lld días. ¡Hora de frenar!"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nesse ritmo, seu orçamento estoura por volta do dia %1, e o mês tem %2 dias. Hora de pisar no freio!"
+            "value" : "Nesse ritmo, seu orçamento estoura por volta do dia %1$lld, e o mês tem %2$lld dias. Hora de pisar no freio!"
           }
         }
       }
     },
     "No ritmo ideal" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4274,6 +6390,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nome"
+          }
+        }
+      }
+    },
+    "Nome da Categoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category Name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la Categoría"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome da Categoria"
+          }
+        }
+      }
+    },
+    "Nome da Subcategoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subcategory Name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la Subcategoría"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome da Subcategoria"
           }
         }
       }
@@ -4322,6 +6482,28 @@
         }
       }
     },
+    "Nunca" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Never"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca"
+          }
+        }
+      }
+    },
     "O CashUp está rodando sem salvar. O que você registrar agora será perdido ao fechar o app. Não apague o app: seus dados continuam no aparelho. Feche e abra de novo; se persistir, fale com o suporte." : {
       "localizations" : {
         "en" : {
@@ -4362,6 +6544,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O método clássico para dividir sua renda sem passar aperto: 50% para necessidades, 30% para estilo de vida e 20% para poupança."
+          }
+        }
+      }
+    },
+    "O nome deve conter entre 2 e 24 caracteres." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The name must be between 2 and 24 characters long."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nombre debe tener entre 2 y 24 caracteres."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O nome deve conter entre 2 e 24 caracteres."
           }
         }
       }
@@ -4520,8 +6724,29 @@
         }
       }
     },
+    "Orçamento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Budget"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presupuesto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orçamento"
+          }
+        }
+      }
+    },
     "Orçamento Diário Apertado" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4565,6 +6790,52 @@
         }
       }
     },
+    "Outras" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Others"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otras"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras"
+          }
+        }
+      }
+    },
+    "Pague a Si Mesmo Primeiro" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pay Yourself First"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Págate a Ti Mismo Primero"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pague a Si Mesmo Primeiro"
+          }
+        }
+      }
+    },
     "Para copiar o planejamento para o mês seguinte,\n utilize o botao de documento no topo da tela." : {
       "localizations" : {
         "en" : {
@@ -4587,48 +6858,68 @@
         }
       }
     },
-    "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês." : {
-      "extractionState" : "stale",
+    "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o fim do mês." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To stay in the black this month, your target is to spend at most %@ per day until the end of the month."
+            "value" : "To stay on budget, aim to spend no more than %@ per day for the rest of the month."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para cerrar el mes en positivo, tu meta es gastar como máximo %@ al día hasta fin de mes."
+            "value" : "Para mantenerte dentro del presupuesto, intenta gastar como máximo %@ al día durante el resto del mes."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês."
+            "value" : "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o fim do mês."
           }
         }
       }
     },
-    "Para não fechar no vermelho, você tem no máximo %1 por dia pelos próximos %2 dias." : {
-      "extractionState" : "stale",
+    "Para não fechar no vermelho, você tem no máximo %@ por dia pelos próximos %lld dias." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To stay out of the red, you have at most %1 per day for the next %2 days."
+            "value" : "To stay out of the red, you have at most %1$@ per day for the next %2$lld days."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para no cerrar en números rojos, tienes un máximo de %1 al día durante los próximos %2 días."
+            "value" : "Para no cerrar en números rojos, tienes un máximo de %1$@ al día durante los próximos %2$lld días."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para não fechar no vermelho, você tem no máximo %1 por dia pelos próximos %2 dias."
+            "value" : "Para não fechar no vermelho, você tem no máximo %1$@ por dia pelos próximos %2$lld dias."
+          }
+        }
+      }
+    },
+    "Para receber lembretes de gastos, permita o envio de notificações nas configurações do iPhone." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To receive expense reminders, allow notifications in iPhone Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para recibir recordatorios de gastos, permite el envío de notificaciones en los ajustes del iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para receber lembretes de gastos, permita o envio de notificações nas configurações do iPhone."
           }
         }
       }
@@ -4656,7 +6947,8 @@
       }
     },
     "Passatempo" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4679,7 +6971,8 @@
       }
     },
     "Pensão" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4702,6 +6995,7 @@
       }
     },
     "Planejamento" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4812,7 +7106,6 @@
       }
     },
     "Planeje o mês" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4834,8 +7127,31 @@
         }
       }
     },
+    "Poupança & Futuro" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Savings & Future"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorro y Futuro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poupança & Futuro"
+          }
+        }
+      }
+    },
     "Presente" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4967,52 +7283,6 @@
         }
       }
     },
-    "R$ 0,00" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "$0.00"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "$0,00"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "R$ 0,00"
-          }
-        }
-      }
-    },
-    "R$ 1.240" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "$1,240"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "$1.240"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "R$ 1.240"
-          }
-        }
-      }
-    },
     "Receba um lembrete diário para não deixar os gastos acumularem." : {
       "localizations" : {
         "en" : {
@@ -5053,6 +7323,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receita"
+          }
+        }
+      }
+    },
+    "Receitas só podem usar a categoria Renda." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Income can only use the Income category."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los ingresos solo pueden usar la categoría Ingresos."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receitas só podem usar a categoria Renda."
           }
         }
       }
@@ -5101,8 +7393,29 @@
         }
       }
     },
+    "Registrar Receita" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record Income"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar Ingreso"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrar Receita"
+          }
+        }
+      }
+    },
     "Registre em segundos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5124,8 +7437,33 @@
         }
       }
     },
+    "Regra dos 3 Dias para Desejos" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The 72-Hour Rule for Impulse Buys"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Regla de los 3 Días para los Antojos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regra dos 3 Dias para Desejos"
+          }
+        }
+      }
+    },
     "Renda" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5143,6 +7481,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Renda"
+          }
+        }
+      }
+    },
+    "Renda & Investimento" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Income & Investing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingresos e Inversión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renda & Investimento"
           }
         }
       }
@@ -5170,7 +7530,8 @@
       }
     },
     "Reserva" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5281,7 +7642,8 @@
       }
     },
     "Restaurante" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5370,7 +7732,6 @@
       }
     },
     "Revisar Teto" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5392,8 +7753,57 @@
         }
       }
     },
+    "Revise extratos de cartões a cada trimestre. Serviços de streaming e assinaturas esquecidas acumulam valores expressivos ao longo de 1 ano." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Review your bank and card statements quarterly. Unused streaming services and forgotten memberships add up to serious cash over a year."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa los extractos de tus tarjetas cada trimestre. Los servicios de streaming y las suscripciones olvidadas acumulan montos importantes a lo largo de 1 año."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revise extratos de cartões a cada trimestre. Serviços de streaming e assinaturas esquecidas acumulam valores expressivos ao longo de 1 ano."
+          }
+        }
+      }
+    },
+    "Rotina" : {
+      "comment" : "Chave dinâmica: tag de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutina"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotina"
+          }
+        }
+      }
+    },
     "Roupas" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5415,8 +7825,33 @@
         }
       }
     },
+    "Roxo Violeta" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violet Purple"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morado Violeta"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roxo Violeta"
+          }
+        }
+      }
+    },
     "Salário" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5439,7 +7874,8 @@
       }
     },
     "Salário Família" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5457,6 +7893,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salário Família"
+          }
+        }
+      }
+    },
+    "Saldo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo"
           }
         }
       }
@@ -5484,7 +7942,8 @@
       }
     },
     "Saúde" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5506,12 +7965,59 @@
         }
       }
     },
-    "Segurança" : {
+    "Saúde & Cuidados" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Security"
+            "value" : "Health & Care"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salud y Cuidados"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saúde & Cuidados"
+          }
+        }
+      }
+    },
+    "Se a compra não couber à vista e não for um bem durável essencial, parcelar em 2x ou 3x só amarra o limite do seu mês que vem com coisas que já passaram." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you can't pay upfront and it isn't an essential durable good, splitting it into 2 or 3 payments just ties up next month's cash flow for past splurges."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si la compra no cabe al contado y no es un bien durable esencial, pagar en 2 o 3 cuotas solo compromete el límite de tu mes que viene con cosas que ya pasaron."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se a compra não couber à vista e não for um bem durável essencial, parcelar em 2x ou 3x só amarra o limite do seu mês que vem com coisas que já passaram."
+          }
+        }
+      }
+    },
+    "Segurança" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Safety Net"
           }
         },
         "es" : {
@@ -5529,7 +8035,8 @@
       }
     },
     "Seguro" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5552,7 +8059,8 @@
       }
     },
     "Seguro do Carro" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5592,6 +8100,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Selecionar categoria"
+          }
+        }
+      }
+    },
+    "Selecionar Subcategoria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Subcategory"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar Subcategoría"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecionar Subcategoria"
+          }
+        }
+      }
+    },
+    "Selecione uma categoria e uma subcategoria." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a category and a subcategory."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecciona una categoría y una subcategoría."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione uma categoria e uma subcategoria."
           }
         }
       }
@@ -5640,8 +8192,31 @@
         }
       }
     },
+    "Semanalmente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanalmente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanalmente"
+          }
+        }
+      }
+    },
     "Serviço" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5664,7 +8239,6 @@
       }
     },
     "Servidores externos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5687,7 +8261,6 @@
       }
     },
     "Seus dados são seus" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5732,7 +8305,8 @@
       }
     },
     "Show" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5777,7 +8351,6 @@
       }
     },
     "Somente neste iPhone" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5817,6 +8390,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sua Renda Mensal"
+          }
+        }
+      }
+    },
+    "Subcategoria Desconhecida" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Subcategory"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subcategoría Desconocida"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subcategoria Desconhecida"
           }
         }
       }
@@ -5953,8 +8548,33 @@
         }
       }
     },
+    "Supermercado com Lista e Estômago Cheio" : {
+      "comment" : "Chave dinâmica: título de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shop with a List on a Full Stomach"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supermercado con Lista y Estómago Lleno"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supermercado com Lista e Estômago Cheio"
+          }
+        }
+      }
+    },
     "Táxi" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5977,7 +8597,8 @@
       }
     },
     "Telefone" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6021,8 +8642,31 @@
         }
       }
     },
+    "Ter o equivalente a 3 a 6 meses do seu custo fixo aplicado em liquidez diária evita que você precise recorrer a juros caros em emergências." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keeping 3 to 6 months of essential living costs in an accessible, liquid account keeps high-interest debt away when surprises happen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tener el equivalente a 3 a 6 meses de tus gastos fijos invertido con liquidez diaria evita que tengas que recurrir a intereses caros en emergencias."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ter o equivalente a 3 a 6 meses do seu custo fixo aplicado em liquidez diária evita que você precise recorrer a juros caros em emergências."
+          }
+        }
+      }
+    },
     "Teto Orçamentário Ultrapassado" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6128,6 +8772,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todas"
+          }
+        }
+      }
+    },
+    "Todas as ocorrências passadas e futuras serão atualizadas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All past and future occurrences will be updated."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las ocurrencias pasadas y futuras se actualizarán."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as ocorrências passadas e futuras serão atualizadas."
           }
         }
       }
@@ -6243,7 +8909,8 @@
       }
     },
     "Trabalho" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6261,6 +8928,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trabalho"
+          }
+        }
+      }
+    },
+    "Trabalho & Estudos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Work & Study"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajo y Estudios"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabalho & Estudos"
+          }
+        }
+      }
+    },
+    "Transação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transaction"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transacción"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transação"
+          }
+        }
+      }
+    },
+    "Transação não encontrada." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transaction not found."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transacción no encontrada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transação não encontrada."
+          }
+        }
+      }
+    },
+    "Transação Recorrente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurring Transaction"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transacción Recurrente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transação Recorrente"
           }
         }
       }
@@ -6331,8 +9086,31 @@
         }
       }
     },
+    "Transporte & Viagens" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transportation & Travel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transporte y Viajes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transporte & Viagens"
+          }
+        }
+      }
+    },
     "Transporte Público" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6377,7 +9155,8 @@
       }
     },
     "TV" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6400,7 +9179,6 @@
       }
     },
     "uma compra recente" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6510,6 +9288,28 @@
         }
       }
     },
+    "Valor destinado a guardar, formar reserva de emergência e investir." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Money set aside to save, build an emergency fund and invest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinero destinado a ahorrar, formar un fondo de emergencia e invertir."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valor destinado a guardar, formar reserva de emergência e investir."
+          }
+        }
+      }
+    },
     "Valor planejado: %@" : {
       "localizations" : {
         "en" : {
@@ -6533,7 +9333,6 @@
       }
     },
     "Valor, categoria e pronto. Sem conta, sem internet, sem complicação." : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6577,6 +9376,50 @@
         }
       }
     },
+    "Velocidade de Gasto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spending Pace"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ritmo de Gasto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidade de Gasto"
+          }
+        }
+      }
+    },
+    "Ver Gastos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Expenses"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver Gastos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver Gastos"
+          }
+        }
+      }
+    },
     "Ver gastos de %@" : {
       "localizations" : {
         "en" : {
@@ -6600,7 +9443,6 @@
       }
     },
     "Ver Limites" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6623,7 +9465,6 @@
       }
     },
     "Ver Transação" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6645,8 +9486,57 @@
         }
       }
     },
+    "Verde Lima" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lime Green"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verde Lima"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verde Lima"
+          }
+        }
+      }
+    },
+    "Vermelho Carmim" : {
+      "comment" : "Chave dinâmica: nome de cor de CategoriaPalette (CategoriaCor.nomeExibicao)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crimson Red"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rojo Carmesí"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vermelho Carmim"
+          }
+        }
+      }
+    },
     "Viagem" : {
-      "extractionState" : "stale",
+      "comment" : "Chave dinâmica: nome do seed (SeedService via AppLocalization.string)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6690,13 +9580,36 @@
         }
       }
     },
-    "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!" : {
-      "extractionState" : "stale",
+    "Viu algo irresistível online? Coloque no carrinho e espere 72 horas. Em mais de 70% das vezes a urgência passa e você poupa sem sofrer." : {
+      "comment" : "Chave dinâmica: corpo de dica de tips.json (BundledTipsRepository)",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You're saving consistently and your spending is well below the target for this point in the month. Keep up the great work!"
+            "value" : "Spotted something tempting online? Add it to your cart and wait 3 days. Over 70% of the time, the urge fades and you save without feeling the pinch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Viste algo irresistible en línea? Ponlo en el carrito y espera 72 horas. En más del 70% de los casos las ganas se pasan y ahorras sin sufrir."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viu algo irresistível online? Coloque no carrinho e espere 72 horas. Em mais de 70% das vezes a urgência passa e você poupa sem sofrer."
+          }
+        }
+      }
+    },
+    "Você está economizando firme e seus gastos estão bem abaixo do teto previsto para essa altura do mês. Continue mantendo o foco!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're saving consistently and spending well below your budget for this time of the month. Keep it going!"
           }
         },
         "es" : {
@@ -6736,7 +9649,6 @@
       }
     },
     "Você já ultrapassou seu orçamento planejado em %@. Qualquer novo gasto vai aumentar o vermelho este mês!" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6803,7 +9715,6 @@
       }
     },
     "Zero gastos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

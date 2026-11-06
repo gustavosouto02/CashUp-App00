@@ -40,13 +40,13 @@ final class SettingsViewModel: ObservableObject {
             return
         }
         guard service.isAvailable else {
-            errorMessage = "Configure Face ID, Touch ID ou um código no iPhone para ativar o bloqueio."
+            errorMessage = String(localized: "Configure Face ID, Touch ID ou um código no iPhone para ativar o bloqueio.")
             return
         }
         processando = true
         defer { processando = false }
         do {
-            if try await service.authenticate(reason: "Confirme sua identidade para ativar o bloqueio do CashUp.") {
+            if try await service.authenticate(reason: String(localized: "Confirme sua identidade para ativar o bloqueio do CashUp.")) {
                 definirBloqueio(true)
             }
         } catch {
@@ -60,7 +60,7 @@ final class SettingsViewModel: ObservableObject {
         if ativar {
             let autorizado = await notificationService.requestAuthorization()
             guard autorizado else {
-                errorMessage = "Para receber lembretes de gastos, permita o envio de notificações nas configurações do iPhone."
+                errorMessage = String(localized: "Para receber lembretes de gastos, permita o envio de notificações nas configurações do iPhone.")
                 return
             }
 

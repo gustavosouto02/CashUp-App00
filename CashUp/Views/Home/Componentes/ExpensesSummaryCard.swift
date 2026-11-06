@@ -88,7 +88,7 @@ struct ExpensesSummaryCard: View {
                 let outras = categoriasResumo.dropFirst(3).map(\.percentual).reduce(0, +)
                 linha(
                     cor: Color.gray.opacity(0.6),
-                    nome: "Outras",
+                    nome: String(localized: "Outras"),
                     percentual: outras,
                     fonteNome: .caption,
                     fontePercentual: .caption.weight(.medium)

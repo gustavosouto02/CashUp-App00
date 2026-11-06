@@ -11,17 +11,17 @@ enum InsightTriggerType: String, Codable, Equatable, CaseIterable {
     var displayName: String {
         switch self {
         case .burnRate:
-            return "Velocidade de Gasto"
+            return String(localized: "Velocidade de Gasto")
         case .dailyBudget:
-            return "Meta Diária"
+            return String(localized: "Meta Diária")
         case .anomalyPeak:
-            return "Gasto Fora da Curva"
+            return String(localized: "Gasto Fora da Curva")
         case .weekendSpender:
-            return "Final de Semana"
+            return String(localized: "Final de Semana")
         case .positiveStreak:
-            return "Conquista"
+            return String(localized: "Conquista")
         case .educational:
-            return "Estratégia"
+            return String(localized: "Estratégia")
         }
     }
 }

@@ -228,7 +228,7 @@ struct RecommendedPlanningSheet: View {
                             Circle()
                                 .fill(grupo.cor)
                                 .frame(width: 8, height: 8)
-                            Text(grupo.rawValue)
+                            Text(grupo.titulo)
                                 .font(.headline)
                             Spacer()
                             Text(grupo == .futuroPoupanca ? "Alvo: 20% (Guardar Dinheiro)" : "Alvo: \(Int(grupo.percentualAlvo))%")
@@ -310,7 +310,7 @@ struct RecommendedPlanningSheet: View {
                         .foregroundStyle(.primary)
 
                     HStack(spacing: 4) {
-                        Text(item.subcategoria?.nome ?? "Selecionar Subcategoria")
+                        Text(item.subcategoria?.nome ?? String(localized: "Selecionar Subcategoria"))
                             .font(.subheadline)
                             .foregroundStyle(item.subcategoria == nil ? .blue : .secondary)
 

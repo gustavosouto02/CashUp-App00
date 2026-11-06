@@ -69,7 +69,7 @@ struct BiometricLockView: View {
     }
 
     private var mensagemErro: String? {
-        if case .falhou(let mensagem) = viewModel.estado, mensagem != "Autenticação cancelada." {
+        if case .falhou(let mensagem) = viewModel.estado {
             return mensagem
         }
         return nil

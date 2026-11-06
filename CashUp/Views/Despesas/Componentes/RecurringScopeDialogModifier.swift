@@ -1,20 +1,43 @@
 import SwiftUI
 
+/// Qual pergunta o diálogo de escopo faz sobre a transação recorrente.
+enum RecurringScopeMensagem {
+    case prosseguir
+    case apagar
+    case editar
+
+    func texto(para expense: DisplayableExpense) -> String {
+        let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
+        let data = expense.date.formatted(date: .numeric, time: .omitted)
+        let nome = expense.expenseDescription.isEmpty
+            ? (expense.subcategoria?.nome ?? String(localized: "Transação"))
+            : expense.expenseDescription
+        switch self {
+        case .prosseguir:
+            return String(localized: "\"\(nome)\" de \(valor) em \(data) é recorrente. Escolha como deseja prosseguir:")
+        case .apagar:
+            return String(localized: "\"\(nome)\" de \(valor) em \(data) é recorrente. Como você gostaria de apagá-la?")
+        case .editar:
+            return String(localized: "\"\(nome)\" de \(valor) em \(data) é recorrente. Quais ocorrências você deseja alterar?")
+        }
+    }
+}
+
 struct RecurringScopeDialogModifier: ViewModifier {
     @Binding var item: DisplayableExpense?
-    let titulo: String
-    let mensagemCustomizada: ((DisplayableExpense) -> String)?
+    let titulo: LocalizedStringKey
+    let mensagem: RecurringScopeMensagem
     let onScope: (DisplayableExpense, RecurringScope) -> Void
 
     init(
         item: Binding<DisplayableExpense?>,
-        titulo: String,
-        mensagemCustomizada: ((DisplayableExpense) -> String)? = nil,
+        titulo: LocalizedStringKey,
+        mensagem: RecurringScopeMensagem = .prosseguir,
         onScope: @escaping (DisplayableExpense, RecurringScope) -> Void
     ) {
         self._item = item
         self.titulo = titulo
-        self.mensagemCustomizada = mensagemCustomizada
+        self.mensagem = mensagem
         self.onScope = onScope
     }
 
@@ -33,29 +56,22 @@ struct RecurringScopeDialogModifier: ViewModifier {
             Button("Toda a série", role: .destructive) { onScope(expense, .entireSeries) }
             Button("Cancelar", role: .cancel) {}
         } message: { expense in
-            Text(mensagemCustomizada?(expense) ?? mensagemPadrao(para: expense))
+            Text(mensagem.texto(para: expense))
         }
-    }
-
-    private func mensagemPadrao(para expense: DisplayableExpense) -> String {
-        let valor = BRLCurrencyFormatter.string(fromCentavos: expense.amountInCents)
-        let data = expense.date.formatted(date: .numeric, time: .omitted)
-        let nome = expense.expenseDescription.isEmpty ? (expense.subcategoria?.nome ?? "Transação") : expense.expenseDescription
-        return "\"\(nome)\" de \(valor) em \(data) é recorrente. Escolha como deseja prosseguir:"
     }
 }
 
 extension View {
     func recurringScopeDialog(
         item: Binding<DisplayableExpense?>,
-        titulo: String = "Transação Recorrente",
-        mensagemCustomizada: ((DisplayableExpense) -> String)? = nil,
+        titulo: LocalizedStringKey = "Transação Recorrente",
+        mensagem: RecurringScopeMensagem = .prosseguir,
         onScope: @escaping (DisplayableExpense, RecurringScope) -> Void
     ) -> some View {
         modifier(RecurringScopeDialogModifier(
             item: item,
             titulo: titulo,
-            mensagemCustomizada: mensagemCustomizada,
+            mensagem: mensagem,
             onScope: onScope
         ))
     }

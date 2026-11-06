@@ -7,6 +7,9 @@ final class AuthViewModel: ObservableObject {
         case bloqueado
         case autenticando
         case liberado
+        /// O usuário (ou o sistema) cancelou a autenticação: não é um erro a exibir.
+        case cancelado
+        /// Falha a exibir; a mensagem já vem localizada. A lógica nunca compara esse texto.
         case falhou(String)
     }
 
@@ -35,10 +38,10 @@ final class AuthViewModel: ObservableObject {
         }
         estado = .autenticando
         do {
-            let sucesso = try await service.authenticate(reason: "Desbloqueie o CashUp para ver suas finanças.")
-            estado = sucesso ? .liberado : .falhou("Autenticação cancelada.")
+            let sucesso = try await service.authenticate(reason: String(localized: "Desbloqueie o CashUp para ver suas finanças."))
+            estado = sucesso ? .liberado : .cancelado
         } catch {
-            estado = .falhou(Self.mensagem(para: error))
+            estado = Self.estado(para: error)
         }
     }
 
@@ -47,15 +50,15 @@ final class AuthViewModel: ObservableObject {
         estado = .bloqueado
     }
 
-    private static func mensagem(para error: Error) -> String {
-        guard let laError = error as? LAError else { return error.localizedDescription }
+    private static func estado(para error: Error) -> Estado {
+        guard let laError = error as? LAError else { return .falhou(error.localizedDescription) }
         switch laError.code {
         case .userCancel, .systemCancel, .appCancel:
-            return "Autenticação cancelada."
+            return .cancelado
         case .authenticationFailed:
-            return "Não foi possível confirmar sua identidade."
+            return .falhou(String(localized: "Não foi possível confirmar sua identidade."))
         default:
-            return laError.localizedDescription
+            return .falhou(laError.localizedDescription)
         }
     }
 }

@@ -29,7 +29,7 @@ struct FiftyThirtyTwentyCard: View {
                 VStack(spacing: 12) {
                     linhaBarra(
                         titulo: "Necessidades (Moradia, Comida, Saúde)",
-                        alvo: "Meta: 50%",
+                        meta: 50,
                         atual: b.pctNecessidades,
                         valorAtual: b.necessidades,
                         cor: Color(red: 0.22, green: 0.74, blue: 0.98)
@@ -37,7 +37,7 @@ struct FiftyThirtyTwentyCard: View {
 
                     linhaBarra(
                         titulo: "Desejos Pessoais (Lazer, Compras)",
-                        alvo: "Meta: 30%",
+                        meta: 30,
                         atual: b.pctDesejos,
                         valorAtual: b.desejos,
                         cor: Color(red: 1.0, green: 0.76, blue: 0.18)
@@ -45,7 +45,7 @@ struct FiftyThirtyTwentyCard: View {
 
                     linhaBarra(
                         titulo: "Poupança & Futuro",
-                        alvo: "Meta: 20%",
+                        meta: 20,
                         atual: b.pctPoupanca,
                         valorAtual: b.poupanca,
                         cor: Color(red: 0.25, green: 0.88, blue: 0.45)
@@ -59,7 +59,7 @@ struct FiftyThirtyTwentyCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    private func linhaBarra(titulo: String, alvo: String, atual: Double, valorAtual: Int64, cor: Color) -> some View {
+    private func linhaBarra(titulo: LocalizedStringKey, meta: Int, atual: Double, valorAtual: Int64, cor: Color) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(titulo)
@@ -84,7 +84,7 @@ struct FiftyThirtyTwentyCard: View {
             }
             .frame(height: 8)
 
-            Text(alvo)
+            Text("Meta: \(meta)%")
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }

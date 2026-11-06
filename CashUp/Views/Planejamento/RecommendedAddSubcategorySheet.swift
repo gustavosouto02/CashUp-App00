@@ -17,7 +17,7 @@ struct RecommendedAddSubcategorySheet: View {
                             .fill(grupo.cor)
                             .frame(width: 10, height: 10)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(grupo.rawValue)
+                            Text(grupo.titulo)
                                 .font(.headline)
                             Text(grupo.descricao)
                                 .font(.caption)

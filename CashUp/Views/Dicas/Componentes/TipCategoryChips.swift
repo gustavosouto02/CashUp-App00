@@ -6,7 +6,7 @@ struct TipCategoryChips: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                chipButton(title: "Todas", isSelected: selectedCategory == nil) {
+                chipButton(title: String(localized: "Todas"), isSelected: selectedCategory == nil) {
                     selectedCategory = nil
                 }
 

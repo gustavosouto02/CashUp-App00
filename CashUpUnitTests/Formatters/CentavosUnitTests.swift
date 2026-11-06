@@ -80,17 +80,16 @@ final class CentavosUnitTests: XCTestCase {
         XCTAssertEqual(Centavos.arredondar(Decimal(string: "12.5")!, multiploDe: 0), 13)
     }
 
-    func testMoedaBRLTrataOInteiroComoCentavos() {
+    func testFormatadorTrataOInteiroComoCentavosEAcompanhaOIdioma() {
         let ptBR = Locale(identifier: "pt_BR")
+        let enUS = Locale(identifier: "en_US")
         func semEspacoDuro(_ t: String) -> String { t.replacingOccurrences(of: "\u{00A0}", with: " ") }
-        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(150_000, locale: ptBR)), "R$ 1.500,00")
-        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(0, locale: ptBR)), "R$ 0,00")
-        XCTAssertEqual(semEspacoDuro(Centavos.moedaBRL(5, locale: ptBR)), "R$ 0,05")
-        // Mesmo texto do formatador usado no resto do app.
-        XCTAssertEqual(
-            semEspacoDuro(Centavos.moedaBRL(123_450, locale: ptBR)),
-            semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 123_450, locale: ptBR))
-        )
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 150_000, locale: ptBR)), "R$ 1.500,00")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 5, locale: ptBR)), "R$ 0,05")
+        // Planejamento e gráfico usam o mesmo formatador do resto do app: em inglês, a moeda da localidade.
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 300_000, locale: enUS)), "$3,000.00")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 0, locale: ptBR, fractionDigits: 0)), "R$ 0")
+        XCTAssertEqual(semEspacoDuro(BRLCurrencyFormatter.string(fromCentavos: 12_345, locale: ptBR, fractionDigits: 2)), "R$ 123,45")
     }
 
     func testDividirEProporcaoNaoPerdemCentavos() {

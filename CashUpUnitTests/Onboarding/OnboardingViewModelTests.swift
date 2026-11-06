@@ -65,8 +65,8 @@ final class OnboardingViewModelTests: XCTestCase {
         let sut = makeSUT()
 
         XCTAssertEqual(sut.paginas.count, 3)
-        XCTAssertEqual(sut.paginas[0].titulo, "Registre em segundos")
-        XCTAssertEqual(sut.paginas[1].titulo, "Planeje o mês")
-        XCTAssertEqual(sut.paginas[2].titulo, "Seus dados são seus")
+        XCTAssertEqual(sut.paginas[0].titulo.key, "Registre em segundos")
+        XCTAssertEqual(sut.paginas[1].titulo.key, "Planeje o mês")
+        XCTAssertEqual(sut.paginas[2].titulo.key, "Seus dados são seus")
     }
 }

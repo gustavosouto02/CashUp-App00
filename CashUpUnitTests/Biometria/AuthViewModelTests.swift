@@ -39,23 +39,24 @@ final class AuthViewModelTests: XCTestCase {
         XCTAssertEqual(service.authenticateCallCount, 1)
     }
 
-    func testAutenticacaoRecusadaFalha() async {
+    func testAutenticacaoRecusadaFicaCancelada() async {
         service.resultado = .success(false)
         let sut = makeSUT()
 
         await sut.autenticar()
 
-        XCTAssertEqual(sut.estado, .falhou("Autenticação cancelada."))
+        XCTAssertEqual(sut.estado, .cancelado)
         XCTAssertTrue(sut.estaBloqueado)
     }
 
-    func testCancelamentoDoUsuarioFalhaComMensagem() async {
+    func testCancelamentoDoUsuarioNaoExibeMensagemDeErro() async {
         service.resultado = .failure(LAError(.userCancel))
         let sut = makeSUT()
 
         await sut.autenticar()
 
-        XCTAssertEqual(sut.estado, .falhou("Autenticação cancelada."))
+        XCTAssertEqual(sut.estado, .cancelado)
+        XCTAssertTrue(sut.estaBloqueado)
     }
 
     func testFalhaDeAutenticacaoFalhaComMensagem() async {
@@ -64,7 +65,7 @@ final class AuthViewModelTests: XCTestCase {
 
         await sut.autenticar()
 
-        XCTAssertEqual(sut.estado, .falhou("Não foi possível confirmar sua identidade."))
+        XCTAssertEqual(sut.estado, .falhou(String(localized: "Não foi possível confirmar sua identidade.")))
     }
 
     func testBiometriaIndisponivelNaoBloqueia() async {

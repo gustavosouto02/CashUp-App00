@@ -6,7 +6,8 @@ enum TipCategory: String, Codable, CaseIterable, Equatable {
     case habitos
     case renda
 
-    var titulo: String {
+    /// Título como recurso localizável: a UI usa `titulo`; os testes resolvem em outro idioma por aqui.
+    var tituloResource: LocalizedStringResource {
         switch self {
         case .orcamento:
             return "Orçamento"
@@ -18,6 +19,8 @@ enum TipCategory: String, Codable, CaseIterable, Equatable {
             return "Renda & Investimento"
         }
     }
+
+    var titulo: String { String(localized: tituloResource) }
 
     var iconName: String {
         switch self {

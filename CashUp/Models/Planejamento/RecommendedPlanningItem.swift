@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+/// O `rawValue` é só identificador (pt-BR); o texto exibido vem de `titulo`, `rotuloCurto`, `rotuloCard` e `descricao`.
 enum Regra503020Grupo: String, CaseIterable, Identifiable, Equatable {
     case necessidades = "Necessidades"
     case desejos = "Estilo de Vida"
@@ -16,27 +17,35 @@ enum Regra503020Grupo: String, CaseIterable, Identifiable, Equatable {
         }
     }
 
+    var titulo: String {
+        switch self {
+        case .necessidades: return String(localized: "Necessidades")
+        case .desejos: return String(localized: "Estilo de Vida")
+        case .futuroPoupanca: return String(localized: "Guardar Dinheiro")
+        }
+    }
+
     var rotuloCurto: String {
         switch self {
-        case .necessidades: return "50% Necessidades"
-        case .desejos: return "30% Estilo"
-        case .futuroPoupanca: return "20% Guardar"
+        case .necessidades: return String(localized: "50% Necessidades")
+        case .desejos: return String(localized: "30% Estilo")
+        case .futuroPoupanca: return String(localized: "20% Guardar")
         }
     }
 
     var rotuloCard: String {
         switch self {
-        case .necessidades: return "Necessidades"
-        case .desejos: return "Estilo de Vida"
-        case .futuroPoupanca: return "Guardar"
+        case .necessidades: return String(localized: "Necessidades")
+        case .desejos: return String(localized: "Estilo de Vida")
+        case .futuroPoupanca: return String(localized: "Guardar")
         }
     }
 
     var descricao: String {
         switch self {
-        case .necessidades: return "Despesas essenciais para moradia, mercado, saúde e transporte."
-        case .desejos: return "Gastos de lazer, entretenimento, compras e conforto pessoal."
-        case .futuroPoupanca: return "Valor destinado a guardar, formar reserva de emergência e investir."
+        case .necessidades: return String(localized: "Despesas essenciais para moradia, mercado, saúde e transporte.")
+        case .desejos: return String(localized: "Gastos de lazer, entretenimento, compras e conforto pessoal.")
+        case .futuroPoupanca: return String(localized: "Valor destinado a guardar, formar reserva de emergência e investir.")
         }
     }
 

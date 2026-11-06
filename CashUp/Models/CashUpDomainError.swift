@@ -19,7 +19,9 @@ enum CashUpDomainError: LocalizedError, Equatable {
     case corCategoriaBaseProtegida
     case persistencia(String)
 
-    var errorDescription: String? {
+    /// Mensagem como recurso localizável: `errorDescription` a resolve no idioma do usuário;
+    /// os testes a resolvem em outro idioma trocando o `locale` do recurso.
+    var mensagem: LocalizedStringResource {
         switch self {
         case .valorInvalido:
             return "Informe um valor maior que zero."
@@ -57,4 +59,6 @@ enum CashUpDomainError: LocalizedError, Equatable {
             return "Não foi possível salvar: \(detalhe)"
         }
     }
+
+    var errorDescription: String? { String(localized: mensagem) }
 }

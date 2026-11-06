@@ -16,7 +16,7 @@ struct HomeSmartInsightBanner: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text(LocalizedStringKey(insight.title))
+                        Text(verbatim: insight.title)
                             .font(.subheadline.bold())
                             .foregroundColor(.white)
 
@@ -27,7 +27,7 @@ struct HomeSmartInsightBanner: View {
                             .foregroundColor(.secondary)
                     }
 
-                    Text(LocalizedStringKey(insight.message))
+                    Text(verbatim: insight.message)
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.8))
                         .lineLimit(2)

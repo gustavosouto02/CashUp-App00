@@ -20,12 +20,12 @@ struct OnboardingPageView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 10) {
 
-            Text(LocalizedStringKey(page.titulo))
+            Text(page.titulo)
                 .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(.white)
                 .lineLimit(2)
 
-            Text(LocalizedStringKey(page.mensagem))
+            Text(page.mensagem)
                 .font(.system(size: 16, weight: .regular))
                 .foregroundStyle(Color.white.opacity(0.72))
                 .lineSpacing(3)

@@ -105,7 +105,7 @@ struct CategoriaFormView: View {
                 size: 32
             )
 
-            Text(nome.isEmpty ? "Nome da Categoria" : nome)
+            Text(nome.isEmpty ? String(localized: "Nome da Categoria") : nome)
                 .font(.title3.weight(.bold))
                 .foregroundStyle(nome.isEmpty ? Color.gray : Color.primary)
                 .lineLimit(1)

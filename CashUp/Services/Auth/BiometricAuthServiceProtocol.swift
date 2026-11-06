@@ -5,7 +5,7 @@ enum BiometricKind: Equatable {
 
     var nome: String {
         switch self {
-        case .none: return "código do iPhone"
+        case .none: return String(localized: "código do iPhone")
         case .touchID: return "Touch ID"
         case .faceID: return "Face ID"
         case .opticID: return "Optic ID"

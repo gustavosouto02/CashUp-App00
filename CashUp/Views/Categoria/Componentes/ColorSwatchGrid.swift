@@ -52,6 +52,7 @@ struct ColorSwatchGrid: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(emUso)
+                    .accessibilityLabel(opcao.nomeExibicao)
                     .accessibilityIdentifier("colorSwatch_\(opcao.id)")
                 }
             }

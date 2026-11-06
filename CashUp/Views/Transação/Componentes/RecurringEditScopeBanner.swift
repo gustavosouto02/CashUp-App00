@@ -42,7 +42,7 @@ struct RecurringEditScopeBanner: View {
         }
     }
 
-    private var titleText: String {
+    private var titleText: LocalizedStringKey {
         switch scope {
         case .thisOccurrenceOnly:
             return "Editando apenas esta ocorrência"
@@ -53,7 +53,7 @@ struct RecurringEditScopeBanner: View {
         }
     }
 
-    private var descriptionText: String {
+    private var descriptionText: LocalizedStringKey {
         switch scope {
         case .thisOccurrenceOnly:
             return "As outras repetições desta transação permanecerão inalteradas."

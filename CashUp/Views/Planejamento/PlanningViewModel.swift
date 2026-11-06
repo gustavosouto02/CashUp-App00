@@ -34,7 +34,7 @@ final class PlanningViewModel: ObservableObject {
         }
     }
 
-    private func salvarContexto(operacao: String = "Operação Desconhecida") -> Bool {
+    private func salvarContexto(operacao: String = "desconhecida") -> Bool {
         do {
             try repository.save()
             objectWillChange.send()
@@ -195,8 +195,8 @@ final class PlanningViewModel: ObservableObject {
     func confirmCopyCurrentMonthPlanningToNextMonth() {
         let currentMonthStart = currentMonth.startOfMonth()
         guard let nextMonthDateUnsafe = Calendar.current.date(byAdding: .month, value: 1, to: currentMonthStart) else {
-            self.copyResultAlertTitle = "Erro"
-            self.copyResultAlertMessage = "Não foi possível determinar o próximo mês."
+            self.copyResultAlertTitle = String(localized: "Erro")
+            self.copyResultAlertMessage = String(localized: "Não foi possível determinar o próximo mês.")
             self.showCopyResultAlert = true
             return
         }
@@ -229,7 +229,7 @@ final class PlanningViewModel: ObservableObject {
     func copyCurrentMonthPlanningToNextMonth() -> (title: String, message: String) {
         let currentMonthStart = currentMonth.startOfMonth()
         guard let nextMonthDateUnsafe = Calendar.current.date(byAdding: .month, value: 1, to: currentMonthStart) else {
-            return ("Erro", "Não foi possível determinar o próximo mês.")
+            return (String(localized: "Erro"), String(localized: "Não foi possível determinar o próximo mês."))
         }
         let nextMonthStart = nextMonthDateUnsafe.startOfMonth()
         let currentLocale = Locale.autoupdatingCurrent
@@ -239,11 +239,11 @@ final class PlanningViewModel: ObservableObject {
             categoriasPlanejadasAtuais = try repository.fetchCategoriasPlanejadas(mes: currentMonthStart)
         } catch {
             CashUpLogger.persistence.error("Erro ao buscar planejamento do mês atual: \(error.localizedDescription, privacy: .public)")
-            return ("Erro", "Falha ao buscar planejamento atual.")
+            return (String(localized: "Erro"), String(localized: "Falha ao buscar planejamento atual."))
         }
 
         if categoriasPlanejadasAtuais.isEmpty {
-            return ("Nenhum Planejamento", "Não há planejamento no mês atual para copiar.")
+            return (String(localized: "Nenhum Planejamento"), String(localized: "Não há planejamento no mês atual para copiar."))
         }
 
         let categoriasPlanejadasProximoMesExistentes: [CategoriaPlanejadaModel]
@@ -251,7 +251,7 @@ final class PlanningViewModel: ObservableObject {
             categoriasPlanejadasProximoMesExistentes = try repository.fetchCategoriasPlanejadas(mes: nextMonthStart)
         } catch {
             CashUpLogger.persistence.error("Erro ao buscar planejamento do próximo mês: \(error.localizedDescription, privacy: .public)")
-            return ("Erro", "Falha ao verificar planejamento existente no próximo mês.")
+            return (String(localized: "Erro"), String(localized: "Falha ao verificar planejamento existente no próximo mês."))
         }
 
         var countCopied = 0
@@ -298,29 +298,36 @@ final class PlanningViewModel: ObservableObject {
         let proximoMesFormatado = nextMonthStart.formatted(.dateTime.month(.wide).year().locale(currentLocale))
 
         if countCopied == 0 && countSkipped == 0 && !categoriasPlanejadasAtuais.isEmpty {
-            return ("Nenhuma Ação", "Nenhuma categoria válida foi encontrada para copiar (verifique se possuem categorias originais associadas).")
+            return (String(localized: "Nenhuma Ação"), String(localized: "Nenhuma categoria válida foi encontrada para copiar (verifique se possuem categorias originais associadas)."))
         }
         if countCopied == 0 && countSkipped > 0 {
-            return ("Nenhuma Categoria Copiada", "\(countSkipped) categoria(s) (\(skippedCategoryNames.joined(separator: ", "))) já existia(m) em \(proximoMesFormatado) e foi(ram) pulada(s). Nenhuma nova categoria foi copiada.")
+            let nomesPulados = skippedCategoryNames.joined(separator: ", ")
+            return (
+                String(localized: "Nenhuma Categoria Copiada"),
+                String(localized: "\(countSkipped) categoria(s) (\(nomesPulados)) já existia(m) em \(proximoMesFormatado) e foi(ram) pulada(s). Nenhuma nova categoria foi copiada.")
+            )
         }
 
         do {
             try repository.save()
             objectWillChange.send()
 
-            let title = "Sucesso"
+            let title = String(localized: "Sucesso")
             var message = ""
+            let nomesPulados = skippedCategoryNames.joined(separator: ", ")
 
             if countCopied > 0 && countSkipped > 0 {
-                message = "\(countCopied) categoria(s) copiada(s) para \(proximoMesFormatado).\n\(countSkipped) categoria(s) (\(skippedCategoryNames.joined(separator: ", "))) pulada(s) pois já existiam."
+                let copiadas = String(localized: "\(countCopied) categoria(s) copiada(s) para \(proximoMesFormatado).")
+                let puladas = String(localized: "\(countSkipped) categoria(s) (\(nomesPulados)) pulada(s) pois já existiam.")
+                message = copiadas + "\n" + puladas
             } else if countCopied > 0 {
-                message = "\(countCopied) categoria(s) planejada(s) copiada(s) com sucesso para \(proximoMesFormatado)."
+                message = String(localized: "\(countCopied) categoria(s) planejada(s) copiada(s) com sucesso para \(proximoMesFormatado).")
             }
 
-            return (title, message.isEmpty ? "Nenhuma ação de cópia necessitou ser realizada." : message)
+            return (title, message.isEmpty ? String(localized: "Nenhuma ação de cópia necessitou ser realizada.") : message)
         } catch {
             CashUpLogger.persistence.error("Erro ao salvar o planejamento copiado: \(error.localizedDescription, privacy: .public)")
-            return ("Erro", "Falha ao salvar o planejamento copiado: \(error.localizedDescription)")
+            return (String(localized: "Erro"), String(localized: "Falha ao salvar o planejamento copiado: \(error.localizedDescription)"))
         }
     }
 }

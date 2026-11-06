@@ -2,7 +2,7 @@ import Foundation
 
 struct CategoriaSymbolGroup: Identifiable {
     let id: String
-    let titulo: String
+    let titulo: LocalizedStringResource
     let simbolos: [String]
 }
 
