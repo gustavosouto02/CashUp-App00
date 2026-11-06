@@ -148,7 +148,7 @@ final class SmartFinancialCoachEngine: InsightEngineProtocol {
         } else {
             return FinancialInsight(
                 title: String(localized: "Meta de Gasto Diário"),
-                message: String(localized: "Para fechar o mês no azul, sua meta é gastar no máximo \(formattedLimite) por dia até o encerramento do mês."),
+                message: String(localized: "Para fechar o mês no azul, sua meta é gastar no máximo \(formattedLimite) por dia até o fim do mês."),
                 severity: .informativo,
                 triggerType: .dailyBudget,
                 priorityScore: 72,

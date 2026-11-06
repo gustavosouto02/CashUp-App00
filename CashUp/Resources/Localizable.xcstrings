@@ -6858,24 +6858,24 @@
         }
       }
     },
-    "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês." : {
+    "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o fim do mês." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To stay in the black this month, your target is to spend at most %@ per day until the end of the month."
+            "value" : "To stay on budget, aim to spend no more than %@ per day for the rest of the month."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para cerrar el mes en positivo, tu meta es gastar como máximo %@ al día hasta fin de mes."
+            "value" : "Para mantenerte dentro del presupuesto, intenta gastar como máximo %@ al día durante el resto del mes."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o encerramento do mês."
+            "value" : "Para fechar o mês no azul, sua meta é gastar no máximo %@ por dia até o fim do mês."
           }
         }
       }
