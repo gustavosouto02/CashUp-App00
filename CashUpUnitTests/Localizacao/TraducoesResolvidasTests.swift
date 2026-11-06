@@ -110,7 +110,7 @@ final class TraducoesResolvidasTests: XCTestCase {
             XCTAssertNotEqual(traduzida.title, original.title, "título sem tradução (es): \(original.title)")
             XCTAssertNotEqual(traduzida.body, original.body, "corpo sem tradução (es): \(original.title)")
         }
-        XCTAssertEqual(emEn.first?.title, "The 3-Day Rule for Wants")
+        XCTAssertEqual(emEn.first?.title, "The 72-Hour Rule for Impulse Buys")
         XCTAssertEqual(emEs.first?.title, "La Regla de los 3 Días para los Antojos")
     }
 
@@ -128,7 +128,7 @@ final class TraducoesResolvidasTests: XCTestCase {
     func testTitulosDosGruposDeSimbolosResolvemEmCadaIdioma() {
         let grupos = CategoriaSymbols.grupos
         XCTAssertEqual(grupos.map { resolver($0.titulo, en) },
-                       ["Shopping & Groceries", "Home & Family", "Food", "Transportation & Travel",
+                       ["Shopping & Groceries", "Home & Family", "Food & Dining", "Transportation & Travel",
                         "Health & Care", "Work & Study", "Leisure & Culture", "Finance & Goals"])
         XCTAssertEqual(grupos.map { resolver($0.titulo, es) },
                        ["Compras y Supermercado", "Hogar y Familia", "Alimentación", "Transporte y Viajes",

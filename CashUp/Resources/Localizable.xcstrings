@@ -1181,7 +1181,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Food"
+            "value" : "Food & Dining"
           }
         },
         "es" : {
@@ -1613,7 +1613,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Audit Your Recurring Subscriptions"
+            "value" : "Audit Your Subscriptions"
           }
         },
         "es" : {
@@ -1637,7 +1637,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Self-control"
+            "value" : "Self-Control"
           }
         },
         "es" : {
@@ -1941,7 +1941,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Card"
+            "value" : "Credit Card"
           }
         },
         "es" : {
@@ -2891,7 +2891,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Takeout: The Silent Drain"
+            "value" : "Takeout: The Silent Budget Drain"
           }
         },
         "es" : {
@@ -3341,7 +3341,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The 50/30/20 Split, Made Simple"
+            "value" : "The 50/30/20 Rule, Simplified"
           }
         },
         "es" : {
@@ -3389,7 +3389,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Two fewer app-ordered meals a week usually add up to more than R$ 300.00 saved by the end of the month. Batch cooking on Sunday saves your wallet."
+            "value" : "Skipping just two food delivery orders a week can easily save you over $60 a month. Batch cooking on Sundays does wonders for your wallet."
           }
         },
         "es" : {
@@ -4181,7 +4181,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avoid Installment Plans Under 3x"
+            "value" : "Rethink Short-Term Installments"
           }
         },
         "es" : {
@@ -4473,7 +4473,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shopping hungry or without checking what's already in your pantry increases impulse buys by up to 40%."
+            "value" : "Grocery shopping while hungry or without checking your pantry first spikes impulse purchases by up to 40%."
           }
         },
         "es" : {
@@ -4633,7 +4633,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fixed"
+            "value" : "Bills"
           }
         },
         "es" : {
@@ -5423,7 +5423,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keep up to 50% for basic needs, 30% for lifestyle and leisure, and make sure 20% goes to paying off debt or building wealth."
+            "value" : "Keep up to 50% for core essentials, 30% for lifestyle and fun, and commit at least 20% toward paying off debt or building wealth."
           }
         },
         "es" : {
@@ -5827,7 +5827,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Don't save what's left after spending: set the amount for your savings or emergency fund and transfer it the day your paycheck or income lands."
+            "value" : "Don't just save what's left over. Set your savings or emergency transfer amount and automate it the day your paycheck lands."
           }
         },
         "es" : {
@@ -7444,7 +7444,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The 3-Day Rule for Wants"
+            "value" : "The 72-Hour Rule for Impulse Buys"
           }
         },
         "es" : {
@@ -7760,7 +7760,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Review your card statements every quarter. Streaming services and forgotten subscriptions add up to a lot over 1 year."
+            "value" : "Review your bank and card statements quarterly. Unused streaming services and forgotten memberships add up to serious cash over a year."
           }
         },
         "es" : {
@@ -7784,7 +7784,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Routine"
+            "value" : "Habits"
           }
         },
         "es" : {
@@ -7994,7 +7994,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "If you can't pay upfront and it's not an essential durable item, splitting it into 2x or 3x only ties up next month's limit with things that are already behind you."
+            "value" : "If you can't pay upfront and it isn't an essential durable good, splitting it into 2 or 3 payments just ties up next month's cash flow for past splurges."
           }
         },
         "es" : {
@@ -8017,7 +8017,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Security"
+            "value" : "Safety Net"
           }
         },
         "es" : {
@@ -8555,7 +8555,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grocery Shopping with a List and a Full Stomach"
+            "value" : "Shop with a List on a Full Stomach"
           }
         },
         "es" : {
@@ -8649,7 +8649,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Having 3 to 6 months of your fixed costs invested with daily liquidity keeps you from turning to expensive interest in emergencies."
+            "value" : "Keeping 3 to 6 months of essential living costs in an accessible, liquid account keeps high-interest debt away when surprises happen."
           }
         },
         "es" : {
@@ -9587,7 +9587,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spotted something irresistible online? Add it to your cart and wait 72 hours. More than 70% of the time the urge fades and you save without suffering."
+            "value" : "Spotted something tempting online? Add it to your cart and wait 3 days. Over 70% of the time, the urge fades and you save without feeling the pinch."
           }
         },
         "es" : {
