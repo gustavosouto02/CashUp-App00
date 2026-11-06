@@ -32,6 +32,16 @@ enum BRLCurrencyFormatter {
 
         return formatter.string(from: Centavos.reais(de: centavos) as NSDecimalNumber) ?? "0,00"
     }
+
+    /// Mesma moeda e localidade de `string(fromCentavos:locale:)`, com número fixo de casas decimais (ex.: "R$ 0" no rótulo de um dia sem gastos).
+    static func string(fromCentavos centavos: Int64, locale: Locale? = nil, fractionDigits: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = locale ?? effectiveLocale
+        formatter.minimumFractionDigits = fractionDigits
+        formatter.maximumFractionDigits = fractionDigits
+        return formatter.string(from: Centavos.reais(de: centavos) as NSDecimalNumber) ?? "0"
+    }
 }
 
 /// Utilitário central de localização para resolver strings respeitando o Locale/idioma fornecido.

@@ -165,7 +165,7 @@ struct InteractiveDailyExpensesChart: View {
     @ViewBuilder
     private func valueAnnotation(for item: DailyExpenseItem) -> some View {
         VStack(spacing: 2) {
-            Text(Centavos.reais(de: item.totalExpenses), format: .currency(code: "BRL").precision(.fractionLength(item.totalExpenses == 0 ? 0 : 2)))
+            Text(BRLCurrencyFormatter.string(fromCentavos: item.totalExpenses, fractionDigits: item.totalExpenses == 0 ? 0 : 2))
                 .font(.caption.weight(.bold))
                 .foregroundColor(.primary)
         }

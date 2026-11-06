@@ -192,7 +192,7 @@ struct PlanningPlanejarView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Despesas Planejadas")
                         .font(.headline)
-                    Text(Centavos.moedaBRL(viewModel.valorTotalPlanejadoParaMesAtual()))
+                    Text(BRLCurrencyFormatter.string(fromCentavos: viewModel.valorTotalPlanejadoParaMesAtual()))
                         .font(.title2.bold())
                         .foregroundColor(viewModel.valorTotalPlanejadoParaMesAtual() > 0 ? .primary : .secondary)
                 }
@@ -239,7 +239,7 @@ struct PlanningPlanejarView: View {
                     .font(.subheadline)
                     .frame(width: 50, alignment: .trailing)
                 
-                Text(Centavos.moedaBRL(total))
+                Text(BRLCurrencyFormatter.string(fromCentavos: total))
                     .font(.subheadline.weight(.medium))
                     .frame(width: 100, alignment: .trailing)
             }
